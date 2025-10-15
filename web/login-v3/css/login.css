@@ -1,0 +1,122 @@
+
+.login-right{
+    background:
+            linear-gradient(
+                    rgba(130, 83, 235, 0.6),
+                    rgba(130, 83, 235, 0.6)
+            ), url("../../images/fcc-building.jpg");
+    background-position: right;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.login-info-logo{
+    width: 110px;
+    height: 113px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 23px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.alert h4 {
+    margin-top: 0;
+    color: inherit;
+}
+.alert .alert-link {
+    font-weight: bold;
+}
+.alert > p,
+.alert > ul {
+    margin-bottom: 0;
+}
+.alert > p + p {
+    margin-top: 5px;
+}
+.alert-dismissable,
+.alert-dismissible {
+    padding-right: 35px;
+}
+.alert-dismissable .close,
+.alert-dismissible .close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+    color: inherit;
+    opacity: 0.5;
+}
+.alert-success {
+    background-color: #4caf50;
+    /*border-color: #509d44;*/
+    color: #ffffff;
+}
+.alert-success hr {
+    border-top-color: #478b3d;
+}
+.alert-success .alert-link {
+    color: #e6e6e6;
+}
+.alert-info {
+    background-color: #9c27b0;
+    /*border-color: #75229b;*/
+    color: #ffffff;
+}
+.alert-info hr {
+    border-top-color: #661e86;
+}
+.alert-info .alert-link {
+    color: #e6e6e6;
+}
+.alert-warning {
+    background-color: #ff9800;
+    /*border-color: #e66300;*/
+    color: #ffffff;
+}
+.alert-warning hr {
+    border-top-color: #cc5800;
+}
+.alert-warning .alert-link {
+    color: #e6e6e6;
+}
+.alert-danger {
+    background-color: #e51c23;
+    /*border-color: #d0183d;*/
+    color: #ffffff;
+}
+.alert-danger hr {
+    border-top-color: #b91536;
+}
+.alert-danger .alert-link {
+    color: #e6e6e6;
+}
+
+.close {
+    float: right;
+    font-size: 19.5px;
+    font-weight: normal;
+    line-height: 1;
+    color: #000000;
+    text-shadow: none;
+    opacity: 0.2;
+    filter: alpha(opacity=20);
+}
+.close:hover,
+.close:focus {
+    color: #000000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+button.close {
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+}

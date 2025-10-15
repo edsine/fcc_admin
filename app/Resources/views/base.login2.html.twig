@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>Federal Character Commission {% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    {#<link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">#}
+
+    <!-- Bootstrap watch paper theme CSS -->
+    <link href="{{ asset('css/bootstrap-bootswatch-paper-theme.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+
+    {% block stylesheets %}{% endblock %}
+
+</head>
+
+<body>
+
+<div class="login-info">
+
+    <div class="login-info-content">
+        <img src="{{ asset('images/fcc-logo2.png') }}" class="login-info-logo"/>
+        <br/>
+        <div class="login-info-client-name">
+            Federal Character Commission
+        </div>
+        <div class="login-info-app-name">
+            {#Data Processing &amp; Analysis Platform#}
+            {% autoescape false %}
+                {{ render(controller('AppBundle:Default:loginPageApplicationName')) }}
+            {% endautoescape %}
+
+        </div>
+    </div>
+
+</div>
+
+<div class="login-wrapper">
+
+    <div class="login-content">
+        <div class="login-logo">
+            <img src="{{ asset('images/login-form-logo.png') }}" />
+        </div>
+        <div class="login-title">{% block heading %}{% endblock %}</div>
+
+        {% block main %}
+
+        {% endblock %}
+    </div>
+
+</div>
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
+</body>
+</html>

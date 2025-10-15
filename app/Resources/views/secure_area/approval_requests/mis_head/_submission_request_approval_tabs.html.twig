@@ -1,0 +1,19 @@
+<div>
+    <ul class="nav nav-tabs with-bold-active">
+        <li class="{{ (activePage == 'pending') ? 'active' : '' }}">
+            <a href="{{ path('mis_head_submission_permission_request_pending_approval_list') }}">
+                PENDING APPROVAL
+            </a>
+        </li>
+        <li class="{{ (activePage == 'approved') ? 'active' : '' }}">
+            <a href="{{ path('mis_head_submission_permission_request_approved_list') }}">
+                APPROVED
+            </a>
+        </li>
+        <li class="{{ (activePage == 'declined') ? 'active' : '' }}">
+            <a href="{{ path('mis_head_submission_permission_request_declined_list') }}">
+                DECLINED
+            </a>
+        </li>
+    </ul>
+</div>

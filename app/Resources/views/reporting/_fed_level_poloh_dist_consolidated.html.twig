@@ -1,0 +1,197 @@
+{% if report is not empty %}
+    <div id="print-panel" class="print-landscape" style="margin-top: 20px;">
+        <!-- STAGE 1 -->
+        <div class="card card-3 print-break-after">
+            <table id="stage1" style="width: 1300px;"
+                   class="table table-bordered table-hover report-table">
+                <tbody>
+                <tr align="center">
+                    <td colspan="13" align="center">POLITICAL OFFICE HOLDERS</td>
+                </tr>
+                <tr align="center">
+                    <td colspan="13" align="center">{{ report.submissionYear }}</td>
+                </tr>
+                <tr align="center">
+                    <td colspan="13" align="center">DISTRIBUTION BY STATE OF ORIGIN</td>
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;"></td>
+                    <td>MINISTERS</td>
+                    <td>MIN. OF. STATE</td>
+                    <td>PERM.SEC</td>
+                    <td>CHM OF BOARD</td>
+                    <td>MEM OF BOARD</td>
+                    <td>AMBAS.</td>
+                    <td>S. ADV. TO PRES</td>
+                    <td>S. ASSI. TO PRES</td>
+                    <td>S. ASSI. TO VP</td>
+                    <td>CHIEF. EXEC.</td>
+                    <td align="right"></td>
+                    <td align="right"></td>
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;">STATES</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td>NO.</td>
+                    <td align="right">TOTAL</td>
+                    <td align="right">%</td>
+                </tr>
+                </tbody>
+                <tbody>
+                {% for stage1Distribution in report.stage1.stage1Data %}
+                    <tr>
+                        <td>{{ stage1Distribution.stateName }}</td>
+                        <td align="right">{{ stage1Distribution.totalMinisters }}</td>
+                        <td align="right">{{ stage1Distribution.totalMinistersOfState }}</td>
+                        <td align="right">{{ stage1Distribution.totalPermSecs }}</td>
+                        <td align="right">{{ stage1Distribution.totalChairmen }}</td>
+                        <td align="right">{{ stage1Distribution.totalMembers }}</td>
+                        <td align="right">{{ stage1Distribution.totalAmbassadors }}</td>
+                        <td align="right">{{ stage1Distribution.totalSpecialAdviserToPresident }}</td>
+                        <td align="right">{{ stage1Distribution.totalSpecialAssistantsToThePresident }}</td>
+                        <td align="right">{{ stage1Distribution.totalSpecialAssistantsToTheVP }}</td>
+                        <td align="right">{{ stage1Distribution.totalChiefExecutives }}</td>
+                        <td align="right">{{ stage1Distribution.total }}</td>
+                        <td align="right">{{ stage1Distribution.percentage }}%</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>TOTAL</td>
+                    <td align="right">{{ report.stage1.overallMinisters }}</td>
+                    <td align="right">{{ report.stage1.overallMinistersOfState }}</td>
+                    <td align="right">{{ report.stage1.overallPermSecs }}</td>
+                    <td align="right">{{ report.stage1.overallChairmen }}</td>
+                    <td align="right">{{ report.stage1.overallMembers }}</td>
+                    <td align="right">{{ report.stage1.overallAmbassadors }}</td>
+                    <td align="right">{{ report.stage1.overallSpecialAdviserToThePresident }}</td>
+                    <td align="right">{{ report.stage1.overallSpecialAssistantToThePresident }}</td>
+                    <td align="right">{{ report.stage1.overallSpecialAssistantToTheVP }}</td>
+                    <td align="right">{{ report.stage1.overallChiefExecutives }}</td>
+                    <td align="right">{{ report.stage1.overallTotal }}</td>
+                    <td align="right">{{ report.stage1.overallPercentage }}%</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="report-page-number">Page 1</div>
+        </div>
+
+        <div class="v-sep-20"></div>
+
+        <!-- STAGE 2 -->
+        <div class="card card-3">
+            <table id="stage2" style="width: 1300px;"
+                   class="table table-bordered table-hover report-table">
+                <thead>
+                <tr align="center">
+                    <td colspan="19" align="center">
+                        MINISTERS, MINISTERS OF STATE, SPECIAL ADVISERS, S. ASSISTANT/L. OFFICERS, P. SEC.
+                        &amp; AMBASSADORS
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="19" align="center">{{ report.submissionYear }}</td>
+                </tr>
+                <tr align="center">
+                    <td colspan="19" align="center">DISTRIBUTION BY STATE OF ORIGIN</td>
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;"></td>
+                    <td colspan="2">MINISTERS</td>
+                    <td colspan="2">MIN. OF. STATE</td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="2">S. ADVISERS</td>
+                    <td colspan="2">S. ASSI./L. OFFICERS</td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="2">P. SEC.</td>
+                    <td colspan="2">AMBASSADORS</td>
+                    <td align="right"></td>
+                    <td align="right"></td>
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;">STATES</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                    <td>SUB TOT</td>
+                    <td>%</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                    <td>SUB TOT</td>
+                    <td>%</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                    <td align="right">G.TOTAL</td>
+                    <td align="right">%</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for stage2Distribution in report.stage2.stage2Data %}
+                    <tr>
+                        <td>{{ stage2Distribution.stateName }}</td>
+                        <td align="right">{{ stage2Distribution.totalMinisters }}</td>
+                        <td align="right">{{ stage2Distribution.percentageMinisters }}%</td>
+                        <td align="right">{{ stage2Distribution.totalMinistersOfState }}</td>
+                        <td align="right">{{ stage2Distribution.percentageMinistersOfState }}%</td>
+                        <td align="right">{{ stage2Distribution.totalMinistersCategory }}</td>
+                        <td align="right">{{ stage2Distribution.percentageMinistersCategory }}%</td>
+                        <td align="right">{{ stage2Distribution.totalSpecialAdvisers }}</td>
+                        <td align="right">{{ stage2Distribution.percentageSpecialAdvisers }}%</td>
+                        <td align="right">{{ stage2Distribution.totalSpecialAssistants }}</td>
+                        <td align="right">{{ stage2Distribution.percentageSpecialAssistants }}%</td>
+                        <td align="right">{{ stage2Distribution.totalSpecialAdvAssistCategory }}</td>
+                        <td align="right">{{ stage2Distribution.percentageSpecialAdvAssistCategory }}%</td>
+                        <td align="right">{{ stage2Distribution.totalPermSecs }}</td>
+                        <td align="right">{{ stage2Distribution.percentagePermSecs }}%</td>
+                        <td align="right">{{ stage2Distribution.totalAmbassadors }}</td>
+                        <td align="right">{{ stage2Distribution.percentageAmbassadors }}%</td>
+                        <td align="right">{{ stage2Distribution.total }}</td>
+                        <td align="right">{{ stage2Distribution.percentage }}%</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>TOTAL</td>
+                    <td align="right">{{ report.stage2.overallMinisters }}</td>
+                    <td align="right">{{ report.stage2.overallPercentageMinisters }}%</td>
+                    <td align="right">{{ report.stage2.overallMinistersOfState }}</td>
+                    <td align="right">{{ report.stage2.overallPercentageMinistersOfState }}%</td>
+                    <td align="right">{{ report.stage2.overallMinistersCategory }}</td>
+                    <td align="right">{{ report.stage2.overallPercentageMinistersCategory }}%</td>
+                    <td align="right">{{ report.stage2.overallSpecialAdvisers }}</td>
+                    <td align="right">{{ report.stage2.overallPercentageSpecialAdvisers }}%</td>
+                    <td align="right">{{ report.stage2.overallSpecialAssistants }}</td>
+                    <td align="right">{{ report.stage2.overallPercentageSpecialAssistants }}%</td>
+                    <td align="right">{{ report.stage2.overallSpecialAdvAssistCategory }}</td>
+                    <td align="right">{{ report.stage2.overallPercentageSpecialAdvAssistCategory }}%</td>
+                    <td align="right">{{ report.stage2.overallPermSecs }}</td>
+                    <td align="right">{{ report.stage2.overallPercentagePermSecs }}%</td>
+                    <td align="right">{{ report.stage2.overallAmbassadors }}</td>
+                    <td align="right">{{ report.stage2.overallPercentageAmbassadors }}%</td>
+                    <td align="right">{{ report.stage2.overallTotal }}</td>
+                    <td align="right">{{ report.stage2.overallPercentage }}%</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="report-page-number">Page 2</div>
+        </div>
+
+        <div class="v-sep-20"></div>
+
+    </div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}

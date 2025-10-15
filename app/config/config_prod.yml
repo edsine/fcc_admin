@@ -1,0 +1,37 @@
+imports:
+    - { resource: config.yml }
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+
+monolog:
+    handlers:
+        main:
+            type: rotating_file
+            path:  '%kernel.logs_dir%/%kernel.environment%.log'
+            level: debug
+            # max number of log files to keep
+            # defaults to zero, which means infinite files
+            max_files: 10
+        nested:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+        console:
+            type:  console
+
+#knp_snappy wkhtml to pdf stuff
+knp_snappy:
+    pdf:
+      enabled:    true
+      binary:     /home/federalc/FCC_PORTAL/wkhtmltox/bin/wkhtmltopdf
+      #binary:     /usr/local/bin/wkhtmltox/bin/wkhtmltopdf
+      options:    []
+    image:
+      enabled:    true
+      binary:     /home/federalc/FCC_PORTAL/wkhtmltox/bin/wkhtmltoimage
+      #binary:     /usr/local/bin/wkhtmltox/bin/wkhtmltoimage
+      options:    []

@@ -1,0 +1,51 @@
+{% if report is not empty %}
+    <div id="print-panel" class="print-portrait-abc" style="width: 1250px;margin-top: 20px;">
+        <!-- STAGE 1 -->
+        <div class="card card-3">
+            <table id="stage1" style="width: 100%;"
+                   class="table table-bordered table-hover report-table">
+                <tbody>
+                <tr align="center">
+                    <td colspan="4" align="center">
+                        LIST OF THE FEDERAL CHIEF EXECUTIVE OFFICER OF AGENCIES
+                    </td>
+                </tr>
+                </tbody>
+                <tbody>
+                {% for committee in report.committeeEntries %}
+
+                    {% if loop.index > 1 %}
+                        <tr class="">
+                            <td colspan="4">&nbsp;</td>
+                        </tr>
+                    {% endif %}
+
+                    <tr class="ceo-list-committee">
+                        <td></td>
+                        <td>{{ committee.committeeName }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="ceo-list-agency-heading">
+                        <td>S/NO</td>
+                        <td>NAME OF ESTABLISHMENT</td>
+                        <td>NAME OF CEO</td>
+                        <td>STATE OF ORIGIN</td>
+                    </tr>
+                    {% for agency in committee.agencyEntries %}
+                        <tr class="no-bold">
+                            <td>{{ agency.displaySerialNo }}</td>
+                            <td>{{ agency.organizationName }}</td>
+                            <td>{{ agency.nameOfCEO }}</td>
+                            <td>{{ agency.stateOfOrigin }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="v-sep-20"></div>
+    </div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}

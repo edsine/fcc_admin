@@ -1,0 +1,115 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block page_toolbar_left %}
+    Federal Parastatals
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+
+            <form method="post" action="{{ path('federal_parastatal_list') }}">
+                <div style="margin-bottom: 10px;">
+                    <input type="text" class="form-control input-sm" name="searchName"
+                           value="{{ searchFilter.organizationName }}"
+                           placeholder="Search Name"
+                           style="width: 250px;display: inline-block;" autocomplete="off">
+                    <input type="text" class="form-control input-sm" name="searchCode"
+                           value="{{ searchFilter.establishmentCode }}"
+                           placeholder="Search Code"
+                           style="width: 120px;display: inline-block;" autocomplete="off">
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+
+                <div style="margin-top: 40px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i class="fa fa-chevron-left"></i> </button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"> <i class="fa fa-chevron-left"></i> </button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"> <i class="fa fa-chevron-right"></i> </button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"> <i class="fa fa-chevron-right"></i>|</button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <a class="btn btn-primary btn-sm" href="{{ path('federal_parastatal_new') }}">
+                            <i class="fa fa-plus"></i> Add Federal Parastatal
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="40">S/N</th>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Mnemonic</th>
+                        <th>Ministry</th>
+                        <th>FCC Committee</th>
+                        <th>FCC Desk Officer</th>
+                        <th>Categories</th>
+                        <th width="100">Status</th>
+                        <th width="50"></th>
+                        <th width="50"></th>
+                        <th width="30"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var record \AppBundle\Model\Organizations\Organization #}
+                    {% for record in records %}
+                        <tr>
+                            <td>{{ record.displaySerialNo }}</td>
+                            <td>{{ record.organizationName }}</td>
+                            <td>{{ record.establishmentCode }}</td>
+                            <td>{{ record.establishmentMnemonic }}</td>
+                            <td>{{ record.parentOrganizationName }}</td>
+                            <td>{{ record.fccCommitteeName }}</td>
+                            <td>{{ record.fccDeskOfficerName }}</td>
+                            <td>{{ record.establishmentCategoryNames }}</td>
+                            <td>{{ record.status }}</td>
+                            <td>
+                                {#<a href="{{ path('federal_organization_profile_summary', { guid: record.guid }) }}"
+                                   class="btn btn-xs btn-default" title="Profile">
+                                    <i class="fa fa-bank"></i> Profile
+                                </a>#}
+                            </td>
+                            <td>
+                                <a href="{{ path('federal_parastatal_edit', { guid: record.guid }) }}"
+                                   class="btn btn-xs btn-primary" title="Edit">
+                                    <i class="fa fa-edit"></i> Edit
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ path('federal_parastatal_delete', { guid: record.guid }) }}"
+                                   class="btn btn-xs btn-danger" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="12">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <input type="hidden" name="startRow" value="{{ paginator.startRow }}"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

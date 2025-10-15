@@ -1,0 +1,161 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+    app.security_user_provider:
+        class: AppBundle\Security\SecurityUserProvider
+        arguments: ['@database_connection']
+
+    app.shared_data_service:
+        class: AppBundle\Utils\SharedDataService
+        arguments: ['@database_connection']
+
+    app.shared_data_manager:
+        class: AppBundle\Utils\SharedDataManager
+        arguments: ['@app.shared_data_service','@cache.app']
+
+    app.committee_service:
+            class: AppBundle\Services\SuperAdmin\Organization\CommitteeService
+            arguments: ['@database_connection']
+
+    app.system_roles_service:
+            class: AppBundle\Services\SuperAdmin\Roles\SystemRoleService
+            arguments: ['@database_connection']
+
+    app.user_profile_service:
+            class: AppBundle\Services\SuperAdmin\Users\UserProfileService
+            arguments: ['@database_connection']
+
+    app.organization_service:
+            class: AppBundle\Services\SuperAdmin\Organization\OrganizationService
+            arguments: ['@database_connection']
+
+    app.federal_organization_profile_service:
+                class: AppBundle\Services\SuperAdmin\Organization\FederalOrganizationProfileService
+                arguments: ['@database_connection']
+
+    app.federal_nominal_roll_service:
+            class: AppBundle\Services\MdaDeskOffice\FederalMDANominalRollService
+            arguments: ['@database_connection']
+
+    app.fcc_desk_office_submission_service:
+            class: AppBundle\Services\FccDeskOffice\FccDeskOfficerNominalRollService
+            arguments: ['@database_connection']
+
+    app.mis_head_submission_service:
+            class: AppBundle\Services\MisHead\MisHeadNominalRollService
+            arguments: ['@database_connection']
+
+    app.career_distribution_service:
+            class: AppBundle\Services\Reporting\CareerDistributionService
+            arguments: ['@database_connection']
+
+    app.fed_level_poloh_distribution_service:
+          class: AppBundle\Services\Reporting\FedLevelPOLOHDistributionService
+          arguments: ['@database_connection']
+
+    app.fed_level_poloh_by_position_and_year_distribution_service:
+          class: AppBundle\Services\Reporting\FederalPOLByPositionAndYearDistService
+          arguments: ['@database_connection']
+
+    app.state_level_career_distribution_service:
+            class: AppBundle\Services\Reporting\StateLevelDistributionService
+            arguments: ['@database_connection']
+
+    app.dashboard_service:
+            class: AppBundle\Services\Dashboard\DashboardService
+            arguments: ['@database_connection']
+
+    app.nominal_role_bg_task_service:
+            class: AppBundle\Services\LongRunningTasks\FederalNominalRollLongRunningTaskService
+            arguments: ['@database_connection']
+
+    app.notification_service:
+                class: AppBundle\Services\Notification\NotificationService
+                arguments: ['@database_connection']
+
+    app.notification_sender_service:
+                    class: AppBundle\Services\Notification\NotificationSenderService
+                    arguments: ['@mailer']
+
+    app.submission_schedule_service:
+                class: AppBundle\Services\SuperAdmin\SubmissionSetup\SubmissionScheduleService
+                arguments: ['@database_connection']
+
+    app.manage_profile_service:
+                class: AppBundle\Services\Security\ManageProfileService
+                arguments: ['@database_connection']
+
+    app.fcc_desk_office_assigned_organization_service:
+                class: AppBundle\Services\FccDeskOffice\FccDeskOfficeAssignedOrganizationService
+                arguments: ['@database_connection']
+
+    app.static_cms_service:
+          class: AppBundle\Services\SuperAdmin\StaticCMS\StaticCMSService
+          arguments: ['@database_connection']
+
+    app.mda_vacancy_service:
+          class: AppBundle\Services\Recruitment\RecruitmentAdvertService
+          arguments: ['@database_connection']
+
+    app.mda_baseline_service:
+        class: AppBundle\Services\MdaDeskOffice\MdaBaselineService
+        arguments: ['@database_connection']
+
+    app.submission_status_service:
+        class: AppBundle\Services\Reporting\SubmissionStatusService
+        arguments: ['@database_connection']
+
+    app.submission_summary:
+        class: AppBundle\Services\Reporting\SubmissionSummaryReportService
+        arguments: ['@database_connection']
+
+    app.comparative_data_report:
+        class: AppBundle\Services\Reporting\ComparativeDataService
+        arguments: ['@database_connection']
+
+    app.list_of_federal_ceo:
+        class: AppBundle\Services\Reporting\ListOfFedCeoService
+        arguments: ['@database_connection']
+
+    app.character_balancing_index:
+        class: AppBundle\Services\Reporting\CharacterBalancingIndexDistributionService
+        arguments: ['@database_connection']
+
+    app.batch_revalidation:
+        class: AppBundle\Services\LongRunningTasks\BatchReValidationService
+        arguments: ['@database_connection']
+
+    app.criteria_search_report:
+        class: AppBundle\Services\Reporting\FederalLevelCriteriaSearchReportService
+        arguments: ['@database_connection']
+
+    app.proportion_of_positions:
+        class: AppBundle\Services\Reporting\ProportionOfPositionReportService
+        arguments: ['@database_connection']
+
+    app.submission_permission_request:
+        class: AppBundle\Services\ApprovalRequests\SubmissionPermissionRequestService
+        arguments: ['@database_connection']
+
+    app.affected_mda_report:
+        class: AppBundle\Services\Reporting\AffectedMDAsDataService
+        arguments: ['@database_connection']
+
+    app.cbi_report_request:
+        class: AppBundle\Services\ReportRequests\CBIReportRequestService
+        arguments: ['@database_connection']
+
+    app.training_integrator:
+        class: AppBundle\Services\TrainingIntegration\TrainingIntegrationService
+        arguments: ['@database_connection']
+
+    app.formula_generator:
+        class: AppBundle\Services\Formula\FormulaGenerationService
+        arguments: ['@database_connection']
+
+    app.download_manager:
+        class: AppBundle\Services\Downloads\DownloadResourceService
+        arguments: ['@database_connection']

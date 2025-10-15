@@ -1,0 +1,95 @@
+{% extends 'base.login.v3.html.twig' %}
+
+{% block main %}
+
+
+    <h2 class="mb-4 text-center">Welcome back!</h2>
+
+    {#<div style="padding: 15px; background-color: #d6efff;border-radius: 10px;color: #fff;margin-bottom: 10px;
+display: flex;align-items: flex-start;">
+        <i class="fa fa-info-circle" style="font-size: 40px;color: #8253EB;"></i>
+        <div>
+            <h5 style="display: inline-block;margin: 0 0 0 20px;text-align: center;color: #521fc5;">
+
+            </h5>
+            <br/>
+            <h6 style="display: inline-block;margin: 20px 0 0 20px;text-align: center;color: #521fc5;">
+
+            </h6>
+        </div>
+    </div>#}
+
+    {% if app.session.started and app.session.flashBag.peekAll is not empty %}
+        <div class="messages">
+            {% for type, messages in app.session.flashBag.all %}
+                {% for message in messages %}
+                    <div class="alert alert-dismissible alert-{{ type }}" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {% autoescape false %}
+                            {{ message }}
+                        {% endautoescape %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <div class="alert-container">
+            <div class="alert alert-danger alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ path('login') }}" class="text-center" onsubmit="showLoading();">
+
+        {#<div style="padding: 15px; background-color: #d6efff;border-radius: 10px;color: #fff;margin-bottom: 10px;
+display: flex;align-items: flex-start;">
+            <i class="fa fa-info-circle" style="font-size: 40px;color: #8253EB;"></i>
+            <div>
+                <h5 style="display: inline-block;margin: 0 0 0 20px;text-align: center;color: #521fc5;">
+                    TEMPORARILY DOWN FOR MAINTENANCE
+                </h5>
+                <br/>
+                <h6 style="display: inline-block;margin: 20px 0 0 20px;text-align: center;color: #521fc5;">
+                    We are performing scheduled maintenance. Please check back later.
+                </h6>
+            </div>
+        </div>#}
+
+        <div class="form-group">
+            <label class="text-muted" for="userlogin">Username</label>
+            <input type="text" placeholder="Enter your Username" class="form-control form-control-line"
+                   name="_username" value="{{ last_username }}" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label class="text-muted" for="userpass">Password</label>
+            <input type="password" placeholder="Enter Your Password" class="form-control form-control-line"
+                   name="_password" autocomplete="off">
+        </div>
+
+        <!-- /.form-group -->
+        <div class="form-group mr-b-20" style="margin-top: 40px;">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+            <button class="btn btn-block btn-rounded btn-md btn-color-scheme text-uppercase fw-600 ripple"
+                    type="submit">Sign In
+            </button>
+        </div>
+
+        <div class="form-group no-gutters mb-5 text-center" style="margin-top: 40px;">
+            <a href="{{ path('reset_password') }}" id="to-recover"
+               class="text-muted fw-700 text-uppercase heading-font-family fs-12">Forgot Password?</a>
+        </div>
+
+    </form>
+    <!-- /form -->
+
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

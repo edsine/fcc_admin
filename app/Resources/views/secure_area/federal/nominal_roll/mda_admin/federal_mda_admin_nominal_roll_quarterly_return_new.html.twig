@@ -1,0 +1,663 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+    <link rel="stylesheet" href="{{ asset('css/form-wizard.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    New Quarterly Nominal Roll Return
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('federal_mda_admin_nominal_roll_quarterly_return_list') }}"><i
+                class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+
+
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            {#{% if alertNotification.hasMessage %}
+                <div style="margin-bottom: 30px;">
+                    <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        {% for message in alertNotification.messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}#}
+
+            <div class="panel-abc panel-default-abc">
+                <div class="panel-body-abc">
+
+                    {% if connectedToMiddleware %}
+                        <div id="first-step" class="step-container">
+                            <div class="row">
+                                <div class="col-sm-5 step-instruction">
+                                    <div class="step-instruction-container">
+                                        <i class="fa fa-cloud-upload step-instruction-icon"></i>
+
+                                        {% autoescape false %}
+                                            {{ submissionInstructions }}
+                                        {% endautoescape %}
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-7">
+                                    <form method="post"
+                                          action="{{ path('federal_mda_admin_nominal_roll_submission_upload') }}"
+                                          id="uploadForm"
+                                          enctype="multipart/form-data" class="form-horizontal">
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <h3 class="submission-title">Quarterly Nominal Roll Return</h3>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="submission_year" class="control-label col-sm-2"><b>Submission
+                                                    Year:</b>
+                                                <span class="text-danger text-bold">*</span>
+                                            </label>
+
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control input-14" id="submission_year"
+                                                       name="submissionYear" value="{{ submissionYear }}" style="width: 300px;font-weight: bold;"
+                                                       readonly/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="confirm_submission_year" class="control-label col-sm-2"><b>Confirm
+                                                    Year:</b>
+                                                <span class="text-danger text-bold">*</span>
+                                            </label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control input-14" id="confirm_submission_year"
+                                                       name="confirmSubmissionYear" value="{{ submissionYear }}" style="width: 300px;font-weight: bold;"
+                                                       readonly />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nominal_roll_file" class="control-label col-sm-2"><b>Select
+                                                    File:</b>
+                                                <span class="text-danger text-bold">*</span>
+                                            </label>
+
+                                            <div class="col-sm-10">
+                                                <input type="file" name="nominalRollFile" id="nominal_roll_file"/>
+
+                                                <input type="hidden" id="establishment_code" name="establishmentCode"
+                                                       value="{{ app.user.organizationEstablishmentCode }}"/>
+                                                <input type="hidden" id="organization_mnemonic"
+                                                       name="organizationMnemonic"
+                                                       value="{{ app.user.organizationMnemonic }}"/>
+
+                                                <input type="hidden" name="submission_type" value="{{ submissionType }}" />
+                                                <button id="uploadButton" type="submit" name="btnSubmit"
+                                                        class="btn btn-primary"
+                                                        style="margin-top: 20px;">
+                                                    Submit
+                                                </button>
+
+                                                <div style="margin-top: 20px;">
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-info active"
+                                                             role="progressbar"
+                                                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width: 0%">
+                                                            <span class="sr-only">0% Complete</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id="second-step" class="step-container">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="validation-step-container">
+
+                                        <div id="validationProgress" class="validation-stage text-center">
+                                            <div class="loader">
+                                                <svg class="circular" viewBox="25 25 50 50">
+                                                    <circle class="path" cx="50" cy="50" r="20" fill="none"
+                                                            stroke-width="3"
+                                                            stroke-miterlimit="10">
+                                                    </circle>
+                                                </svg>
+                                            </div>
+                                            <br/>
+                                            <h5>Please Wait</h5>
+                                        </div>
+
+                                        <div id="validationSuccess" class="validation-stage text-center">
+
+                                            <form method="post"
+                                                  action="{{ path('federal_nominal_roll_show') }}">
+
+                                                <i class="fa fa-check-circle validation-success-icon"></i>
+                                                <br/>
+                                                <h5 class="text-success">Congratulations!, Validation Passed.</h5>
+                                                <br/>
+                                                <input type="hidden" name="submissionId"
+                                                       class="validation_stage_submission_id_holders"/>
+                                                <br/>
+                                                <input type="hidden" name="validationStatus" value="PASSED"/>
+                                                <br/>
+                                                <button type="submit" class="btn btn-success">
+                                                    Continue
+                                                </button>
+
+                                            </form>
+                                        </div>
+
+                                        <div id="validationFailed" class="validation-stage text-center">
+                                            <form method="post"
+                                                  action="{{ path('federal_nominal_roll_failed_validation_show') }}">
+                                                <i class="fa fa-times-circle validation-error-icon"></i>
+                                                <br/>
+                                                <h5 class="text-danger">Validation Failed</h5>
+                                                <br/>
+                                                <input type="hidden" name="submissionId"
+                                                       class="validation_stage_submission_id_holders"/>
+                                                <br/>
+                                                <input type="hidden" name="validationStatus" value="FAILED"/>
+                                                <br/>
+                                                <button type="submit" class="btn btn-danger">
+                                                    View Validation Result
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <div id="validationError" class="validation-stage text-center">
+                                            <form method="post"
+                                                  action="{{ path('federal_nominal_roll_failed_validation_show') }}">
+                                                <i class="fa fa-ban validation-error-icon"></i>
+                                                <br/>
+                                                <h5 class="text-danger">A Fatal Error Occurred, While Processing
+                                                    Validation</h5>
+                                                <br/>
+                                                <input type="hidden" name="submissionId"
+                                                       class="validation_stage_submission_id_holders"/>
+                                                <br/>
+                                                <input type="hidden" name="validationStatus" value="FATAL_ERROR"/>
+                                                <br/>
+
+                                                <div>
+                                                    <h4>Check the following in your upload file:</h4>
+                                                    <br/>
+                                                    <ul style="list-style-type: decimal;text-align: left;">
+                                                        <li>
+                                                            <h5>Ensure that the the first column in your file is the serial number column.</h5>
+                                                        </li>
+                                                        <li>
+                                                            <h5>Make sure that the serial number column contains valid integer values.</h5>
+                                                        </li>
+                                                        <li>
+                                                            <h5>Make sure that there are no merged columns or rows in your file.</h5>
+                                                        </li>
+                                                        <li>
+                                                            <h5>If this error persists, please contact your desk officer for help.</h5>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                {#<button type="submit" class="btn btn-danger">
+                                                    View Result
+                                                </button>#}
+
+                                            </form>
+                                        </div>
+
+                                        <div id="retry-validation" class="validation-stage text-center">
+                                            <i class="fa fa-bolt validation-warning-icon"></i>
+                                            <br/>
+                                            <h5 class="text-warning">
+                                                We are having trouble connecting with our validation service.
+                                                <br/>
+                                                Check your internet connection and click the button bellow.
+                                            </h5>
+                                            <br/>
+                                            <button id="btn-retry-validation" type="submit" class="btn btn-warning">
+                                                Try Again
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {#validation form#}
+                        <div id="validation-form-container" class="validation-form-container"
+                             style="visibility: hidden;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div>
+                                        <form method="post"
+                                              action="{{ path('federal_mda_admin_nominal_roll_submission_validate') }}"
+                                              id="validationForm"
+                                              enctype="multipart/form-data">
+
+                                            <input type="hidden" name="submissionId" id="validation_submission_id"/>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+
+                        <div class="text-center">
+                            <i class="fa fa-bolt validation-warning-icon"></i>
+                            <br/>
+                            <h5 class="text-warning">
+                                We are having trouble connecting with our upload service.
+                                <br/>
+                                Check your internet connection and click the button bellow.
+                            </h5>
+                            <br/>
+                            <a href="{{ path('federal_mda_admin_nominal_roll_quarterly_return_new') }}" type="submit"
+                               class="btn btn-warning">
+                                Try Again
+                            </a>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/jquery.form.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            {% if connectedToMiddleware %}
+
+            var firstStepContainer = $('#first-step');
+            var secondStepContainer = $('#second-step');
+
+            var validationProgressContainer = $('#validationProgress');
+            var validationSuccessContainer = $('#validationSuccess');
+            var validationFailedContainer = $('#validationFailed');
+            var validationErrorContainer = $('#validationError');
+
+            var validationReTryContainer = $('#retry-validation');
+            var retryValidationBtn = $('#btn-retry-validation');
+
+            var validationForm = $('#validationForm');
+            var validationSubmissionId = $('#validation_submission_id');
+            var txtValidationStageSubmissionIdHolders = $('.validation_stage_submission_id_holders');
+
+            var txtSubmissionYear = $('#submission_year');
+            var txtConfirmSubmissionYear = $('#confirm_submission_year');
+            var fileNominalRoll = $('#nominal_roll_file');
+            var uploadButton = $('#uploadButton');
+            var txtOrganizationMnemonic = $('#organization_mnemonic');
+            var txtEstablishmentCode = $('#establishment_code');
+
+            var uploadProgress = $(".progress");
+            var uploadProgressBar = $(".progress-bar");
+            var uploadProgressText = $(".sr-only");
+
+            var timerCheckValidation;
+
+            /*$('#submitButton').on('click', function (event) {
+             event.preventDefault();
+             console.log('button clicked');
+
+             disableForm();
+
+             setTimeout(disableForm,3000);
+
+             });*/
+
+            //set the progress bar to be hidden on loading
+            hideUploadProgress();
+
+            // function from the jquery form plugin
+            $('#uploadForm').ajaxForm({
+                beforeSubmit: function (formData, jqForm, options) {
+                    //check the source if its image before uploading
+                    showUploadProgress();
+
+                    uploadButton.attr('disabled', 'disabled');
+
+                    var checkSubmissionYear = validateSubmissionYear();
+                    var isValidFileExtension = isFileExtensionValid();
+                    var isValidFileName = isFileNameValid();
+
+                    if (!checkSubmissionYear) {
+                        //update the alert message and show it
+                        showAlert('Message', 'Invalid Submission Year: <br/> Must be a valid year and must match', 'red');
+
+                        //hide the progress bar
+                        hideUploadProgress();
+                        return false;
+                    }
+                    else if (!isValidFileExtension) {
+                        //update the alert message and show it
+                        showAlert('Message', 'Only Excel 2007 and above Files Are Allowed', 'red');
+
+                        //hide the progress bar
+                        hideUploadProgress();
+                        return false;
+                    } else if (!isValidFileName) {
+                        //update the alert message and show it
+                        showAlert('Message', "Invalid File Name.<br/>Must Contain: ESTABLISHMENT CODE AND YEAR OF SUBMISSION", 'red');
+
+                        //hide the progress bar
+                        hideUploadProgress();
+                        return false;
+                    }
+                    else {
+                        setInterval(pollServer, 45000);
+                        return true;
+                    }
+                },
+                dataType: "json",
+                uploadProgress: function (event, position, total, percentComplete) {
+                    uploadProgressBar.width(percentComplete + '%'); //dynamicaly change the progress bar width
+                    uploadProgressText.html(percentComplete + '%'); // show the percentage number
+                },
+                success: function (data, textStatus, jqXHR) {
+                    hideUploadProgress(); //hide progress bar on success of upload
+
+                    var uploadStatus = data.uploadStatus;
+                    var uploadMessage = data.uploadMessage;
+                    var submissionId = data.submissionId;
+
+                    if (uploadStatus === 'OK') {
+                        validationSubmissionId.val(submissionId);
+                        txtValidationStageSubmissionIdHolders.val(submissionId);
+                        validationForm.submit();
+
+                        //console.log('got here and calling validation proxy')
+
+                        /*firstStepContainer.hide();
+                         secondStepContainer.show('fade');
+                         thirdStepContainer.hide();*/
+                    }
+
+                    //showAlert('Confirmation', uploadStatus + ":" + uploadMessage + ":" + submissionId);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    hideUploadProgress(); //hide progress bar on error of upload
+
+                    //console.log(jqXHR.responseText);
+                    //showAlert('Error!', 'File upload failed. Try again ', 'red');
+                    showAlert('Error!', jqXHR.responseText, 'red');
+                },
+                complete: function (jqXHR, textStatus) {
+
+                }
+            });
+
+            //validation form
+            validationForm.ajaxForm({
+                beforeSubmit: function (formData, jqForm, options) {
+                    //check the submission Id
+                    var submissionId = txtValidationStageSubmissionIdHolders.val();
+
+                    if (!submissionId) {
+                        showAlert('Error', 'Invalid Submission ID', 'red');
+                        return false;
+                    } else {
+                        showValidationStage("progress");
+                        return true;
+                    }
+                },
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    var validationRequestStatus = data.validationRequestStatus;
+
+                    if (validationRequestStatus === 'OK') {
+                        //showValidationStage
+                        //function to be checking status of validation
+                        timerCheckValidation = window.setInterval(checkValidationStatus, 2000);
+                    } else {
+                        //show try again stage of panel, that will submit validation form again
+                        showValidationStage("retry");
+                    }
+
+                    //showAlert('Confirmation', uploadStatus + ":" + uploadMessage + ":" + submissionId);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showValidationStage("retry");
+                    //console.log(jqXHR.responseText);
+                    //showAlert('Error', jqXHR.responseText);
+                    //show retry panel
+                },
+                complete: function (jqXHR, textStatus) {
+
+                }
+            });
+
+            retryValidationBtn.on('click', function (event) {
+                event.preventDefault();
+                validationForm.submit();
+            });
+
+            function checkValidationStatus() {
+                var validationSubmissionId = txtValidationStageSubmissionIdHolders.val();
+                $.ajax({
+                    url: "{{ path('federal_mda_admin_nominal_roll_submission_validation_check_status') }}",
+                    data: {
+                        submissionId: validationSubmissionId
+                    },
+                    dataType: "json",
+                    type: "GET"
+                }).done(function (data, textStatus, jqXHR) {
+                    var checkStatus = data.checkStatus;
+                    var validationStatus = data.validationStatus;
+
+                    if (checkStatus === 'OK') {
+                        switch (validationStatus) {
+                            case 'PENDING':
+                                break;
+
+                            case 'STARTED':
+                                break;
+
+                            case 'PASSED':
+                                showValidationStage("passed");
+                                stopCheckingValidation();
+                                break;
+
+                            case 'FAILED':
+                                showValidationStage("failed");
+                                stopCheckingValidation();
+                                break;
+
+                            case 'FATAL_ERROR':
+                                showValidationStage("error");
+                                stopCheckingValidation();
+                                break;
+                        }
+                    } else {
+
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    //console.log(jqXHR.responseText);
+                    //show retry panel
+                    //showAlert('Network Error', jqXHR.responseText);
+                }).always(function (jqXHR, textStatus) {
+
+                });
+            }
+
+            function stopCheckingValidation(){
+                if(timerCheckValidation){
+                    window.clearInterval(timerCheckValidation);
+                }
+            }
+
+            function validateSubmissionYear() {
+                var submissionYear = txtSubmissionYear.val();
+                var confirmSubmissionYear = txtConfirmSubmissionYear.val();
+
+                var yearIsInteger = submissionYear.search(/^\d{4}$/);
+                var sameYear = submissionYear === confirmSubmissionYear;
+
+                return (yearIsInteger >= 0 && sameYear)
+            }
+
+            function isFileExtensionValid() {
+                var filePath = fileNominalRoll.val();
+                //var n = window.document.getE;
+                var fileExtension = filePath.substr(filePath.lastIndexOf('.') + 1);
+                var fileExtensionUppercase = fileExtension.toUpperCase();
+                var allowedExtensions = ['XLSX'];
+                var isAllowed = $.inArray(fileExtensionUppercase, allowedExtensions);
+
+                return (isAllowed >= 0);
+            }
+
+            function isFileNameValid() {
+                var filePath = fileNominalRoll.val();
+
+                var sepIndex = filePath.lastIndexOf('/');
+                if (sepIndex === -1) {
+                    sepIndex = filePath.lastIndexOf('\\');
+                }
+                //var periodIndex = filePath.lastIndexOf('\\');
+                var fileName = filePath.substr(sepIndex + 1);
+
+                var submissionYear = txtSubmissionYear.val();
+                var organizationMnemonic = txtOrganizationMnemonic.val();
+                var establishmentCode = txtEstablishmentCode.val();
+
+                var beginFileName = establishmentCode + "-" + submissionYear;
+
+                return (fileName.indexOf(establishmentCode) !== -1) && (fileName.indexOf(submissionYear) !== -1);
+                //var validFileName = fileName.indexOf(beginFileName);
+                //return (validFileName === 0);
+            }
+
+            function hideUploadProgress() {
+                uploadProgress.hide();
+            }
+
+            function showUploadProgress() {
+                uploadProgress.show();
+            }
+
+            var jcDialog;
+
+            function showAlert(title, content, dialogtype) {
+                dialogtype = (typeof dialogtype !== 'undefined') ? dialogtype : 'green';
+
+                $.alert({
+                    title: title,
+                    content: content,
+                    type: dialogtype
+                });
+
+                /*if (jcDialog) {
+                 console.log('jcDialog Exists: Title:' + title + ' , Content: ' + content);
+                 jcDialog.setTitle('' + title);
+                 jcDialog.$content.find('.jconfirm-content > div').html(content);
+                 jcDialog.setType(dialogtype);
+                 if (jcDialog.isClosed()) {
+                 jcDialog.open();
+                 }
+                 } else {
+                 console.log('jcDialog does not exist');
+                 jcDialog = $.confirm({
+                 title: title,
+                 content: content,
+                 type: dialogtype
+                 });
+                 //jcDialog.open();
+                 }*/
+            }
+
+
+            //VALIDATION
+            function showValidationStage(which) {
+                firstStepContainer.hide();
+                secondStepContainer.show();
+
+                $('.validation-stage').hide();
+
+                switch (which) {
+                    case "progress":
+                        validationProgressContainer.show();
+                        break;
+
+                    case "passed":
+                        validationSuccessContainer.show();
+                        break;
+
+                    case "failed":
+                        validationFailedContainer.show();
+                        break;
+
+                    case "retry":
+                        validationReTryContainer.show();
+                        break;
+
+                    case "error":
+                        validationErrorContainer.show();
+                        break;
+                }
+
+            }
+
+            /*function disableForm(){
+
+
+
+             txtSubmissionYear.prop("readonly", function (i, r) {
+             return !r;
+             });
+
+             txtConfirmSubmissionYear.prop("readonly", function (i, r) {
+             return !r;
+             });
+
+             fileNominalRole.prop("disabled", function (i, d) {
+             return !d;
+             });
+
+             submitButton.prop("disabled", function (i, d) {
+             return !d;
+             });
+
+             }*/
+
+            function pollServer() {
+                $.get('{{ path('keep_alive') }}', function (resp) {
+                    //console.log(resp);
+                });
+            }
+
+            {% else %}
+            {% endif %}
+
+        });
+
+    </script>
+{% endblock %}

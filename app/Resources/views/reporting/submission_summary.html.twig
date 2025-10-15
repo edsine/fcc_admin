@@ -1,0 +1,133 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Submission Summary
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('submission_summary') }}" class="do-not-print"
+                  onsubmit="showLoading();">
+                <div style="margin-bottom: 10px;" class="do-not-print">
+                    <select class="form-control input-14" name="searchStartYear"
+                            style="display: inline-block; width: 200px;">
+                        <option value="">Choose Start Year</option>
+                        {% for startYear in submissionYears %}
+                            {% if startYear.submission_year == searchStartYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ startYear.submission_year }}" {{ selected }}>{{ startYear.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="searchEndYear"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose End Year</option>
+                        {% for endYear in submissionYears %}
+                            {% if endYear.submission_year == searchEndYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ endYear.submission_year }}" {{ selected }}>{{ endYear.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+            </form>
+
+            {# @var yearEntry \AppBundle\Model\Reporting\Submission\SubmissionSummaryYearEntry #}
+            {% if report is not empty %}
+                <div id="print-panel" class="print-landscape" style="margin-top: 20px;">
+                    <!-- STAGE 1 -->
+                    <div class="card card-3 print-break-after">
+
+                        <div style="text-align: center;font-weight: bold; padding: 10px;">
+                            {{ searchStartYear }} - {{ searchEndYear }} SUBMISSION SUMMARY REPORT
+                        </div>
+
+                        <table id="stage1"
+                               class="table table-bordered table-hover report-table">
+                            <tbody>
+                            <tr align="center">
+                                <td width="80">YEAR</td>
+                                <td>EXPECTED SUBMISSIONS</td>
+                                <td>ACTUAL SUBMISSIONS</td>
+                                <td>PENDING SUBMISSIONS</td>
+                                <td>PASSED VALIDATION</td>
+                                <td>FAILED VALIDATION</td>
+                                <td>PROCESSED AND ANALYSED</td>
+                                <td>PENDING PROCESSING</td>
+                            </tr>
+                            </tbody>
+                            <tbody>
+                            {% for yearEntry in report.yearEntries %}
+                                <tr align="center">
+                                    <td>{{ yearEntry.year }}</td>
+                                    <td>
+                                        <a href="#" style="color: #00f;text-decoration: underline;" onclick="showList();return false;">
+                                        {#{{ yearEntry.totalQualifiedOrganizations }}#} -
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" style="color: #00f;text-decoration: underline;" onclick="showList();return false;">
+                                        {{ yearEntry.totalActualSubmissions }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" style="color: #00f;text-decoration: underline;" onclick="showList();return false;">
+                                        {#{{ yearEntry.totalNotSubmitted }}#} -
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" style="color: #00f;text-decoration: underline;" onclick="showList();return false;">
+                                            {#{{ yearEntry.totalPassedSubmissions }}#} -
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" style="color: #00f;text-decoration: underline;" onclick="showList();return false;">
+                                        {#{{ yearEntry.totalFailedSubmissions }}#} -
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" style="color: #00f;text-decoration: underline;" onclick="showList();return false;">
+                                        {#{{ yearEntry.totalProcessedSubmissions }}#} -
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" style="color: #00f;text-decoration: underline;" onclick="showList();return false;">
+                                        {#{{ yearEntry.totalNotProcessed }}#} -
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="v-sep-20"></div>
+
+                </div>
+            {% else %}
+                <span class="text-warning">No Report Found.</span>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/body-not-white.css') }}" rel="stylesheet">
+    <link href="{{ asset('jasny-bootstrap-v3.1.3/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Profile
+{% endblock %}
+{% block page_toolbar_right %}
+
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-3">
+
+            {% include 'secure_area/user_account_profile/_user_profile_summary.html.twig' %}
+
+        </div>
+        <div class="col-sm-9">
+            <div class="organization-profile-wrapper">
+
+                {% include 'secure_area/user_account_profile/_user_account_profile_tabs.html.twig' with { activePage : 'change_profile_picture' } %}
+
+                <div class="v-sep-20"></div>
+
+                <div>
+                    <form method="post" action="{{ path('user_profile_change_profile_picture') }}" id="main-form" enctype="multipart/form-data">
+
+                        {% if alertNotification.hasMessage %}
+                            <div style="margin-bottom: 30px;">
+                                <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                                aria-hidden="true">&times;</span></button>
+                                    {% for message in alertNotification.messages %}
+                                        {{ message }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            {#<label for="profile_photo_file" class="control-label text-bold">
+                                Upload Profile Photo:
+                                <span class="required"> *</span>
+                            </label>#}
+
+                            <div class="">
+                                <div id="profile_photo_file-error" class="validation-error"></div>
+
+                                <div id="uploaded-file" class="fileinput fileinput-new" data-provides="fileinput">
+                                    <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+                                    <div>
+                                <span class="btn btn-info btn-sm btn-file">
+                                    <span class="fileinput-new"><i class="fa fa-paperclip"></i> Select File</span>
+                                    <span class="fileinput-exists"><i class="fa fa-edit"></i> Change</span>
+                                    <input type="file" name="profile_photo_file" id="profile_photo_file" onchange="get_detail();"></span>
+                                        <a href="#" class="btn btn-danger btn-sm fileinput-exists" data-dismiss="fileinput">
+                                            Remove <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div id="file_error" class="validation-error"></div>
+                                {{ validator.fields.field('profile_photo_file').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <input type="hidden" name="submit_check"/>
+                            <input type="hidden" name="guid" value="{{ profileSummary.guid }}"/>
+                            <button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary">Submit <i class="fa fa-send"></i></button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="{{ asset('jasny-bootstrap-v3.1.3/js/jasny-bootstrap.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var fileUpload = $('#profile_photo_file');
+            var fileError = $('#file_error');
+            $('#main-form').on('submit', function (e) {
+
+                var fileName = fileUpload.val();
+
+                if(!fileName){
+                    fileError.html('Please Select Attachment');
+                    return false;
+                }else{
+
+                    var size= fileUpload[0].files[0].size;
+                    var extension= fileName.replace(/^.*\./, '');
+
+                    if($.inArray(extension, ['png','jpg','jpeg']) === -1){
+                        fileError.html('Only images (png,jpg,jpeg) allowed');
+                        return false;
+                    }
+
+                    if(size > 800000){
+                        fileError.html('Invalid file Size. Not greater than 800kb');
+                        return false;
+                    }
+                }
+
+                showLoading();
+                return true;
+
+            });
+
+        });
+    </script>
+
+
+{% endblock %}

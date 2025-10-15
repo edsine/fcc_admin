@@ -1,0 +1,58 @@
+
+{#<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.pieRenderer.js') }}"></script>#}
+
+{# @var stage3Distribution \AppBundle\Model\Reporting\FederalLevel\POLOHDistStage3Entry #}
+{% if zonalFedPolohConsolidatedReport is not empty and zonalFedPolohConsolidatedReport.stage3 is not empty %}
+    <script>
+        //var tipformat = '{{ '{{' }}{{ 'offset:positions' }}{{ '}}' }} {{ '-' }} {{ 'value' }}';
+
+        $(document).ready(function () {
+
+            var data;
+            var positions = {
+                0: 'Ministers',
+                1: 'Ministers of State',
+                2: 'Permanent Secretaries',
+                3: 'Board Chairmen',
+                4: 'Board Members',
+                5: 'Ambassadors',
+                6: 'Sp. Advs. to President',
+                7: 'Sp. Assts. to President',
+                8: 'Sp. Assts. to Vice President',
+                9: 'Chief Executives'
+            };
+
+            {% for stage3Distribution in zonalFedPolohConsolidatedReport.stage3.stage3Data %}
+
+
+            data = [
+                {{ stage3Distribution.totalMinisters }}
+                ,{{ stage3Distribution.totalMinistersOfState }}
+                ,{{ stage3Distribution.totalPermSecs }}
+                , {{ stage3Distribution.totalChairmen }}
+                , {{ stage3Distribution.totalMembers }}
+                , {{ stage3Distribution.totalAmbassadors }}
+                , {{ stage3Distribution.totalSpecialAdviserToPresident }}
+                , {{ stage3Distribution.totalSpecialAssistantsToThePresident }}
+                , {{ stage3Distribution.totalSpecialAssistantsToTheVP }}
+                , {{ stage3Distribution.totalChiefExecutives }}
+            ];
+
+            $("#chart_{{ stage3Distribution.zoneId }}").sparkline(data, {
+                type: 'pie',
+                width: '100px',
+                height: '100px',
+                sliceColors: ["#CDDC39", "#9C27B0", "#3F51B5", "#2196F3", "#00BCD4", "#009688", "#FFC107", "#de8400", "#7b9c55", "#E91E63"],
+                borderWidth: 0,
+                tooltipFormat: ' {{ '{{' }}{{ 'value:value' }}{{ '}}' }} {{ ' ' }} {{ '{{' }}{{ 'offset:positions' }}{{ '}}' }}',
+                tooltipValueLookups: {
+                    'positions': positions
+                }
+            });
+
+            {% endfor %}
+        });
+
+    </script>
+{% endif %}

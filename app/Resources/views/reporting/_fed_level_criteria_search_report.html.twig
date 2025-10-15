@@ -1,0 +1,47 @@
+{# @var record \AppBundle\Model\Submission\NominalRoll #}
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th width="40">S/No</th>
+        <th>Year</th>
+        <th>Emp. No</th>
+        <th>Name</th>
+        <th>MDA</th>
+        <th>Nationality<br/>Code</th>
+        <th>State of Origin<br/>Code</th>
+        <th>Date of Birth</th>
+        <th>Date of Employment</th>
+        <th>Grade Level<br/>Code</th>
+        <th>Designation</th>
+        <th>Sex<br/>Code</th>
+        <th>M. Status<br/>Code</th>
+        <th>LGA<br/>Code</th>
+        <th>Region<br/>Code</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for record in records %}
+        <tr>
+            <td class="">{{ record.serialNo }}</td>
+            <td>{{ record.submissionYear }}</td>
+            <td>{{ record.employeeNumber }}</td>
+            <td>{{ record.name }}</td>
+            <td>{{ record.organizationName }}</td>
+            <td>{{ record.nationality }}</td>
+            <td>{{ record.stateOfOrigin }}</td>
+            <td>{{ record.dateOfBirth }}</td>
+            <td>{{ record.dateOfEmployment }}</td>
+            <td>{{ record.gradeLevel }}</td>
+            <td>{{ record.designation }}</td>
+            <td>{{ record.gender }}</td>
+            <td>{{ record.maritalStatus }}</td>
+            <td>{{ record.lga }}</td>
+            <td>{{ record.geoPoliticalZone }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="15">No records found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,130 @@
+{% extends 'base.fcc.html.twig' %}
+
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+{# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+{% set privilegeChecker = loggedInUser.privilegeChecker %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/downloads.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Downloads
+{% endblock %}
+{% block page_toolbar_right %}
+    {% if privilegeChecker.misHead or privilegeChecker.superAdmin %}
+        <a href="{{ path('download_resource_new') }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-cloud-upload"></i> Add
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            {# @var category \AppBundle\Model\Download\DownloadResourceCategory#}
+            {% for category in downloadResourcesCategories %}
+                <div style="margin-bottom: 50px;">
+                    <div style="display: block;padding-bottom: 5px; margin-bottom: 10px;
+                            border-bottom: 1px dashed #ccc;font-size: 20px; font-weight: 500;">
+                        {{ category.title }}
+                    </div>
+                    <div style="display: flex;align-items: flex-end;">
+                        {% for resource in category.downloads %}
+                            <div class="download-card" style="margin-right: 20px;">
+                                <div class="download-card-body">
+                                    <h4 class="download-card-title">
+                                        {{ resource.title }}
+                                    </h4>
+                                    <p class="download-card-text">
+                                        {{ resource.description }}
+                                    </p>
+                                    <a href="#" class="download-file download-card-link bordered"
+                                       data-url="{{ path('download_resource_document', { selector : resource.selector }) }}">
+                                        <i class="fa fa-cloud-download"></i> Download
+                                    </a>
+
+                                    {% if privilegeChecker.misHead or privilegeChecker.superAdmin %}
+                                        <a href="{{ path('download_resource_edit', { selector : resource.selector }) }}"
+                                           class="download-card-link">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+
+                                        <a href="#" style="margin-left: 40px;"
+                                           data-url="{{ path('download_resource_delete', { selector : resource.selector }) }}"
+                                           data-document="{{ resource.title }}"
+                                           class="delete-btn download-card-link">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </a>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+            {% endfor %}
+
+            <div style="visibility: hidden">
+                <form method="post"
+                      action=""
+                      id="deleteForm" onsubmit="showLoading();">
+                    <input type="hidden" name="btn_submit"/>
+                </form>
+            </div>
+
+            <iframe id="download-frame" style="visibility: hidden" src=""></iframe>
+
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('.download-file').on('click', function (event) {
+                event.preventDefault();
+                $('#download-frame').attr('src', $(this).data('url'));
+
+            });
+
+            $('.delete-btn').on('click', function (event) {
+                event.preventDefault();
+
+                var deleteForm = $('#deleteForm');
+                deleteForm.attr('action', '');
+
+                deleteForm.attr('action', $(this).data('url'));
+
+                $.confirm({
+                    title: 'Confirmation?',
+                    content: 'Are you sure you want to delete this document?<br/><br/><b>'
+                    + $(this).data('document')
+                    + '</b><br/><br/>This cannot be reversed.',
+                    buttons: {
+                        ok: {
+                            text: "Yes",
+                            btnClass: 'btn-primary',
+                            keys: ['enter'],
+                            action: function () {
+                                deleteForm.submit();
+                            }
+                        },
+                        cancel: function () {
+                            //console.log('the user clicked cancel');
+                        }
+                    }
+                });
+            });
+
+        });
+
+    </script>
+{% endblock %}

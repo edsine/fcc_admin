@@ -1,0 +1,198 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('fancybox/jquery.fancybox.css') }}" type="text/css" media="screen"/>
+    <link href="{{ asset('css/step-indicator.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Nominal Roll Submission Status
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+
+            {% if app.session.started and app.session.flashBag.peekAll is not empty %}
+                <div class="messages">
+                    {% for type, messages in app.session.flashBag.all %}
+                        {% for message in messages %}
+                            {# Bootstrap alert, see http://getbootstrap.com/components/#alerts #}
+                            <div class="alert alert-dismissible alert-{{ type }}" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('submission_status') }}">
+                <div style="margin-bottom: 10px;">
+                    <select class="form-control input-14 select-2" name="search_organization"
+                            style="display: inline-block; width: 400px;">
+                        <option value="">Choose Organization</option>
+                        {% for organization in organizations %}
+                            {% if organization.id == searchFilter.organizationId %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ organization.id }}" {{ selected }}>{{ organization.organization_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="search_submission_year"
+                            style="display: inline-block; width: 240px;margin-left: 20px;">
+                        <option value="">Choose Submission Year</option>
+                        {% for submissionYearRecord in submissionYears %}
+                            {% if submissionYearRecord.submission_year == searchFilter.submissionYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionYearRecord.submission_year }}" {{ selected }}>{{ submissionYearRecord.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="search_submission_status"
+                            style="display: inline-block; width: 240px;margin-left: 20px;">
+                        <option value="">Choose Validation Status</option>
+                        {% for submissionStat in submissionStatus %}
+                            {% if submissionStat.status == searchFilter.validationStatus %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionStat.status }}" {{ selected }}>{{ submissionStat.description }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                </div>
+
+                <div style="margin-top: 20px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"><i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"><i
+                                        class="fa fa-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"><i
+                                        class="fa fa-chevron-right"></i>|
+                            </button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                        <input type="hidden" name="startRow" value="{{ paginator.startRow }}" readonly/>
+                    </div>
+                    <div class="pull-right">
+                        <a href="{{ path('federal_level_nominal_roll_batch_re_validation_show') }}" class="btn btn-primary btn-sm">
+                            Batch Re-Validation
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </form>
+            <form method="post" action="{{ path('submission_status') }}" id="approvalForm">
+                <table class="table table-bordered table-stripped table-hover">
+                    <thead>
+                    <tr>
+                        <th width="40">S/N</th>
+                        <th>Year</th>
+                        <th>Organization</th>
+                        <th>Date Of Submission</th>
+                        <th>Total Rows Imported</th>
+                        <th>MDA Desk Officer</th>
+                        <th>FCC Desk Officer</th>
+                        <th width="480">Status</th>
+                        <th width="50"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var record \AppBundle\Model\Reporting\Submission\SubmissionStatus #}
+                    {% for record in records %}
+                        <tr class="VALIDATION-{{ record.validationStatus }}-abc">
+                            <td>{{ record.displaySerialNo }}</td>
+                            <td>{{ record.submissionYear }}</td>
+                            <td>{{ record.organizationName }}</td>
+                            <td>{{ record.dateOfSubmission }}</td>
+                            <td>{{ record.totalRowsImportedFormatted }}</td>
+                            <td>
+                                {{ record.mdaDeskOfficerName }}<br/>
+                                {{ record.mdaDeskOfficerPhone }}
+                            </td>
+                            <td>
+                                {{ record.fccDeskOfficerName }}<br/>
+                                {{ record.fccDeskOfficerPhone }}
+                            </td>
+                            <td>
+                                <div class="step-indicator">
+                                    {{ record.validationStepHtml | raw }}
+                                    {{ record.confirmationStepHtml | raw }}
+                                    {{ record.approvalStepHtml | raw }}
+                                    {{ record.processingStepHtml | raw }}
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{{ path('submission_status_preview_show', {submissionId : record.submissionId}) }}"
+                                   data-href="{{ path('submission_status_preview_show', {submissionId : record.submissionId}) }}"
+                                   class="btn btn-xs btn-primary submission-preview" title="OPEN">
+                                    <i class="fa fa-folder-open-o"></i> Open
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('fancybox/jquery.fancybox.js') }}"></script>
+    <script>
+
+        $(document).ready(function () {
+            $(".submission-preview").click(function (event) {
+                event.preventDefault();
+                openFancyBox($(this).data("href"));
+            });
+        });
+
+        function openFancyBox(url) {
+            $.fancybox.open({
+                autoSize: false,
+                width: '98%',
+                height: '97%',
+                href: '' + url + '',
+                type: 'iframe',
+                padding: 2,
+                helpers: {
+                    overlay: {
+                        closeClick: false
+                    }
+                }
+            });
+            return false;
+        }
+
+    </script>
+{% endblock %}

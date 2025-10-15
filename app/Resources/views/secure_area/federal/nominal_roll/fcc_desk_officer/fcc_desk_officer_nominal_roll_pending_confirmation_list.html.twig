@@ -1,0 +1,214 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Nominal Roll Submissions: Pending Confirmation
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            {% include 'secure_area/federal/nominal_roll/fcc_desk_officer/_fcc_desk_officer_nominal_roll_tabs.html.twig' with { activePage : 'pending' } %}
+
+            {% if app.session.started and app.session.flashBag.peekAll is not empty %}
+                <div class="messages">
+                    {% for type, messages in app.session.flashBag.all %}
+                        {% for message in messages %}
+                            {# Bootstrap alert, see http://getbootstrap.com/components/#alerts #}
+                            <div class="alert alert-dismissible alert-{{ type }}" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('fcc_desk_officer_nominal_roll_pending_confirmation_list') }}">
+                <div style="margin: 20px 0;">
+                    <select class="form-control input-14 select-2" name="searchOrganizationId"
+                            style="display: inline-block; width: 360px;">
+                        <option value="">Choose Organization</option>
+                        {% for organization in deskOfficerOrganizations %}
+                            {% if organization.id == searchFilter.organizationId %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ organization.id }}" {{ selected }}>{{ organization.organizationName }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+
+                <div style="margin-top: 20px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"><i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"><i
+                                        class="fa fa-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"><i
+                                        class="fa fa-chevron-right"></i>|
+                            </button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnApprove">
+                            <i class="fa fa-check"></i> Confirm
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </form>
+            <form method="post" action="{{ path('fcc_desk_officer_nominal_roll_confirm') }}" id="confirmationForm">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="30">
+                            <input type="checkbox" id="selectall"/>
+                        </th>
+                        <th width="40">S/N</th>
+                        <th>Year</th>
+                        <th>Organization</th>
+                        <th>Date Of Submission</th>
+                        <th>File Name</th>
+                        <th>Total Rows Imported</th>
+                        <th>Validation Status</th>
+                        <th>Confirmation Status</th>
+                        <th>Processing Status</th>
+                        <th width="50"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var record \AppBundle\Model\Submission\NominalRollSubmission #}
+                    {% for record in records %}
+                        <tr class="VALIDATION-{{ record.validationStatus }}">
+                            <td>
+                                <input type="checkbox" name="selectedSubmissionIds[]" value="{{ record.submissionId }}"
+                                       class="submission_chkbox">
+                            </td>
+                            <td>{{ record.displaySerialNo }}</td>
+                            <td>{{ record.submissionYear }}</td>
+                            <td>{{ record.organizationName }}</td>
+                            <td>{{ record.created }}</td>
+                            <td>{{ record.simpleFileName }}</td>
+                            <td>{{ record.totalRowsImportedFormatted }}</td>
+                            <td>{{ record.validationStatus }}</td>
+                            <td>{{ record.fccDeskOfficerConfirmationStatus }}</td>
+                            <td>{{ record.processingStatus }}</td>
+                            <td>
+
+                                {% if app.user.privilegeChecker.canConfirmFedMdaNominalRollUpload() %}
+
+                                    <a href="{{ path('federal_nominal_roll_show', {submissionId : record.submissionId}) }}"
+                                       class="btn btn-xs btn-primary" title="Open">
+                                        <i class="fa fa-folder-open-o"></i> View
+                                    </a>
+
+                                {% elseif app.user.privilegeChecker.canConfirmStateMdaNominalRollUpload() %}
+
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="11">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <input type="hidden" name="startRow" value="{{ paginator.startRow }}"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+
+            var selectAllCheckBox = $("#selectall");
+            var checkBoxes = $(".submission_chkbox");
+
+            selectAllCheckBox.change(function () {
+                checkBoxes.prop('checked', $(this).prop("checked"));
+            });
+
+            $('#btnApprove').on('click', function (event) {
+                event.preventDefault();
+
+                var countCheckedCheckboxes = checkBoxes.filter(':checked').length;
+
+                if (countCheckedCheckboxes > 0) {
+                    $.confirm({
+                        title: 'Confirmation?',
+                        content: 'Are you sure you want to CONFIRM the selected submissions?',
+                        buttons: {
+                            ok: {
+                                text: "Yes",
+                                btnClass: 'btn-primary',
+                                keys: ['enter'],
+                                action: function () {
+                                    showLoading();
+                                    $('#confirmationForm').submit();
+                                }
+                            },
+                            cancel: function () {
+                                //console.log('the user clicked cancel');
+                            }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        title: 'Message',
+                        content: 'You have not made any selection!'
+                    });
+                }
+
+
+            });
+
+            /*$('#selectall').on('click',function(){
+             if ($(this).is(':checked')) {
+             $('.submission_chkbox').each(function(){
+             this.checked = true;
+             });
+             }else{
+             $('.submission_chkbox').each(function(){
+             this.checked = false;
+             });
+             }
+             });*/
+
+        });
+
+    </script>
+{% endblock %}

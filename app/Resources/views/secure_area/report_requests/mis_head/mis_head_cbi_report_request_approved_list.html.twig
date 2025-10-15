@@ -1,0 +1,89 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block page_toolbar_left %}
+    Approved CBI Requests
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            {% include 'secure_area/report_requests/mis_head/_mis_head_report_request_tabs.html.twig' with { activePage : 'approved' } %}
+
+            <form method="post" action="{{ path('mis_head_cbi_report_request_approved_list') }}">
+                <div style="margin-bottom: 10px;">
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+
+                <div style="margin-top: 40px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"><i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"><i
+                                        class="fa fa-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"><i
+                                        class="fa fa-chevron-right"></i>|
+                            </button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                    </div>
+                    <div class="pull-right">
+
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="40">S/N</th>
+                        <th>Category</th>
+                        <th>Recruitment Value</th>
+                        <th width="200">Submission Year Used</th>
+                        <th width="150">Approval Status</th>
+                        <th width="150">Date Approved</th>
+                        <th width="50"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var record \AppBundle\Model\ReportRequests\CBIReportRequest #}
+                    {% for record in records %}
+                        <tr>
+                            <td>{{ record.displaySerialNo }}</td>
+                            <td>{{ record.cbiGradeLevelCategoryName }}</td>
+                            <td>{{ record.recruitmentValue }}</td>
+                            <td>{{ record.submissionYearUsed }}</td>
+                            <td>{{ record.approvalStatus }}</td>
+                            <td>{{ record.dateOfApproval }}</td>
+                            <td>
+                                <a href="{{ path('federal_cbi_request_report_show', { cbiRequestSelector : record.selector }) }}"
+                                   class="btn btn-xs btn-primary" title="View">
+                                    <i class="fa fa-folder-open"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <input type="hidden" name="startRow" value="{{ paginator.startRow }}"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

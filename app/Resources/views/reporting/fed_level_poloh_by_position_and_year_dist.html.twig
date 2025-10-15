@@ -1,0 +1,77 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Political Post Distribution By Position And Year
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('fed_level_poloh_by_position_and_year_dist') }}" class="do-not-print">
+                <div style="margin-bottom: 10px;" class="do-not-print">
+                    <select class="form-control input-14 select-2" name="searchPosition"
+                            style="display: inline-block; width: 200px;">
+                        <option value="">Choose Political Office</option>
+                        {% for politicalOffice in politicalPositions %}
+                            {% if politicalOffice.grade_level_code == searchPosition %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ politicalOffice.grade_level_code }}" {{ selected }}>{{ politicalOffice.description }}</option>
+                        {% endfor %}
+                    </select>
+                    <select class="form-control input-14" name="searchSubmissionYear"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Submission Year</option>
+                        {% for submissionYearRecord in submissionYears %}
+                            {% if submissionYearRecord.submission_year == searchSubmissionYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionYearRecord.submission_year }}" {{ selected }}>{{ submissionYearRecord.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+            </form>
+
+            {% if report is not empty %}
+                <div class="do-not-print" style="width: 600px;text-align: right; padding: 5px;margin-bottom: 20px;" >
+                    <a href="#" onclick="window.print(); return false;"
+                       class="btn btn-default btn-sm" target="_blank">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-download"></i> Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {#<li><a href="#" onclick="alert('Excel export, coming soon.'); return false;">Microsoft Excel</a></li>#}
+                            <li><a href="{{ path('export_fed_level_poloh_by_position_and_year_dist',{position:searchPosition,submissionYear:searchSubmissionYear}) }}"
+                                target="_blank">Adobe PDF</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% include 'reporting/_fed_level_poloh_by_position_and_year_dist.html.twig' %}
+
+        </div>
+    </div>
+{% endblock %}

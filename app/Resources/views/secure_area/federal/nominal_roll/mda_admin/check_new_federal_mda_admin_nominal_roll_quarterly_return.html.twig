@@ -1,0 +1,161 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+    <link rel="stylesheet" href="{{ asset('css/form-wizard.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    New Main Nominal Roll Submission
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('federal_mda_admin_nominal_roll_main_submission_list') }}"><i
+                class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+
+
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="panel-abc panel-default-abc">
+                <div class="panel-body-abc">
+
+                    {% if connectedToMiddleware %}
+                        <div id="first-step" class="step-container">
+                            <div class="row">
+                                <div class="col-sm-5 step-instruction">
+                                    <div class="step-instruction-container">
+                                        <i class="fa fa-cloud-upload step-instruction-icon"></i>
+
+                                        {% autoescape false %}
+                                            {{ submissionInstructions }}
+                                        {% endautoescape %}
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-7">
+
+                                    {% if alertNotification.hasMessage %}
+                                        <div style="margin-bottom: 30px;" id="alert-container">
+                                            <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                                            aria-hidden="true">&times;</span></button>
+                                                {% autoescape false %}
+                                                    {% for message in alertNotification.messages %}
+                                                        {{ message }}
+                                                    {% endfor %}
+                                                {% endautoescape %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    <form method="post" id="check-form"
+                                          action="{{ path('check_new_federal_mda_admin_nominal_roll_quarterly_return') }}" class="form-horizontal"
+                                          onsubmit="showLoading();">
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <h3 class="submission-title">What year do you want to make QUARTER RETURN for?</h3>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="submission_year" class="control-label col-sm-2"><b>Submission
+                                                    Year:</b>
+                                                <span class="text-danger text-bold">*</span>
+                                            </label>
+
+                                            <div class="col-sm-10">
+                                                <select class="form-control" id="submission_year"
+                                                        name="submissionYear" style="width: 400px;font-weight: bold;">
+                                                    <option value="">Choose Submission Year</option>
+                                                    {% for submissionYearRecord in submissionYears %}
+                                                        {% if submissionYearRecord == submissionYear %}
+                                                            {% set selected = 'selected' %}
+                                                        {% else %}
+                                                            {% set selected = '' %}
+                                                        {% endif %}
+                                                        <option value="{{ submissionYearRecord }}" {{ selected }}>{{ submissionYearRecord }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-10 col-sm-offset-2">
+                                                <input type="hidden" name="submission_type" value="{{ submissionType }}" />
+                                                <input type="hidden" name="btn_submit" />
+                                                <button type="button" name="btn_continue" id="continue-btn"
+                                                        class="btn btn-primary"
+                                                        style="margin-top: 20px;">
+                                                    Continue
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+
+                        <div class="text-center">
+                            <i class="fa fa-bolt validation-warning-icon"></i>
+                            <br/>
+                            <h5 class="text-warning">
+                                We are having trouble connecting with our upload service.
+                                <br/>
+                                Check your internet connection and click the button bellow.
+                            </h5>
+                            <br/>
+                            <a href="{{ path('check_new_federal_mda_admin_nominal_roll_main_submission') }}" type="submit"
+                               class="btn btn-warning">
+                                Try Again
+                            </a>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            {% if connectedToMiddleware %}
+
+            $('#continue-btn').on('click', function (e) {
+                e.preventDefault();
+
+                $('#alert-container').hide();
+
+                var submissionYear = $('#submission_year').val();
+
+                if(submissionYear){
+                    $('#check-form').submit();
+                }else{
+                    $.alert({
+                        title: 'Message',
+                        content: 'Submission Year Is Required.',
+                        type : 'red'
+                    });
+                }
+
+            });
+
+            {% else %}
+            {% endif %}
+
+        });
+
+    </script>
+{% endblock %}

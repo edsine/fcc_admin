@@ -1,0 +1,55 @@
+
+.step-container{
+    display:none; /*FOR CHECKING LAYOUT*/
+}
+
+#first-step{
+    display:block;
+}
+
+.step-instruction{
+    border-right: 1px dashed #9e9d9d;
+    min-height: 420px;
+}
+
+.step-instruction-container{
+    padding: 30px;
+    margin-top: 0px;
+    font-size: 14px;
+}
+
+.step-instruction-icon{
+    font-size: 40px;
+    color: #A9A9A9;
+}
+
+.step-instruction-title{
+    font-size: 22px;
+}
+
+.validation-step-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 420px;
+}
+
+.validation-stage{
+    display: none; /*FOR CHECKING LAYOUT*/
+    padding: 30px;
+}
+
+.validation-error-icon{
+    font-size: 100px;
+    color: #E51C23;
+}
+
+.validation-warning-icon{
+    font-size: 100px;
+    color: #E16725;
+}
+
+.validation-success-icon{
+    font-size: 100px;
+    color: #009048;
+}

@@ -1,0 +1,52 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    List Of Federal Chief Executives
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('fed_level_ceo_list') }}">
+                <div style="margin-bottom: 10px;" class="do-not-print">
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Fetch Report <i class="fa fa-search"></i>
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+            </form>
+
+            {% if report is not empty %}
+                <div class="do-not-print" style="width: 1250px;text-align: right; padding: 5px;margin-bottom: 20px;" >
+                    <a href="#" onclick="window.print(); return false;"
+                       class="btn btn-default btn-sm" target="_blank">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-download"></i> Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {#<li><a href="#" onclick="alert('Excel export, coming soon.'); return false;">Microsoft Excel</a></li>#}
+                            <li><a href="{{ path('export_fed_level_ceo_list_export',{exportFormat : 'pdf'}) }}"
+                                target="_blank">Adobe PDF</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% include 'reporting/_fed_level_ceo_list.html.twig' %}
+
+        </div>
+    </div>
+{% endblock %}

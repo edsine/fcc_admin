@@ -1,0 +1,70 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('select2-4.0.3/dist/css/select2.min.css') }}" />
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Merge Federal MDAs
+{% endblock %}
+{% block page_toolbar_right %}
+    {#<a class="btn btn-link close-btn" href="#"><i class="fa fa-arrow-left"></i></a>#}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-7">
+
+            <div class="panel- panel-default">
+                <div class="panel-body">
+                    <form method="post" action="{{ path('merge_federal_mda') }}" id="main-form" class="form-horizontal">
+
+                        <div class="form-group fcc-committee-form-group">
+                            <label for="child-establishments" class="col-sm-3 control-label">Merge:</label>
+                            <div class="col-sm-9">
+                                <select class="form-control input-14" name="child_establishments" id="child-establishments" multiple="multiple">
+                                    {% for organization in organizations %}
+                                        <option value="{{ organization.id }}">{{ organization.organization_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group fcc-committee-form-group">
+                            <label for="parent-establishment" class="col-sm-3 control-label">Into:</label>
+                            <div class="col-sm-9">
+                                <select class="form-control input-14" name="parent_establishment" id="parent-establishment">
+                                    <option value="">Choose Parent Establishment</option>
+                                    {% for organization in organizations %}
+                                        <option value="{{ organization.id }}">{{ organization.organization_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <button disabled type="submit" name="btnSubmit" class="btn btn-info">
+                                Submit <i class="fa fa-send"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('select2-4.0.3/dist/js/select2.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#child-establishments').select2({
+                placeholder: "Choose One or More Establishment(s) To Be Merged",
+                allowClear: false
+            });
+            $('#parent-establishment').select2();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 0px; margin: 0px;">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>Federal Character Commission {% block title %}{% endblock %}</title>
+
+
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/printable-view.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>
+
+</head>
+
+<body style="padding-top: 0px !important; margin-top: 0px !important;">
+
+<div class="container-fluid"  style="overflow: visible;">
+    {% include 'reporting/_fed_level_career_dist_stage1_to_stage9.html.twig' with { 'whichDistribution' : 'consolidated_federal_parastatals' } %}
+</div>
+<!-- /container -->
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.barRenderer.js') }}"></script>
+<script type="text/javascript"
+        src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.categoryAxisRenderer.js') }}"></script>
+<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.pointLabels.js') }}"></script>
+
+{% if report is not empty and report.stage3 is not empty %}
+<script>
+    $(document).ready(function () {
+
+        var gl_01_to_04 = {{ report.stage3.stage3Data[0] }};
+        var gl_05_to_06 = {{ report.stage3.stage3Data[1] }};
+        var gl_07_to_10 = {{ report.stage3.stage3Data[2] }};
+        var gl_11_to_14 = {{ report.stage3.stage3Data[3] }};
+        var gl_15_And_Above = {{ report.stage3.stage3Data[4] }};
+
+        var ticks = {{ report.stage3.xAxisLabels|raw }};
+        //console.log(ticks);
+
+        plot3 = $.jqplot('stage3-chart', [gl_01_to_04, gl_05_to_06, gl_07_to_10, gl_11_to_14, gl_15_And_Above], {
+            // Tell the plot to stack the bars.
+            title: 'STAFF DISTRIBUTION BY STATE OF ORIGIN AND BY CATEGORY',
+            stackSeries: true,
+            captureRightClick: true,
+            seriesDefaults: {
+                renderer: $.jqplot.BarRenderer,
+                rendererOptions: {
+                    // Put a 30 pixel margin between bars.
+                    barMargin: 10,
+                    // Highlight bars when mouse button pressed.
+                    // Disables default highlighting on mouse over.
+                    highlightMouseDown: true
+                },
+                pointLabels: {show: false}
+            },
+            series: [
+                {label: '01-04'},
+                {label: '05-06'},
+                {label: '07-10'},
+                {label: '11-14'},
+                {label: '15+'}
+            ],
+            seriesColors: ["#9999FF", "#993366", "#FFFFCC", "#CCFFFF", "#660066"],
+            grid: {
+                background: '#C0C0C0'
+            },
+            axes: {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: ticks
+                },
+                yaxis: {
+                    // Don't pad out the bottom of the data range.  By default,
+                    // axes scaled as if data extended 10% above and below the
+                    // actual range to prevent data points right on grid boundaries.
+                    // Don't want to do that here.
+                    padMin: 0
+                }
+            },
+            legend: {
+                show: true,
+                location: 'e',
+                placement: 'outside'
+            }
+        });
+        // Bind a listener to the "jqplotDataClick" event.  Here, simply change
+        // the text of the info3 element to show what series and ponit were
+        // clicked along with the data for that point.
+        /*$('#stage3-chart').bind('jqplotDataClick',
+         function (ev, seriesIndex, pointIndex, data) {
+         $('#info3').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+         }
+         );*/
+
+        window.print();
+
+    });
+
+</script>
+
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,218 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block page_toolbar_left %}
+    Add System Role
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('system_role_list') }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    {% if alertNotification.hasMessage %}
+                        <div style="margin-bottom: 30px;">
+                            <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                {% for message in alertNotification.messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('system_role_new') }}" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="role-name" class="col-sm-1 control-label text-bold">Role Name:</label>
+                            <div class="col-sm-11">
+                                <input type="text" name="role_name" value="{{ systemRole.roleName }}"
+                                       class="form-control input-14" id="role-name"
+                                       placeholder="Enter Role Name"
+                                       autocomplete="off">
+                                {{ validator.fields.field('role_name').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="role-category" class="col-sm-1 control-label text-bold">User Category:</label>
+                            <div class="col-sm-11">
+                                <select class="form-control input-14" id="role-category" name="role_category">
+                                    <option value="">Choose User Category</option>
+                                    {% for category in systemRoleCategories %}
+                                        {% if category.id == systemRole.categoryId %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ category.id }}" {{ selected }}>{{ category.description }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('role_category').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label text-bold">Role Privileges:</label>
+                            <div class="col-sm-11">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        {{ validator.fields.field('privileges').html | raw }}
+                                        <div class="row">
+                                            <div class="col-md-4">
+
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">Federal Character Commission</div>
+                                                    <div class="panel-body">
+                                                        {% for privilege in systemPrivileges['FCC'] %}
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="checkbox" name="privilegeIds[]"
+                                                                           value="{{ privilege.id }}"
+                                                                           class="state_chkbox"
+                                                                           {% if privilege.id in systemRole.privileges %}checked{% endif %}> {{ privilege.description }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-4">
+
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">Federal MDA</div>
+                                                    <div class="panel-body">
+                                                        {% for privilege in systemPrivileges['FEDERAL_MDA'] %}
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="checkbox" name="privilegeIds[]"
+                                                                           value="{{ privilege.id }}"
+                                                                           class="state_chkbox"
+                                                                           {% if privilege.id in systemRole.privileges %}checked{% endif %}> {{ privilege.description }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-md-4">
+
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">State MDA</div>
+                                                    <div class="panel-body">
+                                                        {% for privilege in systemPrivileges['STATE_MDA'] %}
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="checkbox" name="privilegeIds[]"
+                                                                           value="{{ privilege.id }}"
+                                                                           class="state_chkbox"
+                                                                           {% if privilege.id in systemRole.privileges %}checked{% endif %}> {{ privilege.description }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">Federal Level Reports</div>
+                                                    <div class="panel-body">
+                                                        {% for privilege in systemPrivileges['FEDERAL_REPORTS'] %}
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="checkbox" name="privilegeIds[]"
+                                                                           value="{{ privilege.id }}"
+                                                                           class="state_chkbox"
+                                                                           {% if privilege.id in systemRole.privileges %}checked{% endif %}> {{ privilege.description }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-4">
+
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">Other Reports</div>
+                                                    <div class="panel-body">
+                                                        {% for privilege in systemPrivileges['OTHER_REPORTS'] %}
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="checkbox" name="privilegeIds[]"
+                                                                           value="{{ privilege.id }}"
+                                                                           class="state_chkbox"
+                                                                           {% if privilege.id in systemRole.privileges %}checked{% endif %}> {{ privilege.description }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-md-4">
+
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">Report Limit Of MDA Selection</div>
+                                                    <div class="panel-body">
+                                                        {% for privilege in systemPrivileges['REPORT_MDA_SELECTION_LIMIT'] %}
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="radio" name="privilegeIds[]"
+                                                                           value="{{ privilege.id }}"
+                                                                           class="state_chkbox"
+                                                                           {% if privilege.id in systemRole.privileges %}checked{% endif %}> {{ privilege.description }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">System Administration</div>
+                                            <div class="panel-body">
+                                                {% for privilege in systemPrivileges['ADMIN'] %}
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" name="privilegeIds[]"
+                                                                   value="{{ privilege.id }}"
+                                                                   class="state_chkbox"
+                                                                   {% if privilege.id in systemRole.privileges %}checked{% endif %}> {{ privilege.description }}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-11 col-sm-offset-1">
+                            <button type="submit" name="btn_submit" class="btn btn-info btn-sm">Submit</button>
+                        </div>
+
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

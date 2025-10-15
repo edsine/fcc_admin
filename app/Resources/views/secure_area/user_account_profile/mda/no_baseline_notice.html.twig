@@ -1,0 +1,42 @@
+{% extends 'base.fcc.html.twig' %}
+
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+{# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+{% set privilegeChecker = loggedInUser.privilegeChecker %}
+
+{% set referrer = app.request.headers.get('referer')|default('#') %}
+
+{% block page_toolbar_left %}
+    Important Notice
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ referrer }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-1">
+            <img src="{{ asset('images/private-sign.png') }}" style="width: 100px; height: 100px;"/>
+        </div>
+        <div class="col-md-11">
+
+
+            <h4>Hi !,</h4>
+            <br/>
+            <h4>looks like you have not updated your organizations 'Baseline Year'.</h4>
+            <h4>This must be done before you can make a submission.</h4>
+
+            <br/>
+
+            <h4>You will need your organizations 'Year of Establishment' to complete this.</h4>
+
+            <br/>
+            <a href="{{ path('mda_baseline_edit') }}" class="btn btn-primary">
+                Click Here To Update Baseline Year
+            </a>
+
+        </div>
+    </div>
+{% endblock %}

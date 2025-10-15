@@ -1,0 +1,860 @@
+{% if report is not empty %}
+<div id="print-panel" class="print-landscape" style="margin: 0 auto;">
+    <!-- STAGE 1 -->
+    <div class="card card-3 print-break-after">
+        <table id="stage1"
+               class="table table-bordered table-hover report-table">
+            <tbody>
+            <tr align="center">
+                <td colspan="21" align="center" class="mda-name">
+                    {% if whichDistribution == 'single_establishment' %}
+                        {{ report.organizationName }}
+                    {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                        {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                    {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                        {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                    {% endif %}
+                </td>
+            </tr>
+            <tr align="center">
+                <td colspan="21" align="center">{{ report.submissionYear }} MANPOWER STATISTICS</td>
+            </tr>
+            <tr align="center">
+                <td colspan="21" align="center">STAFF DISTRIBUTION BY STATE OF ORIGIN</td>
+            </tr>
+            <tr align="center">
+                <td>&nbsp;</td>
+                <td colspan="18" align="center">GL</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr align="center">
+                <td style="text-align: left;">STATES</td>
+                <td>01</td>
+                <td>02</td>
+                <td>03</td>
+                <td>04</td>
+                <td>05</td>
+                <td>06</td>
+                <td>07</td>
+                <td>08</td>
+                <td>09</td>
+                <td>10</td>
+                <td>11</td>
+                <td>12</td>
+                <td>13</td>
+                <td>14</td>
+                <td>15</td>
+                <td>16</td>
+                <td>17</td>
+                <td>CSLD</td>
+                <td align="right">TOTAL</td>
+                <td align="right">%</td>
+            </tr>
+            </tbody>
+            <tbody>
+            {% for stage1Distribution in report.stage1.stage1Data %}
+                <tr>
+                    <td>{{ stage1Distribution.stateName }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL1 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL2 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL3 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL4 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL5 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL6 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL7 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL8 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL9 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL10 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL11 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL12 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL13 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL14 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL15 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL16 }}</td>
+                    <td align="right">{{ stage1Distribution.totalGL17 }}</td>
+                    <td align="right">{{ stage1Distribution.totalConsolidated }}</td>
+                    <td align="right">{{ stage1Distribution.total }}</td>
+                    <td align="right">{{ stage1Distribution.percentage }}%</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>TOTAL</td>
+                <td align="right">{{ report.stage1.overallGl1 }}</td>
+                <td align="right">{{ report.stage1.overallGl2 }}</td>
+                <td align="right">{{ report.stage1.overallGl3 }}</td>
+                <td align="right">{{ report.stage1.overallGl4 }}</td>
+                <td align="right">{{ report.stage1.overallGl5 }}</td>
+                <td align="right">{{ report.stage1.overallGl6 }}</td>
+                <td align="right">{{ report.stage1.overallGl7 }}</td>
+                <td align="right">{{ report.stage1.overallGl8 }}</td>
+                <td align="right">{{ report.stage1.overallGl9 }}</td>
+                <td align="right">{{ report.stage1.overallGl10 }}</td>
+                <td align="right">{{ report.stage1.overallGl11 }}</td>
+                <td align="right">{{ report.stage1.overallGl12 }}</td>
+                <td align="right">{{ report.stage1.overallGl13 }}</td>
+                <td align="right">{{ report.stage1.overallGl14 }}</td>
+                <td align="right">{{ report.stage1.overallGl15 }}</td>
+                <td align="right">{{ report.stage1.overallGl16 }}</td>
+                <td align="right">{{ report.stage1.overallGl17 }}</td>
+                <td align="right">{{ report.stage1.overallConsolidated }}</td>
+                <td align="right">{{ report.stage1.overallTotal }}</td>
+                <td align="right">{{ report.stage1.overallPercentage }}%</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="report-page-number">Page 1</div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 2 -->
+    <div class="card card-3 print-break-after">
+        <table id="stage2"
+               class="table table-bordered table-hover report-table">
+            <thead>
+            <tr align="center">
+                <td colspan="17" align="center" class="mda-name">
+                    {% if whichDistribution == 'single_establishment' %}
+                        {{ report.organizationName }}
+                    {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                        {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                    {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                        {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                    {% endif %}
+                </td>
+            </tr>
+            <tr align="center">
+                <td colspan="17" align="center">{{ report.submissionYear }} MANPOWER STATISTICS</td>
+            </tr>
+            <tr align="center">
+                <td colspan="17" align="center">STAFF DISTRIBUTION (GL 01 AND ABOVE) BY STATE OF
+                    ORIGIN
+                    AND CATEGORY
+                </td>
+            </tr>
+            <tr align="center">
+                <td>&nbsp;</td>
+                <td colspan="14" align="center">GL</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr align="center">
+                <td style="text-align: left;">STATES</td>
+                <td>01-04</td>
+                <td>%</td>
+                <td>05-06</td>
+                <td>%</td>
+                <td>TOTAL<br/>01-06</td>
+                <td>%<br/>01-06</td>
+                <td>07-10</td>
+                <td>%</td>
+                <td>11-14</td>
+                <td>%</td>
+                <td>15+</td>
+                <td>%</td>
+                <td>TOTAL<br/>07-15</td>
+                <td>%<br/>07-15</td>
+                <td align="right">GRAND<br/>TOTAL</td>
+                <td align="right">%</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for stage2Distribution in report.stage2.stage2Data %}
+                <tr>
+                    <td>{{ stage2Distribution.stateName }}</td>
+                    <td align="right">{{ stage2Distribution.totalGL1to4 }}</td>
+                    <td align="right">{{ stage2Distribution.percentageGL1to4 }}%</td>
+                    <td align="right">{{ stage2Distribution.totalGL5to6 }}</td>
+                    <td align="right">{{ stage2Distribution.percentageGL5to6 }}%</td>
+                    <td align="right">{{ stage2Distribution.totalGL1to6 }}</td>
+                    <td align="right">{{ stage2Distribution.percentageGL1to6 }}%</td>
+                    <td align="right">{{ stage2Distribution.totalGL7to10 }}</td>
+                    <td align="right">{{ stage2Distribution.percentageGL7to10 }}%</td>
+                    <td align="right">{{ stage2Distribution.totalGL11to14 }}</td>
+                    <td align="right">{{ stage2Distribution.percentageGL11to14 }}%</td>
+                    <td align="right">{{ stage2Distribution.totalGL15AndAbove }}</td>
+                    <td align="right">{{ stage2Distribution.percentageGL15AndAbove }}%</td>
+                    <td align="right">{{ stage2Distribution.totalGL7to15AndAbove }}</td>
+                    <td align="right">{{ stage2Distribution.percentageGL7to15AndAbove }}%</td>
+                    <td align="right">{{ stage2Distribution.total }}</td>
+                    <td align="right">{{ stage2Distribution.percentage }}%</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>TOTAL</td>
+                <td align="right">{{ report.stage2.overallGL1to4 }}</td>
+                <td align="right">{{ report.stage2.overallPercentageGL1to4 }}%</td>
+                <td align="right">{{ report.stage2.overallGL5to6 }}</td>
+                <td align="right">{{ report.stage2.overallPercentageGL5to6 }}%</td>
+                <td align="right">{{ report.stage2.overallGL1to6 }}</td>
+                <td align="right">{{ report.stage2.overallPercentageGL1to6 }}%</td>
+                <td align="right">{{ report.stage2.overallGL7to10 }}</td>
+                <td align="right">{{ report.stage2.overallPercentageGL7to10 }}%</td>
+                <td align="right">{{ report.stage2.overallGL11to14 }}</td>
+                <td align="right">{{ report.stage2.overallPercentageGL11to14 }}%</td>
+                <td align="right">{{ report.stage2.overallGL15AndAbove }}</td>
+                <td align="right">{{ report.stage2.overallPercentageGL15AndAbove }}%</td>
+                <td align="right">{{ report.stage2.overallGL7to15AndAbove }}</td>
+                <td align="right">{{ report.stage2.overallPercentageGL7to15AndAbove }}%</td>
+                <td align="right">{{ report.stage2.overallTotal }}</td>
+                <td align="right">{{ report.stage2.overallPercentage }}%</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="report-page-number">Page 2</div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 3 -->
+    <div class="card card-3 print-break-after">
+        <table style="width: 100%;"
+               class="table table-bordered table-hover report-table">
+            <thead>
+            <tr align="center">
+                <td colspan="17" align="center" class="mda-name">
+                    {% if whichDistribution == 'single_establishment' %}
+                        {{ report.organizationName }}
+                    {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                        {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                    {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                        {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                    {% endif %}
+                </td>
+            </tr>
+            </thead>
+        </table>
+        <div id="stage4" style="display: flex;justify-content: center;">
+            <div id="stage3-chart" style="width: 900px;height: 600px;"></div>
+        </div>
+        <div class="report-page-number">Page 3</div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 4 -->
+    <div class="card card-3 print-break-after">
+        <div id="stage4">
+            <table
+                   class="table table-bordered table-hover report-table">
+                <thead>
+                <tr align="center">
+                    <td colspan="17" align="center" class="mda-name">
+                        {% if whichDistribution == 'single_establishment' %}
+                            {{ report.organizationName }}
+                        {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                        {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                        STATISTICS
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">STAFF DISTRIBUTION (GL 01-06) BY STATES OF
+                        ORIGIN WITHIN ZONE AND BY CATEGORY
+                    </td>
+                </tr>
+                </thead>
+            </table>
+            <div class="sub-analysis-container">
+                {% for stage4SubAnalysis in report.stage4.stage4Data %}
+                    <div class="stage-4-to-5-item-container">
+
+                        <table style="width: 100%"
+                               class="table table-bordered table-hover report-table">
+                            <thead>
+                            <tr align="center">
+                                <td style="text-align: left;">{{ stage4SubAnalysis.zoneName }}</td>
+                                <td>01-03</td>
+                                <td>%</td>
+                                <td>04-05</td>
+                                <td>%</td>
+                                <td>06</td>
+                                <td>%</td>
+                                <td align="right">TOTAL</td>
+                                <td align="right">%</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for stage4SubAnalysisEntry in stage4SubAnalysis.subAnalysisData %}
+                                <tr>
+                                    <td>{{ stage4SubAnalysisEntry.stateName }}</td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.totalGL1to3 }}</td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.percentageGL1to3 }}
+                                        %
+                                    </td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.totalGL4to5 }}</td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.percentageGL4to5 }}
+                                        %
+                                    </td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.totalGL6 }}</td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.percentageGL6 }}
+                                        %
+                                    </td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.total }}</td>
+                                    <td align="right">{{ stage4SubAnalysisEntry.percentage }}%
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>TOTAL</td>
+                                <td align="right">{{ stage4SubAnalysis.overallGL1to3 }}</td>
+                                <td align="right">{{ stage4SubAnalysis.overallPercentageGL1to3 }}
+                                    %
+                                </td>
+                                <td align="right">{{ stage4SubAnalysis.overallGL4to5 }}</td>
+                                <td align="right">{{ stage4SubAnalysis.overallPercentageGL4to5 }}
+                                    %
+                                </td>
+                                <td align="right">{{ stage4SubAnalysis.overallGL6 }}</td>
+                                <td align="right">{{ stage4SubAnalysis.overallPercentageGL6 }}
+                                    %
+                                </td>
+                                <td align="right">{{ stage4SubAnalysis.overallTotal }}</td>
+                                <td align="right">{{ stage4SubAnalysis.overallPercentage }}%
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                {% endfor %}
+            </div>
+
+            <div class="report-page-number">Page 4</div>
+
+        </div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 5 -->
+    <div class="card card-3 print-break-after">
+        <div id="stage5">
+            <table
+                   class="table table-bordered table-hover report-table">
+                <thead>
+                <tr align="center">
+                    <td colspan="17" align="center" class="mda-name">
+                        {% if whichDistribution == 'single_establishment' %}
+                            {{ report.organizationName }}
+                        {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                        {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                        STATISTICS
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">STAFF DISTRIBUTION (GL 07 AND ABOVE) BY STATES
+                        OF ORIGIN WITHIN ZONE AND BY CATEGORY
+                    </td>
+                </tr>
+                </thead>
+            </table>
+            <div class="sub-analysis-container">
+                {% for stage5SubAnalysis in report.stage5.stage5Data %}
+
+                    <div class="stage-4-to-5-item-container">
+
+                        <table style="width: 100%"
+                               class="table table-bordered table-hover report-table">
+                            <thead>
+                            <tr align="center">
+                                <td style="text-align: left;">{{ stage5SubAnalysis.zoneName }}</td>
+                                <td>07-10</td>
+                                <td>%</td>
+                                <td>12-14</td>
+                                <td>%</td>
+                                <td>15+</td>
+                                <td>%</td>
+                                <td align="right">TOTAL</td>
+                                <td align="right">%</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for stage5SubAnalysisEntry in stage5SubAnalysis.subAnalysisData %}
+                                <tr>
+                                    <td>{{ stage5SubAnalysisEntry.stateName }}</td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.totalGL7to10 }}</td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.percentageGL7to10 }}
+                                        %
+                                    </td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.totalGL12to14 }}</td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.percentageGL12to14 }}
+                                        %
+                                    </td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.totalGL15AndAbove }}</td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.percentageGL15AndAbove }}
+                                        %
+                                    </td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.total }}</td>
+                                    <td align="right">{{ stage5SubAnalysisEntry.percentage }}%
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>TOTAL</td>
+                                <td align="right">{{ stage5SubAnalysis.overallGL7to10 }}</td>
+                                <td align="right">{{ stage5SubAnalysis.overallPercentageGL7to10 }}
+                                    %
+                                </td>
+                                <td align="right">{{ stage5SubAnalysis.overallGL12to14 }}</td>
+                                <td align="right">{{ stage5SubAnalysis.overallPercentageGL12to14 }}
+                                    %
+                                </td>
+                                <td align="right">{{ stage5SubAnalysis.overallGL15AndAbove }}</td>
+                                <td align="right">{{ stage5SubAnalysis.overallPercentageGL15AndAbove }}
+                                    %
+                                </td>
+                                <td align="right">{{ stage5SubAnalysis.overallTotal }}</td>
+                                <td align="right">{{ stage5SubAnalysis.overallPercentage }}%
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                {% endfor %}
+            </div>
+
+            <div class="report-page-number">Page 5</div>
+
+        </div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 6 -->
+    <div class="card card-3 print-break-after">
+        <div id="stage6">
+            <table
+                   class="table table-bordered table-hover report-table">
+                <thead>
+                <tr align="center">
+                    <td colspan="17" align="center" class="mda-name">
+                        {% if whichDistribution == 'single_establishment' %}
+                            {{ report.organizationName }}
+                        {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                        {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                        STATISTICS
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">DISTRIBUTION
+                        OF {{ report.stage6.overallSubAnalysisTotal }} STAFF ON GL 07 AND ABOVE
+                    </td>
+                </tr>
+                </thead>
+            </table>
+            <div class="sub-analysis-container">
+
+                {% for stage6SubAnalysis in report.stage6.stage6Data %}
+
+                    <div class="stage-6-to-7-item-container">
+                        <div class="stage-6-to-7-item-content-wrapper">
+                            <div style="text-align: center;font-weight: bold;">
+                                State whose indigenes constitute <br/>
+                                {{ stage6SubAnalysis.subAnalysisTitle }}
+                            </div>
+                            <table class="table table-bordered table-hover report-table">
+                                <thead>
+                                <tr>
+                                    <td style="text-align: left;">STATE</td>
+                                    <td align="right">NO.</td>
+                                    <td align="right">%</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for stage6SubAnalysisEntry in stage6SubAnalysis.subAnalysisData %}
+                                    <tr>
+                                        <td align="left">{{ stage6SubAnalysisEntry.stateName }}</td>
+                                        <td align="right">{{ stage6SubAnalysisEntry.totalGL7AndAbove }}</td>
+                                        <td align="right">{{ stage6SubAnalysisEntry.percentageGL7AndAbove }}
+                                            %
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td align="right">{{ stage6SubAnalysis.overallGL7AndAbove }}</td>
+                                    <td align="right">{{ stage6SubAnalysis.overallPercentageGL7AndAbove }}
+                                        %
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="report-page-number">Page 6</div>
+
+        </div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 7 -->
+    <div class="card card-3 print-break-after">
+        <div id="stage7">
+            <table
+                   class="table table-bordered table-hover report-table">
+                <thead>
+                <tr align="center">
+                    <td colspan="17" align="center" class="mda-name">
+                        {% if whichDistribution == 'single_establishment' %}
+                            {{ report.organizationName }}
+                        {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                        {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                        STATISTICS
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">DISTRIBUTION
+                        OF {{ report.stage7.overallSubAnalysisTotal }} STAFF ON GL 15 AND ABOVE
+                    </td>
+                </tr>
+                </thead>
+            </table>
+            <div class="sub-analysis-container">
+
+                {% for stage7SubAnalysis in report.stage7.stage7Data %}
+
+                    <div class="stage-6-to-7-item-container">
+                        <div class="stage-6-to-7-item-content-wrapper">
+                            <div style="text-align: center;font-weight: bold;">
+                                State whose indigenes constitute <br/>
+                                {{ stage7SubAnalysis.subAnalysisTitle }}
+                            </div>
+                            <table style="width: 100%"
+                                   class="table table-bordered table-hover report-table">
+                                <thead>
+                                <tr>
+                                    <td style="text-align: left;">STATE</td>
+                                    <td align="right">NO.</td>
+                                    <td align="right">%</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for stage7SubAnalysisEntry in stage7SubAnalysis.subAnalysisData %}
+                                    <tr>
+                                        <td align="left">{{ stage7SubAnalysisEntry.stateName }}</td>
+                                        <td align="right">{{ stage7SubAnalysisEntry.totalGL15AndAbove }}</td>
+                                        <td align="right">{{ stage7SubAnalysisEntry.percentageGL15AndAbove }}
+                                            %
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td align="right">{{ stage7SubAnalysis.overallGL15AndAbove }}</td>
+                                    <td align="right">{{ stage7SubAnalysis.overallPercentageGL15AndAbove }}
+                                        %
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="report-page-number">Page 7</div>
+
+        </div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 8 -->
+    <div class="card card-3 print-break-after">
+        <div id="stage8">
+            <!-- STAGE 8 GL7 AND ABOVE -->
+            <table
+                   class="table table-bordered table-hover report-table">
+                <thead>
+                <tr align="center">
+                    <td colspan="17" align="center" class="mda-name">
+                        {% if whichDistribution == 'single_establishment' %}
+                            {{ report.organizationName }}
+                        {% elseif whichDistribution == 'consolidated_federal_ministries' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL MINISTRIES/EXTRA MINISTERIAL DEPARTMENTS
+                        {% elseif whichDistribution == 'consolidated_federal_parastatals' %}
+                            {{ report.submissionYear }} CONSOLIDATED STATISTICS OF {{ report.totalEstablishments }} FEDERAL PARASTATALS
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                        STATISTICS
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="17" align="center">
+                        DISTRIBUTION
+                        OF {{ report.stage8.stage8GL7AndAboveData.overallCategorySubAnalysisTotal }}
+                        STAFF ON GL 07 AND ABOVE
+                    </td>
+                </tr>
+                </thead>
+            </table>
+            <div class="sub-analysis-container">
+
+                {% for stage8SubAnalysis in report.stage8.stage8GL7AndAboveData.stage8CategoryData %}
+                    <div class="stage-8-item-container">
+                        <div class="stage-8-item-content-wrapper">
+                            <div style="text-align: left;font-weight: bold;">
+                                {{ stage8SubAnalysis.zoneName }}
+                            </div>
+                            <table style="width: 100%"
+                                   class="table table-bordered table-hover report-table">
+                                <thead>
+                                <tr>
+                                    <td style="text-align: left;">STATE</td>
+                                    <td align="right">NO.</td>
+                                    <td align="right">%</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for stage8SubAnalysisEntry in stage8SubAnalysis.subAnalysisData %}
+                                    <tr>
+                                        <td align="left">{{ stage8SubAnalysisEntry.stateName }}</td>
+                                        <td align="right">{{ stage8SubAnalysisEntry.total }}</td>
+                                        <td align="right">{{ stage8SubAnalysisEntry.percentage }}%
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td align="right">{{ stage8SubAnalysis.overallTotal }}</td>
+                                    <td align="right">{{ stage8SubAnalysis.overallPercentage }}%
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- STAGE 8 GL15 AND ABOVE -->
+            <table
+                   class="table table-bordered table-hover report-table">
+                <thead>
+                <tr align="center">
+                    <td colspan="17" align="center">
+                        DISTRIBUTION
+                        OF {{ report.stage8.stage8GL15AndAboveData.overallCategorySubAnalysisTotal }}
+                        STAFF ON GL 15 AND ABOVE
+                    </td>
+                </tr>
+                </thead>
+            </table>
+            <div class="sub-analysis-container">
+
+                {% for stage8SubAnalysis in report.stage8.stage8GL15AndAboveData.stage8CategoryData %}
+                    <div class="stage-8-item-container">
+                        <div class="stage-8-item-content-wrapper">
+                            <div style="text-align: left;font-weight: bold;">
+                                {{ stage8SubAnalysis.zoneName }}
+                            </div>
+                            <table style="width: 100%"
+                                   class="table table-bordered table-hover report-table">
+                                <thead>
+                                <tr>
+                                    <td style="text-align: left;">STATE</td>
+                                    <td align="right">NO.</td>
+                                    <td align="right">%</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for stage8SubAnalysisEntry in stage8SubAnalysis.subAnalysisData %}
+                                    <tr>
+                                        <td align="left">{{ stage8SubAnalysisEntry.stateName }}</td>
+                                        <td align="right">{{ stage8SubAnalysisEntry.total }}</td>
+                                        <td align="right">{{ stage8SubAnalysisEntry.percentage }}%
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td align="right">{{ stage8SubAnalysis.overallTotal }}</td>
+                                    <td align="right">{{ stage8SubAnalysis.overallPercentage }}%
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="report-page-number">Page 8</div>
+        </div>
+    </div>
+
+    <div class="v-sep-20 do-not-print"></div>
+
+    <!-- STAGE 9 -->
+    <div class="card card-3">
+        <div class="report-wrapper">
+            <table>
+                <tr>
+                    <td valign="top">
+                        <b>N.B. Based on FCC formula:</b>
+                        <div class="v-sep-20"></div>
+                        <div class="stage-9-item-container">
+                            (1) Distribution of {{ report.stage6.overallSubAnalysisTotal }} Staff on
+                            grade 07 and above
+                            <div class="stage-9-item-content-wrapper">
+                                No state should have less than 2.5% or more than 3%.
+                                <br/>
+                                But from the distribution of staff on GL 07 and above as
+                                at {{ report.submissionYear }} page 6 refers.
+                                <br/>
+                                {{ report.stage9.stage64pt0OrMoreTotalStates }} States are grossly
+                                over-represented with their indigenes constituting 4.0% or more,
+                                <br/>
+                                while {{ report.stage9.stage63pt1to3pt9TotalStates }} States are
+                                over-represented with indigenes
+                                constituting between 3.1% to 3.9%
+                                <br/>
+                                However, only {{ report.stage9.stage62pt5to3TotalStates }} States are
+                                adequately represented with their indigenes constituting
+                                between 2.5% to 3%.
+                                <br/>
+                                In addition, it is observed
+                                that {{ report.stage9.stage61pt5to2pt4TotalStates }} States are
+                                under-represented with their indigenes
+                                constituting between 1.5% to 2.4%,
+                                <br/>
+                                while {{ report.stage9.stage6LessThan1pt5TotalStates }} States are
+                                grossly under-represented with
+                                their indigenes constituting less than 1.5%
+
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+                        <div class="v-sep-20"></div>
+
+                        <div class="stage-9-item-container">
+                            (3) Distribution of {{ report.stage7.overallSubAnalysisTotal }} Staff on
+                            grade 15 and above
+                            <div class="stage-9-item-content-wrapper">
+                                No state should have less than 2.5% or more than 3%.
+                                <br/>
+                                But from the distribution of staff on GL 15 and above as
+                                at {{ report.submissionYear }} page 7 refers.
+                                <br/>
+                                {{ report.stage9.stage74pt0OrMoreTotalStates }} States are grossly
+                                over-represented with their indigenes constituting 4.0% or more,
+                                <br/>
+                                while {{ report.stage9.stage73pt1to3pt9TotalStates }} States are
+                                over-represented with indigenes
+                                constituting between 3.1% to 3.9%
+                                <br/>
+                                However, only {{ report.stage9.stage72pt5to3TotalStates }} States are
+                                adequately represented with their indigenes constituting
+                                between 2.5% to 3%.
+                                <br/>
+                                In addition, it is observed
+                                that {{ report.stage9.stage71pt5to2pt4TotalStates }} States are
+                                under-represented with their indigenes
+                                constituting between 1.5% to 2.4%,
+                                <br/>
+                                while {{ report.stage9.stage7LessThan1pt5TotalStates }} States are
+                                grossly under-represented with
+                                their indigenes constituting less than 1.5%
+
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+                        <div class="v-sep-20"></div>
+
+                        <div class="stage-9-item-container">
+                            (3)
+                            <div class="stage-9-item-content-wrapper">
+                                If the principle is applied and adhered to, over a period of time, more
+                                states would gradually converge on the middle category
+                                (2.5% to 3%), as required by the FCC Guiding Principle.
+                                <br/>
+                                Therefore, it is expected that efforts should be made to ensure fair
+                                representation particularly at entry level by liaising with
+                                Federal Character Commission to obtain the Character Balancing Index
+                                (CBI) whenever fresh recruitments are to be made.
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+                        <div class="v-sep-20"></div>
+
+                        <div class="stage-9-item-container">
+                            (4) Number of Staff without State of Origin/Grade Level
+                            <div class="stage-9-item-content-wrapper">
+                                {{ report.stage9.totalWithoutStateOfOrigin }} Staff without State of
+                                Origin
+                                <br/>
+                                {{ report.stage9.totalWithoutGradeLevel }} Staff without Grade Level
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+                        <div class="v-sep-20 do-not-print"></div>
+
+                        <div class="report-page-number">Page 9</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="v-sep-20"></div>
+
+</div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}
+

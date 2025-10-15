@@ -1,0 +1,62 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Federal Establishment Political Post Distribution
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('fed_level_poloh_dist_consolidated') }}" class="do-not-print">
+                <div style="margin-bottom: 10px;" class="do-not-print">
+                    <select class="form-control input-14" name="searchSubmissionYear"
+                            style="display: inline-block; width: 200px;">
+                        <option value="">Choose Submission Year</option>
+                        {% for submissionYearRecord in submissionYears %}
+                            {% if submissionYearRecord.submission_year == searchSubmissionYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionYearRecord.submission_year }}" {{ selected }}>{{ submissionYearRecord.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            {% if report is not empty %}
+                <div class="do-not-print" style="width: 1300px;text-align: right; padding: 5px;margin-bottom: 20px;" >
+                    <a href="#" onclick="window.print(); return false;"
+                       class="btn btn-default btn-sm" target="_blank">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-download"></i> Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {#<li><a href="#" onclick="alert('Excel export, coming soon.'); return false;">Microsoft Excel</a></li>#}
+                            <li><a href="{{ path('export_fed_level_poloh_dist_consolidated',{submissionYear:searchSubmissionYear}) }}"
+                                target="_blank">Adobe PDF</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% include 'reporting/_fed_level_poloh_dist_consolidated.html.twig' %}
+
+        </div>
+    </div>
+{% endblock %}

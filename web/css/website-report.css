@@ -1,0 +1,99 @@
+
+body{
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-family: "Roboto", Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+}
+
+table.website-report{
+    display: inline-block;
+    border-collapse: collapse;
+    border: 1px solid #dedede;
+    background-color: #fff;
+
+    -webkit-transition: -webkit-box-shadow .25s;
+    transition: -webkit-box-shadow .25s;
+    transition: box-shadow .25s;
+    transition: box-shadow .25s, -webkit-box-shadow .25s;
+    border-radius: 2px;
+
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+table.website-report tr:nth-child(even) {
+    background-color: #EAF9E6;
+}
+
+table.website-report thead tr th{
+    color: #008c7f;
+    background-color: #333333;
+}
+
+table.website-report thead tr th{
+    color: #F2F2F2;
+    background-color: #545454;
+}
+
+table.website-report tbody tr td{
+    color: #000;
+}
+
+table.website-report tbody tr td.text-left{
+    text-align: left;
+}
+
+table.website-report tbody tr td.text-right{
+    text-align: right;
+}
+
+table.website-report thead tr th
+,table.website-report tbody tr td{
+    padding: 4px !important;
+    font-weight: 500;
+    text-align: center;
+    font-size: 11px !important;
+    border-right: 1px solid #F0F2F5;
+}
+
+table.website-report thead tr th {
+    /*padding: 1px !important;*/
+}
+
+table.website-report thead tr th
+,table.website-report tbody tr td {
+    border-bottom: 1px solid #F0F2F5;
+}
+
+table.website-report tbody tr td.highlight{
+    background-color: #545454 !important;
+    color: #fff;
+}
+
+table.website-report tbody tr td.totals {
+    background-color: #009688;
+    color: #fff;
+}
+
+table.website-report tbody tr:hover {
+    background-color: #FCEBF5 !important;
+}
+
+table.website-report tbody tr:hover td.highlight{
+    background-color: #E13D9C !important;
+}
+
+table.website-report tfoot tr td{
+    color: #F2F2F2;
+    background-color: #545454;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    padding: 5px 0;
+}
+
+table.website-report thead tr th.heading
+,table.website-report tfoot tr td.heading{
+    font-size: 18px !important;
+}

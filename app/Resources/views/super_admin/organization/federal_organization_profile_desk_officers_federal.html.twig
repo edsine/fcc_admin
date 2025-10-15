@@ -1,0 +1,140 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/body-not-white.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('fancybox/jquery.fancybox.css') }}" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    {{ organization.organizationName }}
+{% endblock %}
+{% block page_toolbar_right %}
+    {#<a class="btn btn-link close-btn" href="{{ path('federal_ministry_list') }}"><i class="fa fa-arrow-left"></i></a>#}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-3">
+
+            <div class="organization-badge-wrapper">
+                <div class="organization-badge-logo-container">
+                    <div class="organization-badge-logo-circle">
+                        {{ organization.establishmentMnemonic }}
+                    </div>
+                </div>
+                <div class="organization-badge-details">
+                    <table class="table table-striped">
+                        <tr>
+                            <td width="70" valign="top"><b>Name:</b></td>
+                            <td>{{ organization.organizationName }}</td>
+                        </tr>
+                        <tr>
+                            <td width="70" valign="top"><b>Code:</b></td>
+                            <td>{{ organization.establishmentCode }}</td>
+                        </tr>
+                        <tr><td width="70" valign="top"><b>Mnemonic:</b></td>
+                            <td>{{ organization.establishmentMnemonic }}</td>
+                        </tr>
+                        <tr>
+                            <td width="70" valign="top"><b>Type:</b></td>
+                            <td>{{ organization.establishmentTypeId }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-9">
+            <div class="organization-profile-wrapper">
+
+                <div>
+                    <ul class="nav nav-tabs with-bold-active">
+                        <li class="">
+                            <a href="{{ path('federal_organization_profile_summary' , { guid : organization.guid }) }}">
+                                Summary
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="{{ path('federal_organization_profile_desk_officers_federal' , { guid : organization.guid }) }}">
+                                Federal Desk Officer
+                            </a>
+                        </li>
+                        {#<li class="">
+                            <a href="{{ path('federal_organization_profile_desk_officers_state' , { guid : organization.guid }) }}">
+                                State Desk Officers
+                            </a>
+                        </li>#}
+                    </ul>
+                </div>
+
+                <table class="table table-bordered table-hover" style="margin-top: 20px;">
+                    <thead>
+                    <tr>
+                        <th width="40">S/N</th>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Contact Info</th>
+                        <th width="100">Status</th>
+                        <th width="50"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for record in deskOfficersFederal %}
+                        <tr>
+                            <td>{{ record.displaySerialNo }}</td>
+                            <td>{{ record.username }}</td>
+                            <td>{{ record.firstName }} {{ record.lastName }}</td>
+                            <td>{{ record.primaryPhone }}<br/>{{ record.emailAddress }}</td>
+                            <td>{{ record.status }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+                                            data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li>
+                                            <a href="#"
+                                               onclick="openFancyBox('{{ path('super_admin_reset_user_password', { guid : record.guid }) }}'); return false;">
+                                                Change Password
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('fancybox/jquery.fancybox.js') }}"></script>
+    <script>
+        function openFancyBox(url) {
+            $.fancybox.open({
+                autoSize: false,
+                width: '500',
+                height: '600',
+                href: '' + url + '',
+                type: 'iframe',
+                padding: 2,
+                helpers : {
+                    overlay : {
+                        closeClick : false
+                    }
+                }
+            });
+            return false;
+        }
+    </script>
+{% endblock %}

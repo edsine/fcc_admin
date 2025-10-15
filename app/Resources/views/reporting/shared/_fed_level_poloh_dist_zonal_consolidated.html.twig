@@ -1,0 +1,174 @@
+{% if zonalFedPolohConsolidatedReport is not empty %}
+    <div style="text-align: center;">
+        <div class="">
+            <table id="stage3"
+                   class="website-report">
+                <thead>
+                <tr>
+                    <th colspan="13" class="heading">
+                        POLITICAL OFFICE HOLDERS
+                        {#<br>
+                        {{ zonalFedPolohConsolidatedReport.submissionYear }} ({{ zonalFedPolohConsolidatedReport.totalEstablishments }} MDA Submissions)#}
+                        <br>
+                        DISTRIBUTION BY GEO-POLITICAL ZONE
+                    </th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>MINISTERS</th>
+                    <th>MIN. OF. STATE</th>
+                    <th>PERM.SEC</th>
+                    <th>CHM OF BOARD</th>
+                    <th>MEM OF BOARD</th>
+                    <th>AMBAS.</th>
+                    <th>S. ADV. TO PRES</th>
+                    <th>S. ASSI. TO PRES</th>
+                    <th>S. ASSI. TO VP</th>
+                    <th>CHIEF. EXEC.</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr align="center">
+                    <th style="text-align: left;">ZONE</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>NO.</th>
+                    <th>TOTAL</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for stage3Distribution in zonalFedPolohConsolidatedReport.stage3.stage3Data %}
+                    <tr>
+                        <td class="text-left highlight">{{ stage3Distribution.zoneName }}</td>
+                        <td>{{ stage3Distribution.totalMinisters }}</td>
+                        <td>{{ stage3Distribution.totalMinistersOfState }}</td>
+                        <td>{{ stage3Distribution.totalPermSecs }}</td>
+                        <td>{{ stage3Distribution.totalChairmen }}</td>
+                        <td>{{ stage3Distribution.totalMembers }}</td>
+                        <td>{{ stage3Distribution.totalAmbassadors }}</td>
+                        <td>{{ stage3Distribution.totalSpecialAdviserToPresident }}</td>
+                        <td>{{ stage3Distribution.totalSpecialAssistantsToThePresident }}</td>
+                        <td>{{ stage3Distribution.totalSpecialAssistantsToTheVP }}</td>
+                        <td>{{ stage3Distribution.totalChiefExecutives }}</td>
+                        <td>{{ stage3Distribution.total }}</td>
+                        <td class="text-right">{{ stage3Distribution.percentage }}%</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td class="text-left totals">TOTAL</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallMinisters }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallMinistersOfState }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallPermSecs }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallChairmen }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallMembers }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallAmbassadors }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallSpecialAdviserToThePresident }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallSpecialAssistantToThePresident }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallSpecialAssistantToTheVP }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallChiefExecutives }}</td>
+                    <td class="totals">{{ zonalFedPolohConsolidatedReport.stage3.overallTotal }}</td>
+                    <td class="text-right totals">{{ zonalFedPolohConsolidatedReport.stage3.overallPercentage }}%</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="13" class="heading">
+                        {#NOTE: This information is based on {{ zonalFedPolohConsolidatedReport.totalEstablishments }} MDA submissions
+                        in {{ zonalFedPolohConsolidatedReport.submissionYear }}#}
+
+                        NOTE: This information is as at August, 2018.
+
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div style="margin-top: 10px;display: flex; flex-wrap: wrap;align-items: center;justify-content: center;">
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;font-weight: 500;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #CDDC39;margin-right: 4px;">
+                </div>
+                MIN
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #9C27B0;margin-right: 4px;">
+                </div>
+                MIN.STATE
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #3F51B5;margin-right: 4px;">
+                </div>
+                P.SEC
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #2196F3;margin-right: 4px;">
+                </div>
+                CHM.BRD
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #00BCD4;margin-right: 4px;">
+                </div>
+                M.BRD
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #009688;margin-right: 4px;">
+                </div>
+                AMB
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #FFC107;margin-right: 4px;">
+                </div>
+                S.ADV.P
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #de8400;margin-right: 4px;">
+                </div>
+                S.ASS.P
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #7b9c55;margin-right: 4px;">
+                </div>
+                S.ASS.VP
+            </div>
+
+            <div style="display:flex;align-items: baseline;font-size: 12px;margin-right: 10px;">
+                <div style="display: inline-block;height: 12px;width: 12px;background-color: #E91E63;margin-right: 4px;">
+                </div>
+                CEO
+            </div>
+
+
+        </div>
+
+
+        <div style="margin-top: 10px;display: inline-block;">
+            <div style="display: flex; flex-wrap: wrap;">
+                {% for stage3Distribution in zonalFedPolohConsolidatedReport.stage3.stage3Data %}
+                    <div style="margin-right: 10px;">
+                        <div style="text-align: center;font-size: 12px; font-weight: 500;">{{ stage3Distribution.zoneName }}</div>
+                        <div id="chart_{{ stage3Distribution.zoneId }}"></div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}

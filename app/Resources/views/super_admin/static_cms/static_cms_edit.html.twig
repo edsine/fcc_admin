@@ -1,0 +1,93 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Edit Static Content
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('static_cms_list') }}">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-7">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {% if alertNotification.hasMessage %}
+                        <div style="margin-bottom: 30px;">
+                            <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                {% for message in alertNotification.messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('static_cms_edit', { guid: staticContent.guid }) }}"
+                          class="form-horizontal">
+                        <div class="form-group">
+                            <label for="description" class="col-sm-2 control-label text-bold">Code:</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="description" value="{{ staticContent.description }}"
+                                       class="form-control text-uppercase input-14" id="description"
+                                       placeholder="Enter Description"
+                                       autocomplete="off" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="content" class="col-sm-2 control-label text-bold">Content:</label>
+                            <div class="col-sm-10">
+                                {% if staticContent.richText == 'N' %}
+                                    <textarea class="form-control input-14 counter" rows="6" name="content" id="content"
+                                              placeholder="Enter Content"
+                                              maxlength="220">{{ staticContent.content }}</textarea>
+                                {% elseif staticContent.richText == 'Y' %}
+                                    <textarea id="is-rich-text" class="form-control input-14 counter" rows="6" name="content"
+                                              id="content">{{ staticContent.content }}</textarea>
+                                {% endif %}
+                                {{ validator.fields.field('content').html | raw }}
+                            </div>
+                        </div>
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <input type="hidden" name="is_rich_text" value="{{ staticContent.richText }}">
+                            <input type="hidden" name="guid" value="{{ staticContent.guid }}">
+                            <button type="submit" name="btn_submit" class="btn btn-info btn-sm">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-5">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('tinymce_4.5.3/tinymce/js/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            tinymce.init({
+                selector: 'textarea#is-rich-text',
+                height: 340,
+                menubar: false,
+                plugins: [
+                    'lists'
+                ],
+                toolbar: 'undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist'
+            });
+        });
+
+    </script>
+{% endblock %}

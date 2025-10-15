@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+
+    {#<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Varela+Round" rel="stylesheet">#}
+
+    <link rel="stylesheet" href="{{ asset('resources/default/open_data/bootstrap/css/bootstrap.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('resources/default/open_data/fonts/font-awesome.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('resources/default/open_data/css/style.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('resources/default/open_data/css/user.css') }}" type="text/css">
+
+    <link rel="stylesheet" href="{{ asset('select2-4.0.3/dist/css/select2.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('resources/vendor/jquery-growl/stylesheets/jquery.growl.css') }}" type="text/css">
+
+
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('resources/custom/open_data/css/open-data.css') }}" type="text/css">
+
+    {% block stylesheets %}{% endblock %}
+
+    <title>Federal Character Commission | Open Data Portal</title>
+
+</head>
+<body>
+<div class="page {% block page_type %}home-page{% endblock %}">
+    <!--*********************************************************************************************************-->
+    <!--************ HERO ***************************************************************************************-->
+    <!--*********************************************************************************************************-->
+    <header class="hero">
+        <div class="hero-wrapper">
+            <!--============ Secondary Navigation ===============================================================-->
+            <div class="secondary-navigation">
+                <div class="container">
+                    <ul class="right">
+                        <li>
+                            <span>
+                                <i class="fa fa-envelope"></i> info@federalcharacter.gov.ng
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <i class="fa fa-phone"></i> +234(0) 805-237-4070
+                            </span>
+                        </li>
+                    </ul>
+                    <!--end left-->
+
+                    <!--end right-->
+                </div>
+                <!--end container-->
+            </div>
+            <!--============ End Secondary Navigation ===========================================================-->
+            <!--============ Main Navigation ====================================================================-->
+            <div class="main-navigation">
+                <div class="container">
+                    <nav class="navbar navbar-expand-lg navbar-light justify-content-between">
+                        <a class="navbar-brand" href="{{ path('open_data') }}">
+                            <img src="{{ asset('resources/custom/open_data/img/open-data-logo-text.png') }}" alt="">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbar">
+                            <!--Main navigation list-->
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('open_data') }}" class="btn btn-secondary text-caps btn-rounded btn-framed">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="http://federalcharacter.gov.ng/" class="btn btn-secondary text-caps btn-rounded btn-framed">
+                                        Commissions Website
+                                    </a>
+                                </li>
+                            </ul>
+                            <!--Main navigation list-->
+                        </div>
+                        <!--end navbar-collapse-->
+                        {% block search_toggle %}{% endblock %}
+                    </nav>
+                    <!--end navbar-->
+                </div>
+                <!--end container-->
+            </div>
+            <!--============ End Main Navigation ================================================================-->
+            <!--============ Page Title =========================================================================-->
+            {% block page_title %}{% endblock %}
+
+            <!--============ End Page Title =====================================================================-->
+            <!--============ Hero Form ==========================================================================-->
+            {% block hero_form %}{% endblock %}
+            <!--============ End Hero Form ======================================================================-->
+
+            {% block sub_page_title %}{% endblock %}
+
+            <div class="background">
+                <div class="background-image original-size">
+                    {% block bg_image %}
+                    <img src="{{ asset('resources/custom/open_data/img/fcc-image-w-1.jpg') }}" alt="">
+                    {% endblock %}
+                </div>
+                <!--end background-image-->
+            </div>
+            <!--end background-->
+        </div>
+        <!--end hero-wrapper-->
+    </header>
+    <!--end hero-->
+
+    <!--*********************************************************************************************************-->
+    <!--************ CONTENT ************************************************************************************-->
+    <!--*********************************************************************************************************-->
+    <section class="content">
+        <section class="block">
+            <div class="{% block main_container %}container{% endblock %}">
+
+                {% block main %}{% endblock %}
+
+            </div>
+            <!--end container-->
+        </section>
+        <!--end block-->
+    </section>
+    <!--end content-->
+
+    <!--*********************************************************************************************************-->
+    <!--************ FOOTER *************************************************************************************-->
+    <!--*********************************************************************************************************-->
+    <footer class="footer">
+        <div class="wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5">
+                        <a href="{{ path('open_data') }}" class="brand">
+                            <img src="{{ asset('resources/custom/open_data/img/open-data-logo.png') }}" alt="" height="50">
+                        </a>
+                        <p>
+                            The Federal Character Commission (FCC) is a Federal Executive body established by Act No 34 of 1996 to
+                            implement and enforce the Federal Character Principle of fairness and equity in the distribution of public posts and
+                            socio-economic infrastructures among the various federating units of the Federal Republic of Nigeria
+                        </p>
+                    </div>
+                    <!--end col-md-3-->
+                    <div class="col-md-4">
+                        <h2>Contact</h2>
+                        <address>
+                            <figure>
+                                Near Abuja Shopping Mall, Maputo St, Zone 3,<br>
+                                FCT-Abuja,<br>
+                                Nigeria.
+                            </figure>
+                            <br>
+                            <strong>Email:</strong> <a href="#">info@federalcharacter.gov.ng</a>
+                            <br>
+                            <strong>Phone: </strong> +234(0) 805-237-4070
+                            <br>
+                            <br>
+                            <a href="http://federalcharacter.gov.ng/contact-us/" class="btn btn-primary text-caps btn-framed">Contact Us</a>
+                        </address>
+                    </div>
+                    <!--end col-md-4-->
+                </div>
+                <!--end row-->
+            </div>
+            <div class="background">
+                <div class="background-image original-size">
+                    <img src="{{ asset('resources/custom/open_data/img/fcc-image-w-2.jpg') }}" alt="">
+                </div>
+                <!--end background-image-->
+            </div>
+            <!--end background-->
+        </div>
+    </footer>
+    <!--end footer-->
+
+</div>
+<!--end page-->
+
+<div id="loading-overlay">
+    <div class="spinner-wrapper">
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
+                        stroke-miterlimit="10"></circle>
+            </svg>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('resources/default/open_data/js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('resources/default/open_data/js/popper.min.js') }}"></script>
+<script src="{{ asset('resources/default/open_data/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('resources/default/open_data/js/masonry.pkgd.min.js') }}"></script>
+<script src="{{ asset('resources/default/open_data/js/icheck.min.js') }}"></script>
+<script src="{{ asset('resources/default/open_data/js/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('resources/default/open_data/js/custom.js') }}"></script>
+
+<script src="{{ asset('js/jquery.sparkline.min.js') }}"></script>
+
+<script src="{{ asset('select2-4.0.3/dist/js/select2.min.js') }}"></script>
+<script src="{{ asset('resources/vendor/jquery-growl/javascripts/jquery.growl.js') }}"></script>
+
+<script src="{{ asset('resources/custom/open_data/js/open-data.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
+
+</body>
+</html>

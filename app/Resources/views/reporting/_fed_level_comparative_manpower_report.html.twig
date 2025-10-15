@@ -1,0 +1,61 @@
+{% if report is not empty %}
+    <div id="print-panel" class="print-portrait-abc" style="width: 930px;margin-top: 20px;">
+        <!-- STAGE 1 -->
+        <div class="card card-3 print-break-after">
+            <table id="stage1" style="width: 100%;"
+                   class="table table-bordered table-hover report-table">
+                <tbody>
+                <tr align="center">
+                    <td colspan="{{ (report.overallYearTotals | length) + 1 }}" align="center" style="font-size: 15px !important;">
+                        CONSOLIDATED MANPOWER STATISTICS (GL. 01-17) IN
+                        <a href="#" style="color: #00f;text-decoration: underline;"
+                           onclick="openFancyBox('{{ path('affected_fed_level_comparative_mda_data', { startYear : report.startYear , endYear : report.endYear }) }}');return false;">
+                            {{ report.totalOrganizationsConsidered }} CORE FEDERAL
+                        </a>
+                         CIVIL SERVICE ESTABLISHMENTS
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="{{ (report.overallYearTotals | length) + 1 }}" align="center" style="font-size: 14px !important;">
+                        COMPARATIVE DATA ON STAFF DISTRIBUTION AMONGST STATES AND FCT FOR
+                        YEAR {{ report.startYear }} - {{ report.endYear }}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;"></td>
+                    {% for yearKey in report.overallYearTotals|keys %}
+                        <td>{{ yearKey }}</td>
+                    {% endfor %}
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;">STATE</td>
+                    {% for yearKey in report.overallYearTotals|keys %}
+                        <td>NO.</td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+                <tbody>
+                {% for stateEntry in report.stateEntries %}
+                    <tr>
+                        <td>{{ stateEntry.stateName }}</td>
+                        {% for yearKey in report.overallYearTotals|keys %}
+                            <td align="center">{{ stateEntry.yearEntries[yearKey].percentage }}%</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>TOTAL</td>
+                    {% for yearKey in report.overallYearTotals|keys %}
+                        <td align="center">{{ report.overallYearTotals[yearKey].overallPercentage }}%</td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="v-sep-20"></div>
+
+    </div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}

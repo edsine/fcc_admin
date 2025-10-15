@@ -1,0 +1,18 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ asset('css/website-report.css') }}"/>
+    {#<link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>#}
+</head>
+<body>
+
+{% include 'reporting/shared/_fed_level_poloh_dist_zonal_consolidated.html.twig' %}
+
+
+<script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+<script src="{{ asset('js/jquery.sparkline.min.js') }}"></script>
+
+{% include 'reporting/shared/_fed_level_poloh_dist_zonal_consolidated_js.html.twig' %}
+
+</body>
+</html>

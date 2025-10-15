@@ -1,0 +1,157 @@
+{% extends 'public.base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>
+
+    <style type="text/css">
+        .flat-table {
+            margin-bottom: 20px;
+            border-collapse:collapse;
+            font-family: 'Lato', Calibri, Arial, sans-serif;
+            border: none;
+            border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+        }
+        .flat-table th, .flat-table td {
+            box-shadow: inset 0 -1px rgba(0,0,0,0.25),
+            inset 0 1px rgba(0,0,0,0.25);
+        }
+        .flat-table th {
+            font-weight: normal;
+            -webkit-font-smoothing: antialiased;
+            padding: 1em;
+            color: rgba(0,0,0,0.45);
+            text-shadow: 0 0 1px rgba(0,0,0,0.1);
+            font-size: 1.5em;
+        }
+        .flat-table td {
+            color: #f7f7f7;
+            padding: 0.7em 1em 0.7em 1.15em;
+            text-shadow: 0 0 1px rgba(255,255,255,0.1);
+            font-size: 1.4em;
+        }
+        .flat-table tr {
+            -webkit-transition: background 0.3s, box-shadow 0.3s;
+            -moz-transition: background 0.3s, box-shadow 0.3s;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .flat-table-1 {
+            background: #336ca6;
+        }
+        .flat-table-1 tr:hover {
+            background: rgba(0,0,0,0.19);
+        }
+        .flat-table-2 tr:hover {
+            background: rgba(0,0,0,0.1);
+        }
+        .flat-table-2 {
+            background: #f06060;
+        }
+        .flat-table-3 {
+            background: #52be7f;
+        }
+        .flat-table-3 tr:hover {
+            background: rgba(0,0,0,0.1);
+        }
+    </style>
+{% endblock %}
+
+{#{% block page_toolbar_left %}
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}#}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+
+            <form method="post" action="{{ path('public_vacancy_list') }}"
+                  class="form-inline">
+                <div class="form-group">
+                    <select class="form-control input-sm input-14" name="search_organization" style="padding: 8px;width: 250px;">
+                        <option value="">Choose Organization</option>
+                        {% for organization in organizations %}
+                            {% if organization.id == searchFilter.organizationId %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ organization.id }}" {{ selected }}>{{ organization.organization_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {#<div class="form-group">
+                    <select class="form-control input-14" name="searchSubmissionYear">
+                        <option value="">Choose Submission Year</option>
+                        {% for submissionYearRecord in submissionYears %}
+                            {% if submissionYearRecord.submission_year == searchSubmissionYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionYearRecord.submission_year }}" {{ selected }}>{{ submissionYearRecord.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>#}
+
+                <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                    Search <i class="fa fa-search"></i>
+                </button>
+                {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                    <i class="fa fa-refresh"></i>
+                </button>#}
+
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="v-sep-20"></div>
+            <table class="flat-table flat-table-3">
+                <thead>
+                <tr>
+                    <th width="40">S/N</th>
+                    <th>Organization</th>
+                    <th>Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th width="50"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for record in records %}
+                    <tr>
+                        <td>{{ record.displaySerialNo }}</td>
+                        <td>{{ record.organizationName }}</td>
+                        <td>{{ record.title }}</td>
+                        <td>{{ record.startDate }}</td>
+                        <td>{{ record.endDate }}</td>
+                        <td>
+                            <a href="#"
+                               class="btn btn-xs btn-primary" title="View">
+                                <i class="fa fa-folder-open"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">No records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

@@ -1,0 +1,829 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    State Establishment Career Post Distribution
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('state_level_career_dist_single_establishment') }}">
+                <div style="margin-bottom: 10px;">
+                    <select class="form-control input-14" name="searchOrganization"
+                            style="display: inline-block; width: 300px;">
+                        <option value="">Choose Organization</option>
+                        {% for organization in organizations %}
+                            {% if organization.id == searchOrganization %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ organization.id }}" {{ selected }}>{{ organization.organization_name }}</option>
+                        {% endfor %}
+                    </select>
+                    {#<input type="text" class="form-control input-14" name="searchSubmissionYear"
+                           value="{{ searchSubmissionYear }}"
+                           placeholder="Submission Year"
+                           style="width: 150px;display: inline-block;margin-left: 20px;" autocomplete="off">#}
+
+                    <select class="form-control input-14" name="searchSubmissionYear"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Submission Year</option>
+                        {% for submissionYearRecord in submissionYears %}
+                            {% if submissionYearRecord.submission_year == searchSubmissionYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionYearRecord.submission_year }}" {{ selected }}>{{ submissionYearRecord.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+
+
+                {% if report is not empty %}
+                    <div id="print-panel" class="print-landscape" style="margin-top: 20px;">
+                        <!-- STAGE 1 -->
+                        <div class="card card-3">
+                            <table id="stage1" style="width: 1300px;"
+                                   class="table table-bordered table-hover report-table">
+                                <thead>
+                                <tr align="center">
+                                    <th colspan="21" align="center">{{ report.organizationName }}</th>
+                                </tr>
+                                <tr align="center">
+                                    <th colspan="21" align="center">{{ report.submissionYear }} MANPOWER STATISTICS</th>
+                                </tr>
+                                <tr align="center">
+                                    <th colspan="21" align="center">
+                                        SUMMARY OF STAFF DISTRIBUTION (GL 01 - 17+ ) BY LGA OF ORIGIN AS
+                                        AT {{ report.submissionYear }}
+                                    </th>
+                                </tr>
+                                <tr align="center">
+                                    <th>&nbsp;</th>
+                                    <th colspan="18" align="center">GL</th>
+                                    <th>&nbsp;</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                                <tr align="center">
+                                    <th style="text-align: left;">LGA</th>
+                                    <th>01</th>
+                                    <th>02</th>
+                                    <th>03</th>
+                                    <th>04</th>
+                                    <th>05</th>
+                                    <th>06</th>
+                                    <th>07</th>
+                                    <th>08</th>
+                                    <th>09</th>
+                                    <th>10</th>
+                                    <th>11</th>
+                                    <th>12</th>
+                                    <th>13</th>
+                                    <th>14</th>
+                                    <th>15</th>
+                                    <th>16</th>
+                                    <th>17</th>
+                                    <th>CSLD</th>
+                                    <th align="right">TOTAL</th>
+                                    <th align="right">%</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for stage1Distribution in report.stage1.stage1Data %}
+                                    <tr>
+                                        <td>{{ stage1Distribution.lgaName }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL1 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL2 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL3 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL4 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL5 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL6 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL7 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL8 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL9 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL10 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL11 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL12 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL13 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL14 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL15 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL16 }}</td>
+                                        <td align="right">{{ stage1Distribution.totalGL17 }}</td>
+                                        <td align="right">{{ stage1Distribution.csld }}</td>
+                                        <td align="right">{{ stage1Distribution.total }}</td>
+                                        <td align="right">{{ stage1Distribution.percentage }}%</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td align="right">{{ report.stage1.overallGl1 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl2 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl3 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl4 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl5 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl6 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl7 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl8 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl9 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl10 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl11 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl12 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl13 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl14 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl15 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl16 }}</td>
+                                    <td align="right">{{ report.stage1.overallGl17 }}</td>
+                                    <td align="right">{{ report.stage1.overallCsld }}</td>
+                                    <td align="right">{{ report.stage1.overallTotal }}</td>
+                                    <td align="right">{{ report.stage1.overallPercentage }}%</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <!-- STAGE 2 -->
+                        <div class="card card-3">
+                            <table id="stage2" style="width: 1300px;"
+                                   class="table table-bordered table-hover report-table">
+                                <thead>
+                                <tr align="center">
+                                    <th colspan="17" align="center">{{ report.organizationName }}</th>
+                                </tr>
+                                <tr align="center">
+                                    <th colspan="17" align="center">{{ report.submissionYear }} MANPOWER STATISTICS</th>
+                                </tr>
+                                <tr align="center">
+                                    <th colspan="17" align="center">
+                                        TOTAL STAFF DISTRIBUTION (GL 01 - 17+) BY LGA OF ORIGIN AND CATEGORY AS
+                                        AT {{ report.submissionYear }}
+                                    </th>
+                                </tr>
+                                <tr align="center">
+                                    <th>&nbsp;</th>
+                                    <th colspan="14" align="center">GL</th>
+                                    <th>&nbsp;</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                                <tr align="center">
+                                    <th style="text-align: left;">LGA</th>
+                                    <th>01-04</th>
+                                    <th>%</th>
+                                    <th>05-07</th>
+                                    <th>%</th>
+                                    <th>TOTAL<br/>01-07</th>
+                                    <th>%<br/>01-07</th>
+                                    <th>08-10</th>
+                                    <th>%</th>
+                                    <th>11-14</th>
+                                    <th>%</th>
+                                    <th>15+</th>
+                                    <th>%</th>
+                                    <th>TOTAL<br/>08-15+</th>
+                                    <th>%<br/>08-15+</th>
+                                    <th align="right">GRAND<br/>TOTAL</th>
+                                    <th align="right">%</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for stage2Distribution in report.stage2.stage2Data %}
+                                    <tr>
+                                        <td>{{ stage2Distribution.lgaName }}</td>
+                                        <td align="right">{{ stage2Distribution.totalGL1to4 }}</td>
+                                        <td align="right">{{ stage2Distribution.percentageGL1to4 }}%</td>
+                                        <td align="right">{{ stage2Distribution.totalGL5to7 }}</td>
+                                        <td align="right">{{ stage2Distribution.percentageGL5to7 }}%</td>
+                                        <td align="right">{{ stage2Distribution.totalGL1to7 }}</td>
+                                        <td align="right">{{ stage2Distribution.percentageGL1to7 }}%</td>
+                                        <td align="right">{{ stage2Distribution.totalGL8to10 }}</td>
+                                        <td align="right">{{ stage2Distribution.percentageGL8to10 }}%</td>
+                                        <td align="right">{{ stage2Distribution.totalGL11to14 }}</td>
+                                        <td align="right">{{ stage2Distribution.percentageGL11to14 }}%</td>
+                                        <td align="right">{{ stage2Distribution.totalGL15AndAbove }}</td>
+                                        <td align="right">{{ stage2Distribution.percentageGL15AndAbove }}%</td>
+                                        <td align="right">{{ stage2Distribution.totalGL8to15AndAbove }}</td>
+                                        <td align="right">{{ stage2Distribution.percentageGL8to15AndAbove }}%</td>
+                                        <td align="right">{{ stage2Distribution.total }}</td>
+                                        <td align="right">{{ stage2Distribution.percentage }}%</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td align="right">{{ report.stage2.overallGL1to4 }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentageGL1to4 }}%</td>
+                                    <td align="right">{{ report.stage2.overallGL5to7 }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentageGL5to7 }}%</td>
+                                    <td align="right">{{ report.stage2.overallGL1to7 }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentageGL1to7 }}%</td>
+                                    <td align="right">{{ report.stage2.overallGL8to10 }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentageGL8to10 }}%</td>
+                                    <td align="right">{{ report.stage2.overallGL11to14 }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentageGL11to14 }}%</td>
+                                    <td align="right">{{ report.stage2.overallGL15AndAbove }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentageGL15AndAbove }}%</td>
+                                    <td align="right">{{ report.stage2.overallGL8to15AndAbove }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentageGL8to15AndAbove }}%</td>
+                                    <td align="right">{{ report.stage2.overallTotal }}</td>
+                                    <td align="right">{{ report.stage2.overallPercentage }}%</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <!-- STAGE 3 -->
+                        <div class="card card-3">
+                            <table style="width: 100%;"
+                                   class="table table-bordered table-hover report-table">
+                                <thead>
+                                <tr align="center">
+                                    <th colspan="17" align="center">{{ report.organizationName }}</th>
+                                </tr>
+                                </thead>
+                            </table>
+                            <div id="stage4" style="width: 1300px;display: flex;justify-content: center;">
+                                <div id="stage3-chart" style="width: 1100px;height: 600px;"></div>
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <!-- STAGE 4 -->
+                        <div class="card card-3">
+                            <div id="stage4" style="width: 1300px;">
+                                <table style="width: 1300px;"
+                                       class="table table-bordered table-hover report-table">
+                                    <thead>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.organizationName }}</th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                                            STATISTICS
+                                        </th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">
+                                            TOTAL STAFF DISTRIBUTION (GL 01-07) BY LGA OF ORIGIN WITHIN DISTRICT AND BY
+                                            CATEGORY AS AT {{ report.submissionYear }}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="sub-analysis-container">
+
+                                    {% for stage4SubAnalysis in report.stage4.stage4Data %}
+                                        <div class="stage-4-to-5-item-container">
+                                            <table style="width: 100%"
+                                                   class="table table-bordered table-hover report-table">
+                                                <thead>
+                                                <tr align="center">
+                                                    <th style="text-align: left;">{{ stage4SubAnalysis.senatorialDistrictName }}</th>
+                                                    <th>01-03</th>
+                                                    <th>%</th>
+                                                    <th>04-05</th>
+                                                    <th>%</th>
+                                                    <th>06-07</th>
+                                                    <th>%</th>
+                                                    <th align="right">TOTAL</th>
+                                                    <th align="right">%</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for stage4SubAnalysisEntry in stage4SubAnalysis.subAnalysisData %}
+                                                    <tr>
+                                                        <td>{{ stage4SubAnalysisEntry.lgaName }}</td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.totalGL1to3 }}</td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.percentageGL1to3 }}
+                                                            %
+                                                        </td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.totalGL4to5 }}</td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.percentageGL4to5 }}
+                                                            %
+                                                        </td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.totalGL6to7 }}</td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.percentageGL6to7 }}
+                                                            %
+                                                        </td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.total }}</td>
+                                                        <td align="right">{{ stage4SubAnalysisEntry.percentage }}%
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                <tr>
+                                                    <td>TOTAL</td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallGL1to3 }}</td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallPercentageGL1to3 }}
+                                                        %
+                                                    </td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallGL4to5 }}</td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallPercentageGL4to5 }}
+                                                        %
+                                                    </td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallGL6to7 }}</td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallPercentageGL6to7 }}
+                                                        %
+                                                    </td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallTotal }}</td>
+                                                    <td align="right">{{ stage4SubAnalysis.overallPercentage }}%
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <!-- STAGE 5 -->
+                        <div class="card card-3">
+                            <div id="stage5" style="width: 1300px;">
+                                <table style="width: 1300px;"
+                                       class="table table-bordered table-hover report-table">
+                                    <thead>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.organizationName }}</th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                                            STATISTICS
+                                        </th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">
+                                            TOTAL STAFF DISTRIBUTION(GL 08 - 15+) BY LGA WITHIN DISTRICT AND BY CATEGORY
+                                            AS AT {{ report.submissionYear }}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="sub-analysis-container">
+
+                                    {% for stage5SubAnalysis in report.stage5.stage5Data %}
+                                        <div class="stage-4-to-5-item-container">
+                                            <table style="width: 100%"
+                                                   class="table table-bordered table-hover report-table">
+                                                <thead>
+                                                <tr align="center">
+                                                    <th style="text-align: left;">{{ stage5SubAnalysis.senatorialDistrictName }}</th>
+                                                    <th>08-10</th>
+                                                    <th>%</th>
+                                                    <th>12-14</th>
+                                                    <th>%</th>
+                                                    <th>15+</th>
+                                                    <th>%</th>
+                                                    <th align="right">TOTAL</th>
+                                                    <th align="right">%</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for stage5SubAnalysisEntry in stage5SubAnalysis.subAnalysisData %}
+                                                    <tr>
+                                                        <td>{{ stage5SubAnalysisEntry.lgaName }}</td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.totalGL8to10 }}</td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.percentageGL8to10 }}
+                                                            %
+                                                        </td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.totalGL12to14 }}</td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.percentageGL12to14 }}
+                                                            %
+                                                        </td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.totalGL15AndAbove }}</td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.percentageGL15AndAbove }}
+                                                            %
+                                                        </td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.total }}</td>
+                                                        <td align="right">{{ stage5SubAnalysisEntry.percentage }}%
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                <tr>
+                                                    <td>TOTAL</td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallGL8to10 }}</td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallPercentageGL8to10 }}
+                                                        %
+                                                    </td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallGL12to14 }}</td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallPercentageGL12to14 }}
+                                                        %
+                                                    </td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallGL15AndAbove }}</td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallPercentageGL15AndAbove }}
+                                                        %
+                                                    </td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallTotal }}</td>
+                                                    <td align="right">{{ stage5SubAnalysis.overallPercentage }}%
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <!-- STAGE 6 -->
+                        <div class="card card-3">
+                            <div id="stage6" style="width: 1300px;">
+                                <table style="width: 1300px;"
+                                       class="table table-bordered table-hover report-table">
+                                    <thead>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.organizationName }}</th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                                            STATISTICS
+                                        </th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">
+                                            DISTRIBUTION OF {{ report.stage6.overallSubAnalysisTotal }} STAFF ON GL 08
+                                            AND ABOVE
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="sub-analysis-container">
+
+                                    {% for stage6SubAnalysis in report.stage6.stage6Data %}
+                                        <div class="stage-6-to-7-item-container">
+                                            <div class="stage-6-to-7-item-content-wrapper">
+                                                <div style="text-align: center;font-weight: bold;">
+                                                    LGA whose indigenes constitute <br/>
+                                                    {{ stage6SubAnalysis.subAnalysisTitle }}
+                                                </div>
+                                                <table style="width: 100%"
+                                                       class="table table-bordered table-hover report-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="text-align: left;">LGA</th>
+                                                        <th align="right">NO.</th>
+                                                        <th align="right">%</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for stage6SubAnalysisEntry in stage6SubAnalysis.subAnalysisData %}
+                                                        <tr>
+                                                            <td align="left">{{ stage6SubAnalysisEntry.lgaName }}</td>
+                                                            <td align="right">{{ stage6SubAnalysisEntry.totalGL8AndAbove }}</td>
+                                                            <td align="right">{{ stage6SubAnalysisEntry.percentageGL8AndAbove }}
+                                                                %
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td>TOTAL</td>
+                                                        <td align="right">{{ stage6SubAnalysis.overallGL8AndAbove }}</td>
+                                                        <td align="right">{{ stage6SubAnalysis.overallPercentageGL8AndAbove }}
+                                                            %
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <!-- STAGE 7 -->
+                        <div class="card card-3">
+                            <div id="stage7" style="width: 1300px;">
+                                <table style="width: 1300px;"
+                                       class="table table-bordered table-hover report-table">
+                                    <thead>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.organizationName }}</th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                                            STATISTICS
+                                        </th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">
+                                            DISTRIBUTION OF {{ report.stage7.overallSubAnalysisTotal }} STAFF ON GL 15
+                                            AND ABOVE
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="sub-analysis-container">
+
+                                    {% for stage7SubAnalysis in report.stage7.stage7Data %}
+                                        <div class="stage-6-to-7-item-container">
+                                            <div class="stage-6-to-7-item-content-wrapper">
+                                                <div style="text-align: center;font-weight: bold;">
+                                                    LGA whose indigenes constitute <br/>
+                                                    {{ stage7SubAnalysis.subAnalysisTitle }}
+                                                </div>
+                                                <table style="width: 100%"
+                                                       class="table table-bordered table-hover report-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="text-align: left;">STATE</th>
+                                                        <th align="right">NO.</th>
+                                                        <th align="right">%</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for stage7SubAnalysisEntry in stage7SubAnalysis.subAnalysisData %}
+                                                        <tr>
+                                                            <td align="left">{{ stage7SubAnalysisEntry.lgaName }}</td>
+                                                            <td align="right">{{ stage7SubAnalysisEntry.totalGL15AndAbove }}</td>
+                                                            <td align="right">{{ stage7SubAnalysisEntry.percentageGL15AndAbove }}
+                                                                %
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td>TOTAL</td>
+                                                        <td align="right">{{ stage7SubAnalysis.overallGL15AndAbove }}</td>
+                                                        <td align="right">{{ stage7SubAnalysis.overallPercentageGL15AndAbove }}
+                                                            %
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <!-- STAGE 8 -->
+                        <div class="card card-3">
+                            <div id="stage8" style="width: 1300px;">
+                                <!-- STAGE 8 GL7 AND ABOVE -->
+                                <table style="width: 1300px;"
+                                       class="table table-bordered table-hover report-table">
+                                    <thead>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.organizationName }}</th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">{{ report.submissionYear }} MANPOWER
+                                            STATISTICS
+                                        </th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">
+                                            DISTRIBUTION
+                                            OF {{ report.stage8.stage8GL8AndAboveData.overallCategorySubAnalysisTotal }}
+                                            STAFF ON GL 08 AND ABOVE
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="sub-analysis-container">
+
+                                    {% for stage8SubAnalysis in report.stage8.stage8GL8AndAboveData.stage8CategoryData %}
+                                    <div class="stage-8-item-container">
+                                        <div class="stage-8-item-content-wrapper">
+                                                <div style="text-align: left;font-weight: bold;">
+                                                    {{ stage8SubAnalysis.senatorialDistrictName }}
+                                                </div>
+                                                <table style="width: 100%"
+                                                       class="table table-bordered table-hover report-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="text-align: left;">LGA</th>
+                                                        <th align="right">NO.</th>
+                                                        <th align="right">%</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for stage8SubAnalysisEntry in stage8SubAnalysis.subAnalysisData %}
+                                                        <tr>
+                                                            <td align="left">{{ stage8SubAnalysisEntry.lgaName }}</td>
+                                                            <td align="right">{{ stage8SubAnalysisEntry.total }}</td>
+                                                            <td align="right">{{ stage8SubAnalysisEntry.percentage }}%
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td>TOTAL</td>
+                                                        <td align="right">{{ stage8SubAnalysis.overallTotal }}</td>
+                                                        <td align="right">{{ stage8SubAnalysis.overallPercentage }}%
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                                <!-- STAGE 8 GL15 AND ABOVE -->
+                                <table style="width: 1300px;"
+                                       class="table table-bordered table-hover report-table">
+                                    <thead>
+                                    <tr align="center">
+                                        <th colspan="17" align="center">
+                                            DISTRIBUTION
+                                            OF {{ report.stage8.stage8GL15AndAboveData.overallCategorySubAnalysisTotal }}
+                                            STAFF ON GL 15 AND ABOVE
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="sub-analysis-container">
+
+                                    {% for stage8SubAnalysis in report.stage8.stage8GL15AndAboveData.stage8CategoryData %}
+                                    <div class="stage-8-item-container">
+                                        <div class="stage-8-item-content-wrapper">
+                                                <div style="text-align: left;font-weight: bold;">
+                                                    {{ stage8SubAnalysis.senatorialDistrictName }}
+                                                </div>
+                                                <table style="width: 100%"
+                                                       class="table table-bordered table-hover report-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="text-align: left;">LGA</th>
+                                                        <th align="right">NO.</th>
+                                                        <th align="right">%</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for stage8SubAnalysisEntry in stage8SubAnalysis.subAnalysisData %}
+                                                        <tr>
+                                                            <td align="left">{{ stage8SubAnalysisEntry.lgaName }}</td>
+                                                            <td align="right">{{ stage8SubAnalysisEntry.total }}</td>
+                                                            <td align="right">{{ stage8SubAnalysisEntry.percentage }}%
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td>TOTAL</td>
+                                                        <td align="right">{{ stage8SubAnalysis.overallTotal }}</td>
+                                                        <td align="right">{{ stage8SubAnalysis.overallPercentage }}%
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                    </div>
+                {% else %}
+                    {#<span class="text-warning">No Report Found.</span>#}
+                {% endif %}
+
+
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.barRenderer.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.categoryAxisRenderer.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.pointLabels.js') }}"></script>
+
+    {% if report is not empty and report.stage3 is not empty %}
+        <script>
+            $(document).ready(function () {
+
+                var gl_01_to_04 = {{ report.stage3.stage3Data[0] }};
+                var gl_05_to_07 = {{ report.stage3.stage3Data[1] }};
+                var gl_08_to_10 = {{ report.stage3.stage3Data[2] }};
+                var gl_11_to_14 = {{ report.stage3.stage3Data[3] }};
+                var gl_15_And_Above = {{ report.stage3.stage3Data[4] }};
+
+                var ticks = {{ report.stage3.xAxisLabels|raw }};
+                //console.log(ticks);
+
+                plot3 = $.jqplot('stage3-chart', [gl_01_to_04, gl_05_to_07, gl_08_to_10, gl_11_to_14, gl_15_And_Above], {
+                    // Tell the plot to stack the bars.
+                    title: 'STAFF DISTRIBUTION BY LGA OF ORIGIN AND BY CATEGORY',
+                    stackSeries: true,
+                    captureRightClick: true,
+                    seriesDefaults: {
+                        renderer: $.jqplot.BarRenderer,
+                        rendererOptions: {
+                            // Put a 30 pixel margin between bars.
+                            barMargin: 10,
+                            // Highlight bars when mouse button pressed.
+                            // Disables default highlighting on mouse over.
+                            highlightMouseDown: true
+                        },
+                        pointLabels: {show: false}
+                    },
+                    series: [
+                        {label: '01-04'},
+                        {label: '05-07'},
+                        {label: '08-10'},
+                        {label: '11-14'},
+                        {label: '15+'}
+                    ],
+                    seriesColors: ["#9999FF", "#993366", "#FFFFCC", "#CCFFFF", "#660066"],
+                    grid: {
+                        background: '#C0C0C0'
+                    },
+                    axes: {
+                        xaxis: {
+                            renderer: $.jqplot.CategoryAxisRenderer,
+                            ticks: ticks,
+                            tickOptions: {
+                                angle: -30
+                            },
+                            tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                            label: 'LGA',
+                            labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+                        },
+                        yaxis: {
+                            // Don't pad out the bottom of the data range.  By default,
+                            // axes scaled as if data extended 10% above and below the
+                            // actual range to prevent data points right on grid boundaries.
+                            // Don't want to do that here.
+                            //renderer: $.jqplot.LogAxisRenderer,
+                            padMin: 0,
+                            label: 'NO. OF STAFF',
+                            labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        location: 'e',
+                        placement: 'outside'
+                    }
+                });
+                // Bind a listener to the "jqplotDataClick" event.  Here, simply change
+                // the text of the info3 element to show what series and ponit were
+                // clicked along with the data for that point.
+                /*$('#stage3-chart').bind('jqplotDataClick',
+                 function (ev, seriesIndex, pointIndex, data) {
+                 $('#info3').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+                 }
+                 );*/
+
+            });
+        </script>
+    {% endif %}
+
+
+{% endblock %}

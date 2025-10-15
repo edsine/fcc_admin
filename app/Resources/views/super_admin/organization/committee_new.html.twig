@@ -1,0 +1,144 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Add Committee
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('committee_list') }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-5">
+
+            <div class="panel- panel-default">
+                <div class="panel-body-">
+
+                    {% if alertNotification.hasMessage %}
+                        <div style="margin-bottom: 30px;">
+                            <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                {% for message in alertNotification.messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('committee_new') }}" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="committee-name" class="col-sm-3 control-label">
+                                Description:
+                                <span class="required-field">*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="committee_name" value="{{ committee.name }}"
+                                       class="form-control input-14" id="committee-name" placeholder="Enter Description"
+                                       autocomplete="off">
+                                {{ validator.fields.field('committee_name').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="committee_chairman" class="control-label col-sm-3 label-left">
+                                Chairman:
+                                <span class="required-field">*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <select id="committee_chairman" name="committee_chairman"
+                                        class="form-control input-14 select-2">
+                                    <option value="">Choose Chairman</option>
+                                    {% for staff in fccCommissioners %}
+                                        {% if staff.id == committee.chairmanUserId %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ staff.id }}" {{ selected }}>{{ staff.user_info }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('committee_chairman').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="committee_secretary" class="control-label col-sm-3 label-left">
+                                Secretary:
+                                <span class="required-field">*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <select id="committee_secretary" name="committee_secretary"
+                                        class="form-control input-14 select-2">
+                                    <option value="">Choose Secretary</option>
+                                    {% for staff in fccCommitteeSecretaries %}
+                                        {% if staff.id == committee.secretaryUserId %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ staff.id }}" {{ selected }}>{{ staff.user_info }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('committee_secretary').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="committee_members" class="control-label col-sm-3 label-left">
+                                Committee Members:
+                                <span class="required-field">*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <select id="committee_members" name="committee_members[]" multiple="multiple"
+                                        class="form-control input-14 select-2 multiple-select">
+                                    {% for member in fccCommissioners %}
+                                        {% if member.id in committee.committeeMemberIds %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ member.id }}" {{ selected }}>{{ member.user_info }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('committee_members').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="committee_mdas" class="control-label col-sm-3 label-left">
+                                Committee MDAs:
+                                <span class="required-field">*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <select id="committee_mdas" name="committee_mdas[]" multiple="multiple"
+                                        class="form-control input-14 select-2 multiple-select">
+                                    {% for committeeMda in organizations %}
+                                        {% if committeeMda.id in committee.committeeMdaIds %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ committeeMda.id }}" {{ selected }}>{{ committeeMda.organization_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('committee_mdas').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <button type="submit" name="btnSubmit" class="btn btn-primary btn-sm">Submit</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>FCC</title>
+
+    <!-- Bootstrap -->
+    {#<link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">#}
+
+    <!-- Bootstrap watch paper theme CSS -->
+    {#<link href="{{ asset('css/bootstrap-bootswatch-paper-theme.min.css') }}" rel="stylesheet">#}
+    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- font awesome -->
+    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+
+</head>
+<body style="padding: 20px;background: #EEF6F9;">
+
+<div class="panel panel-primary">
+
+    <div class="panel-heading">
+        <h3 class="panel-title"> <i class="fa fa-envelope"></i> Compose Message</h3>
+        <br/>
+        <table class="mail-table">
+            <tbody>
+            <tr>
+                <td width="90"><b>To:</b></td>
+                <td>
+                    {{ notification.recipientName }}
+                </td>
+            </tr>
+            <tr>
+                <td><b>Phone:</b></td>
+                <td>
+                    {{ notification.recipientPhoneNumbers }}
+                </td>
+            </tr>
+            <tr>
+                <td><b>Email:</b></td>
+                <td>
+                    {{ notification.recipientEmailAddresses }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel-body" style="background-color: #EEF6F9;">
+
+        <table width="100%">
+            <tr>
+                <td valign="top">
+                    {% if alertNotification.hasMessage %}
+                        <div style="margin-bottom: 30px;">
+                            <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                {% for message in alertNotification.messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {{ validator.fields.field('recipient_id_or_group').html | raw }}
+                    {{ validator.fields.field('recipient_phone').html | raw }}
+                    {{ validator.fields.field('recipient_email').html | raw }}
+                    {{ validator.fields.field('recipient_name').html | raw }}
+
+                    <div class="v-sep-10"></div>
+                    <form method="post" action="{{ path('send_single_recipient_notification'
+                    ,{ recipientUserId : notification.recipientIdOrGroup, phone : notification.recipientPhoneNumbers
+                        , email : notification.recipientEmailAddresses, name : notification.recipientName }) }}"
+                          class="form-horizontal">
+                        <div class="form-group">
+                            <label for="subject" class="col-xs-2 control-label">Subject:</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="subject" value="{{ notification.subject }}"
+                                       class="form-control input-14" id="subject" placeholder="Enter Subject"
+                                       autocomplete="off" maxlength="100">
+                                {{ validator.fields.field('subject').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="col-xs-2 control-label">Message:</label>
+                            <div class="col-xs-10">
+                    <textarea class="form-control input-14 counter" rows="6" name="message" id="message"
+                              placeholder="Enter Message" maxlength="220">{{ notification.message }}</textarea>
+                                {{ validator.fields.field('message').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="col-xs-10 col-xs-offset-2">
+                            <input type="hidden" name="recipient_id_or_group" value="{{ notification.recipientIdOrGroup }}" />
+                            <input type="hidden" name="recipient_name" value="{{ notification.recipientName }}" />
+                            <input type="hidden" name="recipient_phone" value="{{ notification.recipientPhoneNumbers }}" />
+                            <input type="hidden" name="recipient_email" value="{{ notification.recipientEmailAddresses }}" />
+                            <button type="submit" class="btn btn-primary" name="btnSend" id="btnSend">
+                                <i class="fa fa-send"></i> Send
+                            </button>
+                        </div>
+
+                    </form>
+                </td>
+                <td valign="top" align="center" width="150">
+
+
+
+                    <div class="spinner-wrapper" style="display: none;width: 60px; height: 60px;">
+                        <div class="loader">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10">
+                                </circle>
+                            </svg>
+                        </div>
+
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+
+
+
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+
+<script src="{{ asset('bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ asset('js/textcounter.min.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#subject').textcounter(
+                {
+                    type: "character",
+                    min: 0,
+                    max: 100,
+                    countContainerElement: "div",
+                    countContainerClass: "text-count-wrapper",
+                    countSpaces : true,
+                    countDown : true
+                }
+        );
+
+        $('#message').textcounter(
+                {
+                    type: "character",
+                    min: 0,
+                    max: 220,
+                    countContainerElement: "div",
+                    countContainerClass: "text-count-wrapper",
+                    countSpaces : true,
+                    countDown : true
+                }
+        );
+
+
+        $('#btnSend').on('click', function () {
+            $('.spinner-wrapper').show();
+        });
+
+    });
+</script>
+
+</body>
+</html>

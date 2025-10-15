@@ -1,0 +1,249 @@
+{% extends 'reporting/open_data/base.opendata.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('resources/custom/open_data/css/mda-manpower-dist.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>
+{% endblock %}
+
+{% block page_type %}
+    sub-page
+{% endblock %}
+
+{% block search_toggle %}
+    {#<a href="#collapseMainSearchForm" class="main-search-form-toggle" data-toggle="collapse" aria-expanded="false"
+       aria-controls="collapseMainSearchForm">
+        Search
+    </a>#}
+    <!--end main-search-form-toggle-->
+{% endblock %}
+
+{% block hero_form %}
+    <div class="--collapse" id="--collapseMainSearchForm" style="background: none;">
+        <form id="report-form" class="hero-form form" method="post"
+              action="{{ path('open_data_fed_level_career_dist_single_establishment') }}" onsubmit="showLoading();">
+            <div class="container">
+                <!--Main Form-->
+                <div class="main-search-form" style="padding-top: 5px;">
+                    <div class="form-row">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                {#<label for="searchOrganization" class="col-form-label" style="color: #545454;">Federal
+                                    MDA
+                                    Manpower Distribution?</label>#}
+                                <select id="searchOrganization" name="searchOrganization" class="select-mda"
+                                        style="width: 100%;" required>
+                                    <option value="">Choose Federal MDA</option>
+                                    {% for organization in organizations %}
+                                        <option value="{{ organization.id }}" {{ organization.id == searchOrganization ? 'selected' : '' }}
+                                                data-total_submissions_processed="{{ organization.total_submissions_processed }}">
+                                            {{ organization.organization_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!--end form-group-->
+                        </div>
+                        <!--end col-md-3-->
+                        <!--end col-md-3-->
+                        <div class="col-md-3 col-sm-3">
+                            <div class="form-group">
+                                {#<label for="searchSubmissionYear" class="col-form-label">Year?</label>#}
+                                <select id="searchSubmissionYear" name="searchSubmissionYear" class="select-2" required style="width: 100%;">
+                                    <option value="">Choose Year</option>
+                                    {% for submissionYearRecord in submissionYears %}
+                                        <option value="{{ submissionYearRecord.submission_year }}"
+                                        {{ submissionYearRecord.submission_year == searchSubmissionYear ? 'selected' : '' }}>
+                                            {{ submissionYearRecord.submission_year }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!--end form-group-->
+                        </div>
+                        <!--end col-md-3-->
+                        <div class="col-md-3 col-sm-3">
+                            <button type="button" id="btn-get-report" class="btn btn-info btn-rounded width-100">Search
+                            </button>
+                        </div>
+                        <!--end col-md-3-->
+                    </div>
+                    <!--end form-row-->
+                </div>
+                <!--end main-search-form-->
+                <!--Alternative Form-->
+
+                <!--end alternative-search-form-->
+            </div>
+            <!--end container-->
+        </form>
+    </div>
+{% endblock %}
+
+
+{% block sub_page_title %}
+    <div class="page-title">
+        <div class="container">
+            <h2 class="center" style="color: #000;text-transform: none;">
+                {{ report.submissionYear }}<br>{{ report.organizationName }}<br>Manpower Statistics
+            </h2>
+        </div>
+        <!--end container-->
+    </div>
+{% endblock %}
+
+{% block bg_image %}
+    <img src="{{ asset('resources/custom/open_data/img/fcc-image-w-2.jpg') }}" alt="">
+{% endblock %}
+
+{% block main_container %}
+    container
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12 col-xs-12">
+            <div style="display: block; align-items: center;justify-content: center;">
+                {% include 'reporting/shared/_fed_level_career_dist_stage1_to_stage9.html.twig' with { 'whichDistribution' : 'single_establishment' } %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.barRenderer.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.categoryAxisRenderer.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.pointLabels.js') }}"></script>
+
+    {% if report is not empty and report.stage3 is not empty %}
+        <script>
+            $(document).ready(function () {
+                var gl_01_to_04 = {{ report.stage3.stage3Data[0] }};
+                var gl_05_to_06 = {{ report.stage3.stage3Data[1] }};
+                var gl_07_to_10 = {{ report.stage3.stage3Data[2] }};
+                var gl_11_to_14 = {{ report.stage3.stage3Data[3] }};
+                var gl_15_And_Above = {{ report.stage3.stage3Data[4] }};
+
+                var ticks = {{ report.stage3.xAxisLabels|raw }};
+                //console.log(ticks);
+
+                plot3 = $.jqplot('stage3-chart', [gl_01_to_04, gl_05_to_06, gl_07_to_10, gl_11_to_14, gl_15_And_Above], {
+                    // Tell the plot to stack the bars.
+                    title: 'STAFF DISTRIBUTION BY STATE OF ORIGIN AND BY CATEGORY',
+                    stackSeries: true,
+                    captureRightClick: true,
+                    seriesDefaults: {
+                        renderer: $.jqplot.BarRenderer,
+                        rendererOptions: {
+                            // Put a 30 pixel margin between bars.
+                            barMargin: 10,
+                            // Highlight bars when mouse button pressed.
+                            // Disables default highlighting on mouse over.
+                            highlightMouseDown: true
+                        },
+                        pointLabels: {show: false}
+                    },
+                    series: [
+                        {label: '01-04'},
+                        {label: '05-06'},
+                        {label: '07-10'},
+                        {label: '11-14'},
+                        {label: '15+'}
+                    ],
+                    seriesColors: ["#9999FF", "#993366", "#FFFFCC", "#CCFFFF", "#660066"],
+                    grid: {
+                        background: '#C0C0C0'
+                    },
+                    axes: {
+                        xaxis: {
+                            renderer: $.jqplot.CategoryAxisRenderer,
+                            ticks: ticks
+                        },
+                        yaxis: {
+                            // Don't pad out the bottom of the data range.  By default,
+                            // axes scaled as if data extended 10% above and below the
+                            // actual range to prevent data points right on grid boundaries.
+                            // Don't want to do that here.
+                            padMin: 0
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        location: 'e',
+                        placement: 'outside'
+                    }
+                });
+                // Bind a listener to the "jqplotDataClick" event.  Here, simply change
+                // the text of the info3 element to show what series and ponit were
+                // clicked along with the data for that point.
+                /*$('#stage3-chart').bind('jqplotDataClick',
+                 function (ev, seriesIndex, pointIndex, data) {
+                 $('#info3').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+                 }
+                 );*/
+
+            });
+
+        </script>
+    {% endif %}
+
+    <script>
+        $(document).ready(function () {
+
+            $('#searchOrganization').on('change', function (event) {
+                var organizationId = $(this).val();
+                var emptyOption = '<option value="">Choose Year</option>';
+
+                var selectYear = $('#searchSubmissionYear');
+                selectYear.html(loadingSelectOption);
+                selectYear.prop("disabled", true);
+
+                if (organizationId) {
+                    $.ajax(
+                        {
+                            type: 'POST',
+                            url: '{{ path('api_mda_processed_years') }}' + "/" + $(this).val()
+                        }
+                    ).done(
+                        function (data, textStatus, jqXHR) {
+                            selectYear.prop("disabled", false);
+                            selectYear.html(data);
+                        }
+                    ).fail(
+                        function (jqXHR, textStatus, errorThrown) {
+                            selectYear.html(emptyOption);
+                        }
+                    ).always(
+                        function (jqXHR, textStatus) {
+
+                        }
+                    );
+                } else {
+                    selectYear.html(emptyOption);
+                }
+            });
+
+            $('#btn-get-report').on('click', function (e) {
+
+                e.preventDefault();
+
+                if (!$('#searchOrganization').val() || !$('#searchSubmissionYear').val()) {
+                    $.growl.warning({
+                        title: 'Ooops!',
+                        message: 'All fields are required',
+                        location: 'tc'
+                    });
+                } else {
+                    $('#report-form').submit();
+                }
+
+            });
+
+
+        });
+    </script>
+
+{% endblock %}

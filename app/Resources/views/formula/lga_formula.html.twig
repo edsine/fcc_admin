@@ -1,0 +1,16 @@
+{# @var lgaFormula \AppBundle\Model\Formula\LGAFormula #}
+{% for lgaFormula in lgaFormulas %}
+
+    {{ loop.index }}:
+    <br/>
+    <div>
+        {{ lgaFormula.formula }}
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+{% else %}
+    could not generate formula.
+{% endfor %}

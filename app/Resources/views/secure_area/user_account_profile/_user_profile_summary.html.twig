@@ -1,0 +1,36 @@
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+<div class="user-profile-badge-wrapper">
+    <div class="user-profile-badge-image-container">
+        {% if not loggedInUser.profilePictureDisplayUrl %}
+            <img src="{{ asset('images/user-128px.png') }}"/>
+        {% else %}
+            <img src="{{ loggedInUser.profilePictureDisplayUrl }}" class="profile-icon-128"/>
+        {% endif %}
+    </div>
+    <div class="organization-badge-details">
+        <table class="table table-striped">
+            <tr>
+                <td width="110" valign="top"><b>Username:</b></td>
+                <td>{{ profileSummary.username }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><b>Full Name:</b></td>
+                <td>{{ profileSummary.firstName }} {{ profileSummary.lastName }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><b>Email:</b></td>
+                <td>{{ profileSummary.emailAddress }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><b>Primary Phone:</b></td>
+                <td>{{ profileSummary.primaryPhone }}</td>
+            </tr>
+            <tr>
+                <td valign="top"><b>Organization:</b></td>
+                <td>{{ profileSummary.organizationName }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
