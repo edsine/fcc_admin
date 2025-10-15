@@ -12,6 +12,6 @@ namespace AppBundle\Utils;
 class ApiKeys
 {
 
-    const SENDGRIG_API_KEY = "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";
+    const SENDGRIG_API_KEY = "env.SENDGRID_API_KEY";
 
 }
