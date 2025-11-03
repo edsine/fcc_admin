@@ -143,8 +143,12 @@ class SendSingleNotificationController extends Controller
                             }
 
                         } catch (\Throwable $st) {
+    $this->get('logger')->error('Error while sending email: ' . $st->getMessage(), [
+        'trace' => $st->getTraceAsString()
+    ]);
+    $alertNotification->addError("Error sending email: " . $st->getMessage());
+}
 
-                        }
                         //this should go later
                         return $this->redirectToRoute('notification_success');
 

@@ -12,6 +12,7 @@ namespace AppBundle\Controller\Notification;
 use AppBundle\Model\Notification\AlertNotification;
 use AppBundle\Model\Notification\Notification;
 use AppBundle\Model\Notification\RecipientsContactInfo;
+use AppBundle\Model\Organizations\Organization;
 use AppBundle\Model\Users\UserProfile;
 use AppBundle\Utils\AppConstants;
 use AppBundle\Utils\GUIDHelper;

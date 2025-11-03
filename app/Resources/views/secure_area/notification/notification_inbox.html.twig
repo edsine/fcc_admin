@@ -91,34 +91,36 @@
 
                                     {# @var message \AppBundle\Model\Notification\Notification #}
                                     {% for message in messages %}
-                                        <a href="#"
-                                           data-href="{{ path('notification_show', { guid : message.guid }) }}" class="message-list-item">
-                                            <div class="message-list-item-content-wrapper">
-                                                <div class="message-list-item-avatar">
-                                                    <img src="{{ asset('images/user-128px.png') }}"/>
-                                                </div>
-                                                <div class="message-list-item-summary">
-                                                    <div class="sender-date">
-                                                        <div class="summary-sender">
-                                                            {{ message.senderOrganization }}
-                                                            <br/>
-                                                            {{ message.senderName }}
-                                                        </div>
-                                                        <div class="summary-date">
-                                                            {{ message.created }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="summary-subject">
-                                                        {{ message.subject }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    {% else %}
-                                        <div class="empty-message-list-notice">
-                                            Your inbox is empty
-                                        </div>
-                                    {% endfor %}
+    <a href="#"
+       data-href="{{ path('notification_show', { guid : message.uid }) }}"
+       class="message-list-item">
+        <div class="message-list-item-content-wrapper">
+            <div class="message-list-item-avatar">
+                <img src="{{ asset('images/user-128px.png') }}"/>
+            </div>
+            <div class="message-list-item-summary">
+                <div class="sender-date">
+                    <div class="summary-sender">
+                        {{ message.from[0].mailbox }}@{{ message.from[0].host }}
+                        <br/>
+                        {{ message.subject }}
+                    </div>
+                    <div class="summary-date">
+                        {{ message.date.format('Y-m-d H:i') }}
+                    </div>
+                </div>
+                <div class="summary-subject">
+                    {{ message.subject }}
+                </div>
+            </div>
+        </div>
+    </a>
+{% else %}
+    <div class="empty-message-list-notice">
+        Your inbox is empty
+    </div>
+{% endfor %}
+
 
                                 </div>
                             </div>

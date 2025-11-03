@@ -78,7 +78,16 @@ services:
 
     app.notification_sender_service:
                     class: AppBundle\Services\Notification\NotificationSenderService
-                    arguments: ['@mailer']
+                    arguments:
+                        $smtpHost: '%smtp_host%'
+                        $smtpUser: '%smtp_user%'
+                        $smtpPassword: '%smtp_password%'
+                        $smtpPort: '%smtp_port%'
+                        $smtpEncryption: '%smtp_encryption%'
+                        $sms_api_url: '%sms_api_url%'
+                        $sms_api_key:  '%sms_api_key%'
+                        $sms_sender_id: '%sms_sender_id%'
+                        $logger: '@logger'
 
     app.submission_schedule_service:
                 class: AppBundle\Services\SuperAdmin\SubmissionSetup\SubmissionScheduleService

@@ -67,11 +67,11 @@
 
                             <div class="form-group">
                                 <label for="phone_numbers" class="col-xs-2 control-label text-bold">Phone Numbers: <span
-                                            class="text-danger">*</span></label>
+                                            class="text-danger"></span></label>
 
                                 <div class="col-xs-10">
                                     <input type="text" name="phone_numbers" value="{{ notification.recipientPhoneNumbers }}"
-                                           class="form-control input-14 text-bold" id="phone_numbers" placeholder="Enter Phone Numbers (Comma Separated)"
+                                           class="form-control input-14 text-bold" id="phone_numbers" placeholder="Enter Phone Numbers (Comma Separated) Optional"
                                            autocomplete="off">
                                     {{ validator.fields.field('phone_numbers').html | raw }}
                                 </div>

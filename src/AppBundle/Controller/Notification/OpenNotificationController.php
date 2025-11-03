@@ -1,13 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: IronHide
- * Date: 1/23/2017
- * Time: 4:57 AM
- */
-
 namespace AppBundle\Controller\Notification;
-
 
 use AppBundle\Model\Notification\AlertNotification;
 use AppBundle\Model\Notification\Notification;
@@ -16,60 +8,51 @@ use AppBundle\Model\Users\UserProfile;
 use AppBundle\Utils\AppConstants;
 use AppBundle\Utils\GUIDHelper;
 use AppBundle\Validation\Validator;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class OpenNotificationController extends Controller
 {
-
     /**
-     * @Route("/notification/open_notification",name="open_notification")
+     * @Route("/notification/open_notification", name="open_notification")
      */
     public function openNotificationAction(Request $request)
     {
-
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw $this->createAccessDeniedException();
         }
 
-        /**
-         * @var UserProfile $loggedInUser
-         */
+        /** @var UserProfile $loggedInUser */
         $loggedInUser = $this->getUser();
 
         $notification = new Notification();
-
         $validator = new Validator();
         $this->initializeValidationFields($validator);
 
         $alertNotification = new AlertNotification();
         $outcome = false;
 
-        $recipientsContactInfo = new RecipientsContactInfo();
-
-        //check if the form was submitted and process else render empty form
         if ($request->request->has("btnSend")) {
-
             $notification = $this->fillModelFromRequest($request);
             $this->validateForm($validator, $notification);
 
             try {
                 if (!$validator->getFields()->hasErrors()) {
-
                     $notificationService = $this->get('app.notification_service');
                     $notificationSenderService = $this->get('app.notification_sender_service');
 
+                    // Populate notification data
                     $notification->setSenderId($loggedInUser->getId());
                     $notification->setSenderOrganization($loggedInUser->getOrganizationName());
                     $notification->setSenderName($loggedInUser->getDisplayName());
                     $notification->setSenderEmail($loggedInUser->getEmailAddress());
-
                     $notification->setRecipientIdOrGroup(AppConstants::OPEN_NOTIFICATION);
-
-                    $today = date("Y-m-d H:i:s");
-                    $notification->setCreated($today);
+                    $notification->setCreated(date("Y-m-d H:i:s"));
                     $notification->setCreatedByUserId($loggedInUser->getId());
+
+                   
+
 
                     $guidHelper = new GUIDHelper();
                     $notification->setGuid($guidHelper->getGUIDUsingMD5($loggedInUser->getUsername()));
@@ -82,83 +65,60 @@ class OpenNotificationController extends Controller
 
                     if ($addNotificationOutcome) {
                         try {
-
                             $recipientsContactInfo = new RecipientsContactInfo();
-                            $recipientsContactInfo->setRecipientsPhoneNumbers($notification->getRecipientPhoneNumbers());
 
-                            $recipientsEmailAddresses = array();
-                            
-                            $emailAddresses = explode(",", $notification->getRecipientEmailAddresses());
-                            if($emailAddresses){
-                                foreach ($emailAddresses as $emailAddress){
-                                    $recipientEmail = array();
-                                    $recipientEmail['contact_email'] = $emailAddress;
-                                    $recipientEmail['contact_name'] = "";
+                            // 📧 Parse and clean email addresses (PHPMailer expects strings)
+                            $emailAddresses = array_filter(array_map('trim', explode(",", $notification->getRecipientEmailAddresses())));
 
-                                    $recipientsEmailAddresses[] = $recipientEmail;
-                                }
-
-                                if($recipientsEmailAddresses){
-                                    $recipientsContactInfo->setRecipientsEmailAddresses($recipientsEmailAddresses);
-                                }
+                            if (!empty($emailAddresses)) {
+                                $recipientsContactInfo->setRecipientsEmailAddresses($emailAddresses);
                             }
 
-                            //inject the senders contact information also to recipients information
+                            // Optionally set phone numbers if needed for SMS
+                             $phonesRaw = $notification->getRecipientPhoneNumbers();
+                             $recipientsContactInfo->setRecipientsPhoneNumbers($phonesRaw);
+
+                             
+
+                            // Add sender info as fallback
                             $recipientsContactInfo->appendSendersContactInformation(
-                                $loggedInUser->getDisplayName()
-                                , $loggedInUser->getEmailAddress()
-                                , $loggedInUser->getPrimaryPhone()
+                                $loggedInUser->getDisplayName(),
+                                $loggedInUser->getEmailAddress(),
+                                $loggedInUser->getPrimaryPhone()
                             );
 
                             $notification->setSmsNotificationSender(AppConstants::FCC_SMS_SENDER);
 
                             $sendResponse = $notificationSenderService->sendNotification($notification, $recipientsContactInfo);
+
                             if ($sendResponse) {
-                                $smsSentForDelivery = ($sendResponse->getSmsHttpResponseCode() === 200)
-                                    && (strpos($sendResponse->getSmsHttpResponseBody(), 'OK:') === 0);
-
-                                $emailSentForDelivery = $sendResponse->getEmailHttpResponseCode() === 202;
-
-                                if($smsSentForDelivery || $emailSentForDelivery){
-                                    //move this later and see how it goes
-                                    return $this->redirectToRoute('notification_success');
-                                }else{
-                                    $alertNotification->addError("Your Message Could Not Be Sent At The Moment, Please Try Again Later.");
-                                }
-
-
+                                return $this->redirectToRoute('notification_success');
                             } else {
-                                $alertNotification->addError("Your Message Could Not Be Sent At The Moment, Please Try Again Later.");
+                                $alertNotification->addError("Your message could not be sent. Please try again later.");
                             }
 
-                        } catch (\Throwable $st) {
+                        } catch (\Throwable $e) {
+                            $this->get('logger')->error('SendNotification Error: ' . $e->getMessage());
+                            $alertNotification->addError("An unexpected error occurred while sending the notification.");
                         }
-                        //this should go later
-                        //return $this->redirectToRoute('notification_success');
-
-
                     } else {
-                        $alertNotification->addError("Notification could not be sent at the moment, Please try again.");
+                        $alertNotification->addError("Notification could not be saved. Please try again.");
                     }
-
                 }
-            } catch (\Throwable $t) {
-                $this->get('logger')->info($t->getMessage());
-                $alertNotification->addError("Notification could not be sent at the moment, Please try again.");
+            } catch (\Throwable $e) {
+                $this->get('logger')->error('Notification Error: ' . $e->getMessage());
+                $alertNotification->addError("An error occurred. Please try again.");
             }
-
         }
 
-        return $this->render('notification/open_notification.html.twig',
-            array(
-                'notification' => $notification,
-                'validator' => $validator,
-                'outcome' => $outcome,
-                'alertNotification' => $alertNotification
-            ));
+        return $this->render('notification/open_notification.html.twig', [
+            'notification' => $notification,
+            'validator' => $validator,
+            'outcome' => $outcome,
+            'alertNotification' => $alertNotification
+        ]);
     }
 
-    //helper methods
     private function initializeValidationFields(Validator $validator)
     {
         $validator->getFields()->addField('email_addresses', "Email addresses are required");
@@ -171,13 +131,11 @@ class OpenNotificationController extends Controller
     private function validateForm(Validator $validator, Notification $notification)
     {
         $validator->required('email_addresses', $notification->getRecipientEmailAddresses());
-        $validator->required('phone_numbers', $notification->getRecipientPhoneNumbers());
         $validator->required('subject', $notification->getSubject());
         $validator->required('message', $notification->getMessage());
-        //$validator->required('sms_notification_message', $notification->getSmsNotificationMessage());
     }
 
-    private function fillModelFromRequest(Request $request)
+    private function fillModelFromRequest(Request $request): Notification
     {
         $notification = new Notification();
         $notification->setRecipientEmailAddresses($request->request->get("email_addresses"));
@@ -188,5 +146,4 @@ class OpenNotificationController extends Controller
 
         return $notification;
     }
-
 }

@@ -68,4 +68,7 @@ swiftmailer:
     host:      "%mailer_host%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
+    encryption: tls
+    auth_mode: login
+    port: 587
     spool:     { type: memory }
