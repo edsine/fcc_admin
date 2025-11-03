@@ -1,0 +1,117 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Downloads
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+
+        {% if not app.user.privilegeChecker.superAdmin %}
+            <div class="col-sm-9">
+                {% if app.user.privilegeChecker.canUploadFedMdaNominalRoll %}
+
+                    <div style="display: flex;align-content: space-between;">
+                        <a href="http://federalcharacter.gov.ng/fcc_portal_docs/downloads/FEDERAL-MDA-MAIN-SUBMISSION-NOMINAL-ROLL-TEMPLATE.xlsx"
+                           class="download-card" target="_blank">
+
+                            <div class="download-title">
+                                Federal MDA<br/>Main Nominal Roll Template
+                            </div>
+                            <div class="download-links">
+                                <div class="btn btn-link">
+                                    <i class="fa fa-download"></i> Download
+                                </div>
+                            </div>
+
+                        </a>
+
+                        <a href="http://federalcharacter.gov.ng/fcc_portal_docs/downloads/FEDERAL-MDA-QUARTERLY-RETURN-NOMINAL-ROLL-TEMPLATE.xlsx"
+                           class="download-card" target="_blank">
+
+                            <div class="download-title blue">
+                                Federal MDA<br/>Quarterly Nominal Roll Template
+                            </div>
+                            <div class="download-links">
+                                <div class="btn btn-link">
+                                    <i class="fa fa-download"></i> Download
+                                </div>
+                            </div>
+
+                        </a>
+                    </div>
+
+                {% endif %}
+            </div>
+
+            <div class="col-sm-3">
+
+            </div>
+        {% endif %}
+
+        {% if app.user.privilegeChecker.superAdmin or app.user.privilegeChecker.misHead %}
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Federal Nominal Roll</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div style="display: flex;align-content: space-between;">
+                            <a href="http://federalcharacter.gov.ng/fcc_portal_docs/downloads/FEDERAL-MDA-MAIN-SUBMISSION-NOMINAL-ROLL-TEMPLATE.xlsx"
+                               class="download-card" target="_blank">
+
+                                <div class="download-title">
+                                    Federal MDA<br/>Main Nominal Roll Template
+                                </div>
+                                <div class="download-links">
+                                    <div class="btn btn-link">
+                                        <i class="fa fa-download"></i> Download
+                                    </div>
+                                </div>
+
+                            </a>
+
+                            <a href="http://federalcharacter.gov.ng/fcc_portal_docs/downloads/FEDERAL-MDA-QUARTERLY-RETURN-NOMINAL-ROLL-TEMPLATE.xlsx"
+                               class="download-card" target="_blank">
+
+                                <div class="download-title blue">
+                                    Federal MDA<br/>Quarterly Nominal Roll Template
+                                </div>
+                                <div class="download-links">
+                                    <div class="btn btn-link">
+                                        <i class="fa fa-download"></i> Download
+                                    </div>
+                                </div>
+
+                            </a>
+                        </div>
+
+                        <div class="v-sep-20"></div>
+
+                        <input type="file" disabled>
+                        <br/>
+                        <button class="btn btn-lg btn-primary disabled"><i class="fa fa-upload"></i> Upload</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">State Nominal Roll</h3>
+                    </div>
+                    <div class="panel-body">
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}

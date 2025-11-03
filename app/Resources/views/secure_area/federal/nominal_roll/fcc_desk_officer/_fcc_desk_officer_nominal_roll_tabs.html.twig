@@ -1,0 +1,17 @@
+<div>
+    <ul class="nav nav-tabs with-bold-active">
+        <li class="{{ (activePage == 'pending') ? 'active' : '' }}">
+            <a href="{{ path('fcc_desk_officer_nominal_roll_pending_confirmation_list') }}">
+                PENDING CONFIRMATION <span class="badge badge-info">{{ totalPending }}</span>
+            </a>
+        </li>
+        <li class="{{ (activePage == 'failed_validation') ? 'active' : '' }}">
+            <a href="{{ path('fcc_desk_officer_nominal_roll_failed_validation_list') }}">
+                FAILED VALIDATION <span class="badge badge-danger">{{ totalFailed }}</span>
+            </a>
+        </li>
+        <li class="{{ (activePage == 'confirmed') ? 'active' : '' }}">
+            <a href="{{ path('fcc_desk_officer_nominal_roll_confirmed_list') }}">CONFIRMATION HISTORY</a>
+        </li>
+    </ul>
+</div>

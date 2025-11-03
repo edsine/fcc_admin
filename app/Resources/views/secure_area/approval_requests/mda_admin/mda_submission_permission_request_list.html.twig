@@ -1,0 +1,118 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block page_toolbar_left %}
+    Submission Permission Request
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('mda_submission_permission_request_list') }}">
+                <div style="margin-bottom: 10px;">
+                    <input type="text" class="form-control input-sm" name="search_submission_year"
+                           value="{{ searchFilter.submissionYear }}"
+                           placeholder="Search Submission Year"
+                           style="width: 250px;display: inline-block;" autocomplete="off">
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+
+                <div style="margin-top: 40px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"><i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"><i
+                                        class="fa fa-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"><i
+                                        class="fa fa-chevron-right"></i>|
+                            </button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <a class="btn btn-primary btn-sm" href="{{ path('mda_submission_permission_request_new') }}">
+                            <i class="fa fa-plus"></i> New Permission Request
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="40">S/N</th>
+                        <th>Year Of Submission</th>
+                        <th>Reason</th>
+                        <th width="150">Date of request</th>
+                        <th width="150">Approval Status</th>
+                        <th width="150">Date Approved</th>
+                        <th width="50"></th>
+                        <th width="30"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var record \AppBundle\Model\ApprovalRequests\SubmissionPermissionRequest #}
+                    {% for record in records %}
+                        <tr>
+                            <td>{{ record.displaySerialNo }}</td>
+                            <td>{{ record.submissionYear }}</td>
+                            <td>{{ record.remarks }}</td>
+                            <td>{{ record.created }}</td>
+                            <td>{{ record.approvalStatus }}</td>
+                            <td>{{ record.dateOfApproval }}</td>
+                            {% if not record.approved or record.hasExpired %}
+                                <td>
+                                    <a href="{{ path('mda_submission_permission_request_edit', { selector : record.selector }) }}"
+                                       class="btn btn-xs btn-primary" title="Edit">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ path('mda_submission_permission_request_cancel', { selector: record.selector }) }}"
+                                       class="btn btn-xs btn-danger" title="Delete">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            {% elseif record.hasExpired or record.approved %}
+                                <td>
+                                    <a href="#"
+                                       class="btn btn-xs btn-default disabled" title="Edit" disabled="">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#"
+                                       class="btn btn-xs btn-default disabled" title="Delete" disabled="">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <input type="hidden" name="startRow" value="{{ paginator.startRow }}"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

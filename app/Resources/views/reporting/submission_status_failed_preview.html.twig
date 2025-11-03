@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>Federal Character Commission</title>
+
+    <!-- Bootstrap core CSS -->
+    {#<link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">#}
+
+    <!-- Bootstrap watch paper theme CSS -->
+    <link href="{{ asset('css/bootstrap-bootswatch-paper-theme.min.css') }}" rel="stylesheet">
+
+    <!-- font awesome -->
+    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
+
+</head>
+
+<body style="padding-top: 10px;">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+
+            {% if app.session.started and app.session.flashBag.peekAll is not empty %}
+                <div class="messages">
+                    {% for type, messages in app.session.flashBag.all %}
+                        {% for message in messages %}
+                            {# Bootstrap alert, see http://getbootstrap.com/components/#alerts #}
+                            <div class="alert alert-dismissible alert-{{ type }}" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div id="failed-validation-summary">
+                <table class="flat-table error">
+                    <tr>
+                        <td width="80">
+                            <img src="{{ asset('images/cancel.png') }}" width="64" height="64"/>
+                        </td>
+                        <td>
+                            <table class="flat-table">
+                                <tr>
+                                    <td width="120">
+                                        <b>Organization:</b>
+                                    </td>
+                                    <td>
+                                        <b>{{ nominalRoleSubmission.organizationName }} - {{ nominalRoleSubmission.organizationEstablishmentCode }}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="120">
+                                        <b>Year:</b>
+                                    </td>
+                                    <td>
+                                        <b>{{ nominalRoleSubmission.submissionYear }}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="120">
+                                        <b>Date Uploaded:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRoleSubmission.created }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>File Name:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRoleSubmission.simpleFileName }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Validation Status:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRoleSubmission.validationStatus }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <form method="post"
+                  action="{{ path('submission_status_preview_show',{submissionId : nominalRoleSubmission.submissionId}) }}">
+                <div style="margin-top: 20px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"><i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"><i
+                                        class="fa fa-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"><i
+                                        class="fa fa-chevron-right"></i>|
+                            </button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="40">S/No</th>
+                        <th>Emp.<br/>Status</th>
+                        <th>Emp. No<br/>MMM/SSSSSS</th>
+                        <th>Name</th>
+                        <th>Nationality<br/>Code</th>
+                        <th>State of Origin<br/>Code</th>
+                        <th>LGA<br/>Code</th>
+                        <th>Region<br/>Code</th>
+                        <th>Date of Birth<br/>DD/MMM/YYYY</th>
+                        <th>Date of Employment<br/>DD/MMM/YYYY</th>
+                        <th>Date of <br/>Pres.Appt.<br/>DD/MMM/YYYY</th>
+                        <th>Grade Level<br/>Code</th>
+                        <th>Designation</th>
+                        <th>State Of Location<br/>Code</th>
+                        <th>Sex<br/>Code</th>
+                        <th>M. Status<br/>Code</th>
+                        <th>Physically<br/>Challenged</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var record \AppBundle\Model\Submission\NominalRollValidation #}
+                    {% for record in records %}
+                        <tr>
+                            <td class="">{{ record.serialNo }}</td>
+                            <td class="validation{{ record.failedEmployeeStatus }}">{{ record.employeeStatus }}</td>
+                            <td class="validation{{ record.failedEmployeeNumber }}">{{ record.employeeNumber }}</td>
+                            <td class="validation{{ record.failedName }}">{{ record.name }}</td>
+                            <td class="validation{{ record.failedNationality }}">{{ record.nationality }}</td>
+                            <td class="validation{{ record.failedStateOfOrigin }}">{{ record.stateOfOrigin }}</td>
+                            <td class="validation{{ record.failedLga }}">{{ record.lga }}</td>
+                            <td class="validation{{ record.failedGeopoliticalZone }}">{{ record.geoPoliticalZone }}</td>
+                            <td class="validation{{ record.failedDateOfBirth }}">{{ record.dateOfBirth }}</td>
+                            <td class="validation{{ record.failedDateOfEmployment }}">{{ record.dateOfEmployment }}</td>
+                            <td class="validation{{ record.failedDateOfPresentAppointment }}">{{ record.dateOfPresentAppointment }}</td>
+                            <td class="validation{{ record.failedGradeLevel }}">{{ record.gradeLevel }}</td>
+                            <td class="validation{{ record.failedDesignation }}">{{ record.designation }}</td>
+                            <td class="validation{{ record.failedStateOfLocation }}">{{ record.stateOfLocation }}</td>
+                            <td class="validation{{ record.failedGender }}">{{ record.gender }}</td>
+                            <td class="validation{{ record.failedMaritalStatus }}">{{ record.maritalStatus }}</td>
+                            <td class="validation{{ record.failedPhysicallyChallenged }}">{{ record.physicallyChallengedStatus }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="17">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <input type="hidden" name="startRow" value="{{ paginator.startRow }}"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+
+</body>
+</html>

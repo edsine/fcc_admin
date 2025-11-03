@@ -1,0 +1,209 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block page_toolbar_left %}
+    Add FCC User
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('fcc_user_list') }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-5">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    {% if alertNotification.hasMessage %}
+                        <div style="margin-bottom: 30px;">
+                            <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                {% for message in alertNotification.messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('fcc_user_new') }}" id="main-form" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="username" class="col-sm-3 control-label">Username:</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="username" value="{{ userProfile.username }}"
+                                       class="form-control input-14" id="username" placeholder="Enter Username"
+                                       autocomplete="off">
+                                {{ validator.fields.field('username').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="plain-pass" class="col-sm-3 control-label">Password:</label>
+                            <div class="col-sm-9">
+                                <input type="password" name="plain_pass" value="{{ userProfile.plainPassword }}"
+                                       class="form-control input-14" id="plain-pass" placeholder="Enter Password"
+                                       autocomplete="off">
+                                {{ validator.fields.field('plain_pass').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="first-name" class="col-sm-3 control-label">First Name:</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="first_name" value="{{ userProfile.firstName }}"
+                                       class="form-control input-14" id="first-name" placeholder="Enter First Name"
+                                       autocomplete="off">
+                                {{ validator.fields.field('first_name').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name" class="col-sm-3 control-label">Last Name:</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="last_name" value="{{ userProfile.lastName }}"
+                                       class="form-control input-14" id="last-name" placeholder="Enter Last Name"
+                                       autocomplete="off">
+                                {{ validator.fields.field('last_name').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-sm-3 control-label">Email:</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="email" value="{{ userProfile.emailAddress }}"
+                                       class="form-control input-14" id="email" placeholder="Enter Email"
+                                       autocomplete="off">
+                                {{ validator.fields.field('email').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="primary-phone" class="col-sm-3 control-label">Primary Phone:</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="primary_phone" value="{{ userProfile.primaryPhone }}"
+                                       class="form-control input-14" id="primary-phone"
+                                       placeholder="Enter Primary Phone Number"
+                                       autocomplete="off">
+                                {{ validator.fields.field('primary_phone').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="state-of-posting" class="col-sm-3 control-label">State of posting:</label>
+                            <div class="col-sm-9">
+                                <select class="form-control input-14" name="state_of_posting" id="state-of-posting">
+                                    <option value="">Choose Location</option>
+                                    {% for nigerianState in nigerianStates %}
+                                        {% if nigerianState.id == userProfile.stateOfPostingId %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ nigerianState.id }}" {{ selected }}>{{ nigerianState.state_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('state_of_posting').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fcc-department" class="col-sm-3 control-label">Department:</label>
+                            <div class="col-sm-9">
+                                <select class="form-control input-14" name="fcc_department" id="fcc-department">
+                                    <option value="">Choose Department</option>
+                                    {% for department in fccDepartments %}
+                                        {% if department.id == userProfile.fccDepartmentId %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ department.id }}" {{ selected }}>{{ department.department_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('fcc_department').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group primary-role-form-group">
+                            <label for="primary-role" class="col-sm-3 control-label">Primary Role:</label>
+                            <div class="col-sm-9">
+                                <select class="form-control input-14" name="primary_role" id="primary-role">
+                                    <option value="">Choose Role</option>
+                                    {% for fccRole in fccRoles %}
+                                        {% if fccRole.id == userProfile.primaryRole %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ fccRole.id }}" {{ selected }}>{{ fccRole.role_description }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('primary_role').html | raw }}
+                            </div>
+                        </div>
+                        {% if userProfile.primaryRole == constant('AppBundle\\Utils\\AppConstants::ROLE_FCC_DESK_OFFICER_FEDERAL') %}
+                            {% set committeeDisplay = '' %}
+                        {% else %}
+                            {% set committeeDisplay = 'none' %}
+                        {% endif %}
+                            <div class="form-group fcc-committee-form-group" style="display: {{ committeeDisplay }};">
+                                <label for="primary-role" class="col-sm-3 control-label">Committee:</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control input-14" name="fcc_committee" id="fcc-committee">
+                                        <option value="">Choose Committee</option>
+                                        {% for fccCommittee in fccCommittees %}
+                                            {% if fccCommittee.id == userProfile.fccCommitteeId %}
+                                                {% set selected = 'selected' %}
+                                            {% else %}
+                                                {% set selected = '' %}
+                                            {% endif %}
+                                            <option value="{{ fccCommittee.id }}" {{ selected }}>{{ fccCommittee.committee_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {{ validator.fields.field('fcc_committee').html | raw }}
+                                </div>
+                            </div>
+                        {#<div class="form-group fcc-supervisor-form-group">
+                            <label for="primary-role" class="col-sm-3 control-label">Supervisor:</label>
+                            <div class="col-sm-9">
+                                <select class="form-control input-14" name="fcc_supervisor" id="fcc-supervisor">
+                                    <option value="">Choose Supervisor</option>
+                                    {% for fccSupervisor in fccSupervisors %}
+                                        {% if fccSupervisor.id == userProfile.fccSupervisorId %}
+                                            {% set selected = 'selected' %}
+                                        {% else %}
+                                            {% set selected = '' %}
+                                        {% endif %}
+                                        <option value="{{ fccSupervisor.id }}" {{ selected }}>{{ fccSupervisor.user_info }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ validator.fields.field('fcc_supervisor').html | raw }}
+                            </div>
+                        </div>#}
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <button type="submit" name="btnSubmit" class="btn btn-info btn-sm">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-7">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+
+            var committeeFormGroup = $('.fcc-committee-form-group');
+            var committeeSelect = $('#fcc-committee');
+
+            var primaryRoleSelect = $('#primary-role');
+
+            $('.primary-role-form-group').on('change', function () {
+                var selectedRole = primaryRoleSelect.val();
+                if(selectedRole === '{{ constant('AppBundle\\Utils\\AppConstants::ROLE_FCC_DESK_OFFICER_FEDERAL') }}'){
+                    committeeFormGroup.show();
+                }else{
+                    committeeSelect.val('');
+                    committeeFormGroup.hide();
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

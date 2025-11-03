@@ -1,0 +1,255 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/body-not-white.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('fancybox/jquery.fancybox.css') }}" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    {{ organization.organizationName }}
+{% endblock %}
+{% block page_toolbar_right %}
+    {#<a class="btn btn-link close-btn" href="{{ path('federal_ministry_list') }}"><i class="fa fa-arrow-left"></i></a>#}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-3">
+
+            <div class="organization-badge-wrapper">
+                <div class="organization-badge-logo-container">
+                    <div class="organization-badge-logo-circle">
+                        {{ organization.establishmentMnemonic }}
+                    </div>
+                </div>
+                <div class="organization-badge-details">
+                    <table class="table table-striped">
+                        <tr>
+                            <td width="70" valign="top"><b>Name:</b></td>
+                            <td>{{ organization.organizationName }}</td>
+                        </tr>
+                        <tr>
+                            <td width="70" valign="top"><b>Code:</b></td>
+                            <td>{{ organization.establishmentCode }}</td>
+                        </tr>
+                        <tr>
+                            <td width="70" valign="top"><b>Mnemonic:</b></td>
+                            <td>{{ organization.establishmentMnemonic }}</td>
+                        </tr>
+                        <tr>
+                            <td width="70" valign="top"><b>Type:</b></td>
+                            <td>{{ organization.establishmentTypeId }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-9">
+            <div class="organization-profile-wrapper">
+
+                <div>
+                    <ul class="nav nav-tabs with-bold-active">
+                        <li class="">
+                            <a href="{{ path('federal_organization_profile_summary' , { guid : organization.guid }) }}">
+                                Summary
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="{{ path('federal_organization_profile_desk_officers_federal' , { guid : organization.guid }) }}">
+                                Federal Desk Officer
+                            </a>
+                        </li>
+                        {#<li class="active">
+                            <a href="{{ path('federal_organization_profile_desk_officers_state' , { guid : organization.guid }) }}">
+                                State Desk Officers
+                            </a>
+                        </li>#}
+                    </ul>
+                </div>
+                <table width="100%">
+                    <tr>
+                        <td valign="top" style="padding-top: 20px;">
+
+                            {% if app.session.started and app.session.flashBag.peekAll is not empty %}
+                                <div class="messages">
+                                    {% for type, messages in app.session.flashBag.all %}
+                                        {% for message in messages %}
+                                            {# Bootstrap alert, see http://getbootstrap.com/components/#alerts #}
+                                            <div class="alert alert-dismissible alert-{{ type }}" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+
+                                                {{ message }}
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th width="40">S/N</th>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Contact Info</th>
+                                    <th width="100">Status</th>
+                                    <th width="50"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for record in deskOfficersState %}
+                                    <tr>
+                                        <td>{{ record.displaySerialNo }}</td>
+                                        <td>{{ record.username }}</td>
+                                        <td>{{ record.firstName }} {{ record.lastName }}</td>
+                                        <td>{{ record.primaryPhone }}<br/>{{ record.emailAddress }}</td>
+                                        <td>{{ record.status }}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+                                                        data-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                    <li>
+                                                        <a href="#"
+                                                           onclick="openFancyBox('{{ path('super_admin_reset_user_password', { guid : record.guid }) }}')">
+                                                            Change Password
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6">No records found</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </td>
+                        <td width="10"></td>
+                        <td width="10" style="border-left: 1px dashed #CCC;"></td>
+                        <td valign="top" width="150" style="padding-top: 20px;">
+                            <form method="post"
+                                  action="{{ path('federal_organization_profile_desk_officers_state_new', { guid : organization.guid }) }}"
+                                  id="addUsersForm">
+
+                                <button type="submit" id="btnAddUsers" class="btn btn-sm btn-info" name="btnAddUsers"
+                                        style="margin-bottom: 4px;width: 100%;">
+                                    <i class="fa fa-users"></i> Add State Users
+                                </button>
+                                <div style="height: 500px; overflow-y: scroll;">
+                                    <table class="table table-bordered padding-sm">
+                                        <thead>
+                                        <tr>
+                                            <th width="30">
+                                                <input type="checkbox" id="selectall"/>
+                                            </th>
+                                            <th>State</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for record in availableStates %}
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="stateIds[]"
+                                                           value="{{ record.state_details }}"
+                                                           class="state_chkbox"
+                                                           {% if record.state_details in selectedStateIds %}checked{% endif %}>
+                                                </td>
+                                                <td>{{ record.state_name }}</td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="2">No records found</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('fancybox/jquery.fancybox.js') }}"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            var selectAllCheckBox = $("#selectall");
+            var checkBoxes = $(".state_chkbox");
+
+            selectAllCheckBox.change(function () {
+                checkBoxes.prop('checked', $(this).prop("checked"));
+            });
+
+            $('#btnAddUsers').on('click', function (event) {
+                event.preventDefault();
+
+                var countCheckedCheckboxes = checkBoxes.filter(':checked').length;
+
+                if (countCheckedCheckboxes > 0) {
+                    $.confirm({
+                        title: 'Confirmation?',
+                        content: 'Are you sure you want to create users for selected States',
+                        buttons: {
+                            ok: {
+                                text: "Yes",
+                                btnClass: 'btn-primary',
+                                keys: ['enter'],
+                                action: function () {
+                                    $('#addUsersForm').submit();
+                                }
+                            },
+                            cancel: function () {
+                                //console.log('the user clicked cancel');
+                            }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        title: 'Message',
+                        content: 'You have not made any selection!',
+                    });
+                }
+
+            });
+        });
+
+        function openFancyBox(url) {
+            $.fancybox.open({
+                autoSize: false,
+                width: '500',
+                height: '600',
+                href: '' + url + '',
+                type: 'iframe',
+                padding: 2,
+                helpers : {
+                    overlay : {
+                        closeClick : false
+                    }
+                }
+            });
+            return false;
+        }
+
+    </script>
+{% endblock %}

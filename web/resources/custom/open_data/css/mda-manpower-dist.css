@@ -1,0 +1,174 @@
+
+.v-sep-20{
+    height: 20px;
+}
+
+#stage1,#stage2,#stage3,#stage4,#stage5,#stage6,#stage7,#stage8,#stage9,.report-wrapper{
+    background-image: url("../img/open-data-watermark.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 600px 600px;
+}
+
+table.report-table{
+    width: 100%;
+}
+
+table.report-table > tbody > tr > td{
+    padding: 0 !important;
+    color: #000000;
+    font-weight: bold;
+    font-size: 11px !important;
+}
+
+table.report-table > thead > tr > th{
+    padding: 0 !important;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    font-size: 11px !important;
+}
+
+table.report-table > tbody > tr.no-bold > td{
+    font-weight: normal !important;
+}
+
+table.report-table > tbody > tr.ceo-list-committee > td{
+    font-size: 18px !important;
+}
+
+table.report-table > tbody > tr.ceo-list-agency-heading > td{
+    font-size: 14px !important;
+}
+
+td.mda-name{
+    text-transform: uppercase;
+}
+
+.report-page-number{
+    display: block;
+    text-align: center;
+    font-weight: bold;
+}
+
+.sub-analysis-container{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.stage-4-to-5-item-container{
+    display: inline-block;
+    /*width: 625px;*/
+    margin-left: 10px;
+    /*min-height: 270px;*/
+    max-height: 230px;
+}
+
+.stage-6-to-7-item-container{
+    display: inline-block;
+    /*width: 400px;*/
+    margin-left: 20px;
+    /*min-height: 270px;*/
+}
+
+.stage-6-to-7-item-content-wrapper{
+    width: 80%;
+}
+
+.stage-8-item-container{
+    display: inline-block;
+    width: 181px;
+    margin-left: 20px;
+    /*min-height: 270px;*/
+}
+
+.stage-8-item-content-wrapper{
+    width: 90%;
+}
+
+.stage-9-item-container{
+    display: inline-block;
+    padding-left: 30px;
+    font-weight: bold;
+}
+
+.stage-9-item-content-wrapper{
+    padding-left: 50px;
+}
+
+.print-landscape{
+    /*width: 1300px;*/
+    width: 100%;
+}
+
+.print-portrait{
+    width: 800px;
+    max-width: 800px;
+}
+
+.report-wrapper{
+    padding:5px;
+}
+
+.card {
+    /*background: #fff;
+    border-radius: 2px;
+    display: block;*/
+    /*margin: 1rem;*/
+    /*padding-left: 5px;*/
+    /*position: relative;*/
+}
+
+.card-1 {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-1:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.card-2 {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.card-3 {
+    /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
+    /*page-break-after: always;*/
+}
+
+.card-4 {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.card-5 {
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+table.website-report{
+    display: inline-block;
+    border-collapse: collapse;
+}
+
+table.website-report thead tr th{
+    color: #F2F2F2;
+    background-color: #333333;
+}
+
+table.website-report tbody tr td{
+    color: #000;
+}
+
+table.website-report thead tr th
+,table.website-report tbody tr td{
+    padding: 0 !important;
+    font-weight: bold;
+    text-align: center;
+    font-size: 13px !important;
+}
+
+table.website-report tbody tr td.highlight{
+    background-color: #57B847 !important;
+}
+

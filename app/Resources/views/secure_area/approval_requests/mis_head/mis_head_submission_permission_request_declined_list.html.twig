@@ -1,0 +1,92 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block page_toolbar_left %}
+    Declined Submission Permission Requests
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            {% include 'secure_area/approval_requests/mis_head/_submission_request_approval_tabs.html.twig' with { activePage : 'declined' } %}
+
+            <form method="post" action="{{ path('mis_head_submission_permission_request_declined_list') }}">
+                <div style="margin-bottom: 10px;margin-top: 15px;">
+                    <input type="text" class="form-control input-sm" name="search_submission_year"
+                           value="{{ searchFilter.submissionYear }}"
+                           placeholder="Search Submission Year"
+                           style="width: 250px;display: inline-block;" autocomplete="off">
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+
+                <div style="margin-top: 40px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i class="fa fa-chevron-left"></i> </button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"> <i class="fa fa-chevron-left"></i> </button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"> <i class="fa fa-chevron-right"></i> </button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"> <i class="fa fa-chevron-right"></i>|</button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="40">S/N</th>
+                        <th>Organization</th>
+                        <th>Year Of Submission</th>
+                        <th>Reason</th>
+                        <th width="150">Date of request</th>
+                        <th width="150">Approval Status</th>
+                        <th width="150">Date Approved</th>
+                        <td width="50"></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var record \AppBundle\Model\ApprovalRequests\SubmissionPermissionRequest #}
+                    {% for record in records %}
+                        <tr>
+                            <td>{{ record.displaySerialNo }}</td>
+                            <td>{{ record.organizationName }}</td>
+                            <td>{{ record.submissionYear }}</td>
+                            <td>{{ record.remarks }}</td>
+                            <td>{{ record.created }}</td>
+                            <td>{{ record.approvalStatus }}</td>
+                            <td>{{ record.dateOfApproval }}</td>
+                            <td>
+                                <a href="{{ path('mis_head_submission_permission_request_approve', { selector : record.selector }) }}"
+                                   class="btn btn-xs btn-primary" title="View">
+                                    <i class="fa fa-edit"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <input type="hidden" name="startRow" value="{{ paginator.startRow }}"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

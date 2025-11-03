@@ -1,0 +1,48 @@
+{# @var report \AppBundle\Model\Reporting\Shared\MDAComparativeDataAnalysis #}
+{# @var mdaEntry \AppBundle\Model\Reporting\Shared\MDAComparativeAnalysisEntry #}
+{% if report is not empty %}
+    <div id="print-panel" class="print-portrait-abc" style="display: block;margin-top: 20px;font-weight: bold;">
+        <!-- STAGE 1 -->
+        <div class="card card-3 print-break-after">
+            <table id="stage1" style="width: 100%;"
+                   class="table table-bordered table-hover report-table">
+                <tbody>
+                <tr align="center">
+                    <td style="text-align: left;"></td>
+                    <td style="text-align: left;"></td>
+                    {% for yearKey in report.overallYearTotals|keys %}
+                        <td>{{ yearKey }}</td>
+                    {% endfor %}
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;">S/N</td>
+                    <td style="text-align: left;">ORGANIZATION</td>
+                    {% for yearKey in report.overallYearTotals|keys %}
+                        <td>NO.</td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+                <tbody>
+                {% for mdaEntry in report.mdaEntries %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ mdaEntry.organizationName }}</td>
+                        {% for yearKey in report.overallYearTotals|keys %}
+                            <td align="center">{{ mdaEntry.yearEntries[yearKey].total | number_format }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td>TOTAL</td>
+                    {% for yearKey in report.overallYearTotals|keys %}
+                        <td align="center">{{ report.overallYearTotals[yearKey].overallTotal | number_format }}</td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}

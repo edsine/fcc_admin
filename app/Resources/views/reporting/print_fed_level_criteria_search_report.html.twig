@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>Federal Character Commission {% block title %}{% endblock %}</title>
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/printable-view.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>
+
+</head>
+
+<body style="padding-top: 0;">
+
+<div class="container-fluid"  style="overflow: visible;">
+
+    {% include 'reporting/_fed_level_criteria_search_report.html.twig' %}
+
+</div>
+<!-- /container -->
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.barRenderer.js') }}"></script>
+<script type="text/javascript"
+        src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.categoryAxisRenderer.js') }}"></script>
+<script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.pointLabels.js') }}"></script>
+
+{% if records is not empty %}
+    <script>
+        $(document).ready(function () {
+            window.print();
+        });
+    </script>
+{% endif %}
+</body>
+</html>

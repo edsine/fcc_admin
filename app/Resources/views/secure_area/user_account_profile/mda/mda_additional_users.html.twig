@@ -1,0 +1,111 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/body-not-white.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Profile
+{% endblock %}
+{% block page_toolbar_right %}
+    {#<a class="btn btn-link close-btn" href="{{ path('federal_ministry_list') }}"><i class="fa fa-arrow-left"></i></a>#}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-3">
+
+            {% include 'secure_area/user_account_profile/_user_profile_summary.html.twig' %}
+
+        </div>
+        <div class="col-sm-9">
+            <div class="organization-profile-wrapper">
+
+                {% include 'secure_area/user_account_profile/_user_account_profile_tabs.html.twig' with { activePage : 'mda_admin_additional_users' } %}
+
+                <div class="v-sep-20"></div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered table-hover dark-header">
+                            <thead>
+                            <tr>
+                                <th width="40">S/N</th>
+                                <th>Username</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th width="100">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {# @var record \AppBundle\Model\Users\UserProfile #}
+                            {% for record in mdaExtraUsers %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ record.username }}</td>
+                                    <td>{{ record.firstName }}</td>
+                                    <td>{{ record.lastName }}</td>
+                                    <td>{{ record.primaryPhone }}</td>
+                                    <td>{{ record.emailAddress }}</td>
+                                    <td>{{ record.status }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7">No records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="background-color: #f5f5f5;">
+                                {% if alertNotification.hasMessage %}
+                                    <div style="margin-bottom: 30px;">
+                                        <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                                        aria-hidden="true">&times;</span></button>
+                                            {% for message in alertNotification.messages %}
+                                                {{ message }}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <div class="pull-right">
+                                    <form method="post" action="{{ path('mda_admin_additional_users') }}" class="form-inline"
+                                          onsubmit="showLoading();">
+
+                                        <div class="form-group">
+                                            <label for="username" class="control-label">Username:<span class="required">*</span></label>
+                                            <input type="text" class="form-control input-14"
+                                                   name="username" id="username" style="width: 300px;"
+                                                   value="{{ userProfile.username }}"
+                                                   placeholder="Enter the username of a new user"
+                                                   autocomplete="off"/>
+
+                                            <button type="submit" name="btnSubmit" class="btn btn-primary">
+                                                Add User
+                                            </button>
+                                            <label>{{ validator.fields.field('username').html | raw }}</label>
+
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

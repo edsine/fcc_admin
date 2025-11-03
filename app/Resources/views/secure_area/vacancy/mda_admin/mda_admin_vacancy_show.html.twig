@@ -1,0 +1,114 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('fancybox/jquery.fancybox.css') }}" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    RecruitmentAdvert Detail
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('mda_admin_vacancy_list') }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-9">
+            {% if alertNotification.hasMessage %}
+                <div style="margin-bottom: 30px;">
+                    <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        {% for message in alertNotification.messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <table class="table table-bordered table-striped">
+                <tbody>
+                <tr>
+                    <td width="150"><label for="title" class="control-label">Title:</label></td>
+                    <td>{{ vacancySummary.title }}</td>
+                </tr>
+                <tr>
+                    <td><label for="title" class="control-label">Start Date:</label></td>
+                    <td>{{ vacancySummary.startDate }}</td>
+                </tr>
+                <tr>
+                    <td><label for="title" class="control-label">End Date:</label></td>
+                    <td>{{ vacancySummary.endDate }}</td>
+                </tr>
+                <tr>
+                    <td><label for="title" class="control-label">Details:</label></td>
+                    <td style="height: 400px;">
+                        {% autoescape false %}
+                            {{ vacancySummary.vacancyPost }}
+                        {% endautoescape %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-3">
+
+            {% if vacancySummary.uploadedFileName %}
+                <a href="#" onclick="openFancyBoxImage('{{ vacancySummary.uploadedFilePreviewUrl }}')"
+                   class="btn btn-info" title="View Attachment">
+                    <i class="fa fa-paperclip"></i> View Evidence Of Advert
+                </a>
+            {% else %}
+                <a href="#"
+                   class="btn btn-default disabled" title="View Attachment" disabled="disabled">
+                    <i class="fa fa-paperclip"></i> View Evidence Of Advert
+                </a>
+            {% endif %}
+
+
+            <div style="height: 5px; border-bottom: 1px dashed #ccc;margin: 25px 0 25px 0;"></div>
+
+            <a href="{{ path('mda_admin_vacancy_edit', { selector : vacancySummary.selector }) }}"
+               class="btn btn-primary" title="Edit">
+                <i class="fa fa-edit"></i> Edit
+            </a>
+
+            <a href="{{ path('mda_admin_vacancy_delete', { selector : vacancySummary.selector }) }}"
+               class="btn btn-danger" title="Delete" style="margin-left: 10px;">
+                <i class="fa fa-trash"></i> Delete
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('fancybox/jquery.fancybox.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+        });
+
+        function openFancyBoxImage(url, title) {
+            $.fancybox.open({
+                autoSize: false,
+                width: '80%',
+                height: '90%',
+                href: '' + url + '',
+                title: title,
+                padding: 2,
+                transitionIn: 'elastic',
+                transitionOut: 'elastic',
+                helpers: {
+                    overlay: {
+                        closeClick: false
+                    }
+                }
+            });
+            return false;
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,214 @@
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+{# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+{% set privilegeChecker = loggedInUser.privilegeChecker %}
+
+{% if report is not empty %}
+
+
+    {% set variationColumnDisplay = 'inline' %}
+
+    {% if not privilegeChecker.misHead %}
+        {% set variationColumnDisplay = "none" %}
+    {% endif %}
+
+    <div id="print-panel" class="print-landscape" style="margin-top: 20px;width: 1300px;">
+
+        <!-- STAGE 1 -->
+        <div class="card card-3 print-break-after">
+
+            <table id="stage1" style="width: 1300px;"
+                   class="table table-bordered report-table">
+                <tbody>
+                <tr align="center">
+                    <td colspan="3" align="center">
+                        {{ report.organizationName }}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="3" align="center">{{ report.submissionYear }} MANPOWER STATISTICS</td>
+                </tr>
+                <tr align="center">
+                    <td colspan="3" align="center">
+                        CBI DISTRIBUTION OF STAFF ON {{ report.distributionCategory }}
+                    </td>
+                </tr>
+                </tbody>
+                <tbody>
+                <tr>
+                    <td valign="top" width="400">
+
+                        <!-- table section -->
+                        <table id="stage1" style="width: 100%"
+                               class="table table-bordered table-hover report-table">
+                            <tbody>
+                            <tr>
+                                <td>STATE</td>
+                                <td>NO</td>
+                                <td style="display: {{ variationColumnDisplay }}">Variation</td>
+                                <td>%BFactor</td>
+                                <td>CBIndex</td>
+                                <td>Prop.</td>
+                                <td>%</td>
+                            </tr>
+                            </tbody>
+                            <tbody>
+                            {% for stage1Distribution in report.stage1.stage1Data %}
+                                <tr>
+                                    <td>{{ stage1Distribution.stateName }}</td>
+                                    <td align="right">{{ stage1Distribution.total }}</td>
+                                    <td align="right" style="display: {{ variationColumnDisplay }}">{{ stage1Distribution.variation }}</td>
+                                    <td align="right">{{ stage1Distribution.percentBFactor }}%</td>
+                                    <td align="right">{{ stage1Distribution.cbIndex }}</td>
+                                    <td align="right">{{ stage1Distribution.proportion }}</td>
+                                    <td align="right">{{ stage1Distribution.percentage }}%</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>TOTAL</td>
+                                <td align="right">{{ report.stage1.overallTotal }}</td>
+                                <td align="right"  style="display: {{ variationColumnDisplay }}">{{ report.stage1.overallVariation }}</td>
+                                <td align="right">{{ report.stage1.overallPercentBFactor }}</td>
+                                <td align="right">{{ report.stage1.overallCBIndex }}</td>
+                                <td align="right"></td>
+                                <td align="right"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </td>
+                    <td valign="top" style="padding: 10px !important;">
+
+                        <!-- chart section -->
+                        <table id="stage1" style="width: 100%"
+                               class="table table-bordered table-hover report-table">
+                            <tbody>
+                            <tr>
+                                <td align="center">Number to be recruited</td>
+                                <td align="center">Number required to balance</td>
+                                <td align="center">Total No. after recruitment</td>
+                            </tr>
+                            </tbody>
+                            <tbody>
+                            <tr>
+                                <td align="center">{{ report.numberToBeRecruited }}</td>
+                                <td align="center">{{ report.numberRequiredToBalance }}</td>
+                                <td align="center">{{ report.totalNumberAfterRecruitment }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">%Balanced {{ report.percentBalanced }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="width: 100%;display: flex;justify-content: center;border: 2px solid #ccc;margin-top: 20px;">
+                            <div id="proportion-chart" style="width: 100%;height: 200px;"></div>
+                        </div>
+
+                        <div style="width: 100%;display: flex;justify-content: center;border: 2px solid #ccc;margin-top: 20px;">
+                            <div id="cbindex-chart" style="width: 100%;height: 200px;"></div>
+                        </div>
+
+                        <div style="width: 100%;display: flex;justify-content: center;border: 2px solid #ccc;margin-top: 20px;">
+                            <div id="percent-bfactor-chart" style="width: 100%;height: 200px;"></div>
+                        </div>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="report-page-number">Page 1</div>
+        </div>
+
+        <div class="v-sep-20 do-not-print"></div>
+
+        <!-- STAGE 2 -->
+        <div class="card card-3">
+            <div id="stage2" style="width: 1300px;">
+                <table style="width: 1300px;"
+                       class="table table-bordered table-hover report-table">
+                    <tbody>
+                    <tr align="center">
+                        <td colspan="17" align="center">
+                            {{ report.organizationName }}
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td colspan="17" align="center">
+                            {{ report.submissionYear }} MANPOWER STATISTICS
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td colspan="17" align="center">
+                            CBI DISTRIBUTION OF STAFF ({{ report.distributionCategory }}) ON ZONAL BASIS
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div style="display: block;text-align: center;margin-bottom: 10px;">
+                    <div style="padding: 2px; border: 2px solid #000;display: inline-block;font-weight: bold;">
+                        Vacancies {{ report.numberToBeRecruited }}
+                    </div>
+                </div>
+                <div class="sub-analysis-container">
+                    {% for stage2SubAnalysis in report.stage2.stage2Data %}
+
+                        <div class="stage-4-to-5-item-container">
+
+                            <table style="width: 100%"
+                                   class="table table-bordered table-hover report-table">
+                                <tbody>
+                                <tr align="center">
+                                    <td style="text-align: left;"
+                                        colspan="3">{{ stage2SubAnalysis.zoneName }}</td>
+                                    <td>{{ stage2SubAnalysis.overallCBIndex }}</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr align="center">
+                                    <td style="text-align: left;">STATE</td>
+                                    <td>NO</td>
+                                    <td>% Bfactor</td>
+                                    <td>CBIndex</td>
+                                    <td>Prop.</td>
+                                    <td>%</td>
+                                </tr>
+                                </tbody>
+                                <tbody>
+                                {% for stage2SubAnalysisEntry in stage2SubAnalysis.subAnalysisData %}
+                                    <tr>
+                                        <td>{{ stage2SubAnalysisEntry.stateName }}</td>
+                                        <td align="right">{{ stage2SubAnalysisEntry.total }}</td>
+                                        <td align="right">{{ stage2SubAnalysisEntry.percentBFactor }}%</td>
+                                        <td align="right">{{ stage2SubAnalysisEntry.cbIndex }}</td>
+                                        <td align="right">{{ stage2SubAnalysisEntry.proportion }}</td>
+                                        <td align="right">{{ stage2SubAnalysisEntry.percentage }}%</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td align="right">{{ stage2SubAnalysis.overallTotal }}</td>
+                                    <td align="right">{{ stage2SubAnalysis.overallPercentBFactor }}%</td>
+                                    <td align="right">{{ stage2SubAnalysis.overallCBIndex }}</td>
+                                    <td align="right">{{ stage2SubAnalysis.overallProportion }}</td>
+                                    <td align="right">{{ stage2SubAnalysis.overallPercentage }}%</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    {% endfor %}
+                </div>
+
+                <div class="report-page-number">Page 2</div>
+
+            </div>
+        </div>
+
+        <div class="v-sep-20 do-not-print"></div>
+
+    </div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}

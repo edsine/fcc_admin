@@ -1,0 +1,153 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Approve CBI Report Request
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('mis_head_cbi_report_request_pending_approval_list') }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-5">
+
+                <div class="">
+
+                    {% if alertNotification.hasMessage %}
+                        <div style="margin-bottom: 30px;">
+                            <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                {% for message in alertNotification.messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" id="form" action="{{ path('mis_head_cbi_report_request_approve', { selector : cbiReportRequestSummary.selector }) }}" class="form-horizontal">
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Organization:</label>
+                            <div class="col-sm-8">
+                                <label class="control-label">{{ cbiReportRequestSummary.organizationName }}</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cbi_grade_level_category" class="col-sm-4 control-label">Recruitment Category:</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="cbi_grade_level_category" value="{{ cbiReportRequestSummary.cbiGradeLevelCategoryName }}"
+                                       class="form-control input-14" id="cbi_grade_level_category"
+                                       placeholder="Recruitment Category"
+                                       autocomplete="off" readonly>
+                                {{ validator.fields.field('cbi_grade_level_category').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recruitment_value" class="col-sm-4 control-label">Recruitment Value:</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="recruitment_value" value="{{ cbiReportRequestSummary.recruitmentValue }}"
+                                       class="form-control input-14" id="recruitment_value"
+                                       placeholder="Enter Recruitment Value (Total Number To Recruit)"
+                                       autocomplete="off" readonly>
+                                {{ validator.fields.field('recruitment_value').html | raw }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="remark" class="col-sm-4 control-label">Remark:</label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control input-14 counter" rows="6" name="remark" id="remark"
+                                          placeholder="Enter the reason for requesting this report"
+                                          maxlength="220" readonly>{{ cbiReportRequestSummary.remarks }}</textarea>
+                                {{ validator.fields.field('remark').html | raw }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Approval Status:</label>
+                            <div class="col-sm-8">
+                                <label class="control-label">{{ cbiReportRequestSummary.approvalStatus }}</label>
+                            </div>
+                        </div>
+
+                        {% if not outcome %}
+                            <div class="form-group">
+                                <label for="approval_status" class="col-sm-4 control-label">Approval:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-14" name="approval_status" style="display: inline-block; width: 300px;">
+                                        <option value="">Choose Approval</option>
+                                        {% for approvalStatus in approvalStatus %}
+                                            {% if approvalStatus.id == cbiReportRequest.approvalStatus %}
+                                                {% set selected = 'selected' %}
+                                            {% else %}
+                                                {% set selected = '' %}
+                                            {% endif %}
+                                            <option value="{{ approvalStatus.id }}" {{ selected }}>{{ approvalStatus.description }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {{ validator.fields.field('approval_status').html | raw }}
+                                </div>
+                            </div>
+                            <div class="col-sm-8 col-sm-offset-4">
+                                <input type="hidden" name="selector" value="{{ cbiReportRequestSummary.selector }}" />
+                                <input type="hidden" name="btnSubmit"/>
+                                <button id="btnSend" class="btn btn-primary">Submit</button>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-8 col-sm-offset-4">
+                                <input type="hidden" name="selector" value="{{ cbiReportRequestSummary.selector }}" />
+                                <button class="btn btn-default btn-sm disabled" disabled>Submit</button>
+                            </div>
+                        {% endif %}
+
+
+
+
+                    </form>
+
+            </div>
+        </div>
+        <div class="col-sm-7">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#btnSend').on('click', function (event) {
+                event.preventDefault();
+
+                $.confirm({
+                    title: 'Confirmation?',
+                    content: 'Are you sure you want to update this approval?',
+                    buttons: {
+                        ok: {
+                            text: "Yes",
+                            btnClass: 'btn-primary',
+                            keys: ['enter'],
+                            action: function () {
+                                $('#form').submit();
+                            }
+                        },
+                        cancel: function () {
+                            //console.log('the user clicked cancel');
+                        }
+                    }
+                });
+            });
+
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'base.fcc.html.twig' %}
+
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+{# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+{% set privilegeChecker = loggedInUser.privilegeChecker %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('fancybox/jquery.fancybox.css') }}" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="{{ asset('css/inbox.css') }}" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Mailbox
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="inbox-wrapper">
+                <table class="inbox-table">
+                    <tbody>
+                    <tr>
+                        <td valign="top" class="inbox-menu">
+                            <div class="list-group">
+                                <a href="{{ path('notification_inbox') }}" class="list-group-item active">
+                                    <i class="fa fa-envelope"></i> Inbox
+                                </a>
+                                <a href="#" class="list-group-item disabled" disabled>
+                                    <i class="fa fa-send"></i> Sent
+                                </a>
+                                <a href="#" class="list-group-item disabled" disabled>
+                                    <i class="fa fa-trash"></i> Trash
+                                </a>
+                                <a href="#" class="list-group-item disabled" disabled>
+                                    <i class="fa fa-edit"></i> Draft
+                                </a>
+                            </div>
+
+                            <div class="v-sep-20"></div>
+                            <div class="v-sep-20"></div>
+
+                            {% if privilegeChecker.superAdmin or privilegeChecker.misHead %}
+                                <div class="text-center">
+                                    <div class="btn-group" style="width: 90%;">
+                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false"
+                                                style="width: 100%">
+                                            Compose <span class="caret"></span>
+                                        </button>
+                                        <div class="v-sep-5"></div>
+                                        <ul class="dropdown-menu">
+                                            {#<li><a href="#">Send Message</a></li>#}
+                                            <li>
+                                                <a href="#"
+                                                   onclick="openFancyBox2('{{ path('notification_for_all_federal_mda') }}');">
+                                                    Send Message To All Federal MDAs
+                                                </a>
+                                            </li>
+
+                                            <li role="separator" class="divider"></li>
+
+                                            <li>
+                                                <a href="#"
+                                                   onclick="openFancyBox2('{{ path('open_notification') }}');">
+                                                    Send Message To Any Email(s)/Phone Number(s)
+                                                </a>
+                                            </li>
+
+                                            <li role="separator" class="divider"></li>
+
+                                            <li>
+                                                <a href="#"
+                                                   onclick="openFancyBox('{{ path('send_submission_demand_notice') }}');">
+                                                    Send Submission Demand Notice
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                        </td>
+                        <td valign="top" class="message-list">
+                            <div class="message-scroll-box" style="height: 750px; overflow-y: scroll;">
+                                <div id="message-list-wrapper">
+
+                                    {# @var message \AppBundle\Model\Notification\Notification #}
+                                    {% for message in messages %}
+    <a href="#"
+       data-href="{{ path('notification_show', { guid : message.uid }) }}"
+       class="message-list-item">
+        <div class="message-list-item-content-wrapper">
+            <div class="message-list-item-avatar">
+                <img src="{{ asset('images/user-128px.png') }}"/>
+            </div>
+            <div class="message-list-item-summary">
+                <div class="sender-date">
+                    <div class="summary-sender">
+                        {{ message.from[0].mailbox }}@{{ message.from[0].host }}
+                        <br/>
+                        {{ message.subject }}
+                    </div>
+                    <div class="summary-date">
+                        {{ message.date.format('Y-m-d H:i') }}
+                    </div>
+                </div>
+                <div class="summary-subject">
+                    {{ message.subject }}
+                </div>
+            </div>
+        </div>
+    </a>
+{% else %}
+    <div class="empty-message-list-notice">
+        Your inbox is empty
+    </div>
+{% endfor %}
+
+
+                                </div>
+                            </div>
+                        </td>
+                        <td valign="top" class="message-detail">
+                            <iframe id="message-detail-frame"
+                                    src="{{ path('no_selected_message_show') }}" onload="this.style.height=this.contentDocument.body.scrollHeight +'px';"></iframe>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('fancybox/jquery.fancybox.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jquery.nicescroll/jquery.nicescroll.min.js') }}"></script>
+    <script>
+
+        $(document).ready(function ($) {
+
+            $(".message-list-item").on('click', function (e) {
+
+                e.preventDefault();
+
+                $(".message-list-item").removeClass('selected');
+                $(".summary-sender").removeClass('selected');
+                $(".summary-date").removeClass('selected');
+                $(".summary-subject").removeClass('selected');
+
+                $(this).addClass('selected');
+                $(this).find('.summary-sender').addClass('selected');
+                $(this).find('.summary-date').addClass('selected');
+                $(this).find('.summary-subject').addClass('selected');
+
+                $('#message-detail-frame').attr('src', $(this).data("href"));
+
+
+            });
+
+            $(".message-scroll-box").niceScroll("#message-list-wrapper",{cursorcolor:"#3F51B5"});
+
+        });
+
+        /*function resizeIframe(obj) {
+            obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+        }*/
+
+        function openFancyBox(url) {
+            $.fancybox.open({
+                autoSize: false,
+                width: '1024',
+                height: '640',
+                href: '' + url + '',
+                type: 'iframe',
+                padding: 2,
+                helpers: {
+                    overlay: {
+                        closeClick: false
+                    }
+                }
+            });
+            return false;
+        }
+
+        function openFancyBox2(url) {
+            $.fancybox.open({
+                autoSize: false,
+                width: '85%',
+                height: '98%',
+                href: '' + url + '',
+                type: 'iframe',
+                padding: 2,
+                helpers: {
+                    overlay: {
+                        closeClick: false
+                    }
+                }
+            });
+            return false;
+        }
+
+    </script>
+{% endblock %}

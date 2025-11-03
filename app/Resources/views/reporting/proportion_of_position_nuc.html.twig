@@ -1,0 +1,154 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('fancybox/jquery.fancybox.css') }}" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Number Of Positions Report (Federal Academic Establishments)
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('proportion_of_position_nuc') }}" class="do-not-print"
+                  onsubmit="showLoading();">
+                <div style="margin-bottom: 10px;" class="do-not-print">
+                    <select class="form-control input-14" name="searchStartYear"
+                            style="display: inline-block; width: 200px;">
+                        <option value="">Choose Start Year</option>
+                        {% for startYear in submissionYears %}
+                            {% if startYear.submission_year == searchStartYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ startYear.submission_year }}" {{ selected }}>{{ startYear.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="searchEndYear"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose End Year</option>
+                        {% for endYear in submissionYears %}
+                            {% if endYear.submission_year == searchEndYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ endYear.submission_year }}" {{ selected }}>{{ endYear.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+            </form>
+
+            {# @var report \AppBundle\Model\Reporting\FederalLevel\NumberOfPositionDataAnalysis #}
+            {# @var cadreEntry \AppBundle\Model\Reporting\FederalLevel\NumberOfPositionCadreAnalysisEntry #}
+            {% if report is not empty %}
+                <div id="print-panel" class="print-portrait-abc" style="margin-top: 20px;">
+                    <div class="card card-3 print-break-after" style="display: inline-block;">
+                        <div style="text-align: center;font-weight: bold; padding: 10px;">
+                            NUMBER OF POSITIONS IN
+                            <a href="#" style="color: #00f;text-decoration: underline;"
+                               onclick="openFancyBox('{{ path('affected_fed_level_comparative_mda_data', { startYear : report.startYear , endYear : report.endYear, organizationCategory : report.organizationCategoryId }) }}');return false;">
+                                {{ report.totalOrganizationsConsidered }} PUBLIC INSTITUTIONS
+                            </a>
+                            BY CADRE,SEX AND YEAR
+                        </div>
+                        <table id="stage1" style="width: 100%;"
+                               class="table table-bordered table-hover report-table">
+                            <tbody>
+                            <tr align="center">
+                                <td rowspan="2" align="center" width="220" valign="bottom" bgcolor="#f7f7f7">
+                                    CADRE
+                                </td>
+                                {% for yearKey in report.overallYearTotals|keys %}
+                                    <td colspan="2" width="150">{{ yearKey }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for yearKey in report.overallYearTotals|keys %}
+                                    <td align="center" bgcolor="#f7f7f7" width="70">Male</td>
+                                    <td align="center" bgcolor="#f7f7f7" width="70">Female</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                            <tbody>
+                            {% for cadreEntry in report.cadreEntries %}
+                                <tr>
+                                    <td bgcolor="#f7f7f7">{{ cadreEntry.cadreName }}</td>
+                                    {% for yearKey in report.overallYearTotals|keys %}
+                                        <td align="center">{{ cadreEntry.yearEntries[yearKey].totalMale }}</td>
+                                        <td align="center">{{ cadreEntry.yearEntries[yearKey].totalFemale }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            <tr align="center">
+                                <td rowspan="2" align="center" width="150" valign="bottom" bgcolor="#f7f7f7">
+
+                                </td>
+                                {% for yearKey in report.overallYearTotals|keys %}
+                                    <td colspan="2">{{ yearKey }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for yearKey in report.overallYearTotals|keys %}
+                                    <td align="center" bgcolor="#f7f7f7">Male</td>
+                                    <td align="center" bgcolor="#f7f7f7">Female</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <td bgcolor="#f7f7f7">TOTAL</td>
+                                {% for yearKey in report.overallYearTotals|keys %}
+                                    <td align="center">{{ report.overallYearTotals[yearKey].overallTotalMale }}</td>
+                                    <td align="center">{{ report.overallYearTotals[yearKey].overallTotalFemale }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="v-sep-20"></div>
+
+                </div>
+            {% else %}
+                <span class="text-warning">No result found</span>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('fancybox/jquery.fancybox.js') }}"></script>
+    <script>
+        function openFancyBox(url) {
+            $.fancybox.open({
+                autoSize: false,
+                autoFit : true,
+                href: '' + url + '',
+                type: 'iframe',
+                padding: 2,
+                helpers: {
+                    overlay: {
+                        closeClick: false
+                    }
+                }
+            });
+            return false;
+        }
+
+    </script>
+
+{% endblock %}

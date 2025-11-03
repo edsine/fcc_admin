@@ -1,0 +1,223 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('select2-4.0.3/dist/css/select2.min.css') }}" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Federal Nominal Roll
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            {% if app.session.started and app.session.flashBag.peekAll is not empty %}
+                <div class="messages">
+                    {% for type, messages in app.session.flashBag.all %}
+                        {% for message in messages %}
+                            {# Bootstrap alert, see http://getbootstrap.com/components/#alerts #}
+                            <div class="alert alert-dismissible alert-{{ type }}" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('federal_level_criteria_search_report') }}">
+                <div style="margin-bottom: 10px;">
+
+                    {# REVIEW AND UPDATE (WHERE NECCESSARY) THE PRINT FORM ANYTIME YOU UPDATE THIS SEARCH FORM #}
+
+                    <select class="form-control input-14" name="searchSubmissionYear"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Submission Year</option>
+                        {% for submissionYearRecord in submissionYears %}
+                            {% if submissionYearRecord.submission_year == searchCriteria.submissionYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionYearRecord.submission_year }}" {{ selected }}>{{ submissionYearRecord.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14 select-2" name="searchOrganization"
+                            style="display: inline-block; width: 400px;">
+                        <option value="">Choose Organization</option>
+                        {% for organization in organizations %}
+                            {% if organization.id == searchCriteria.organization %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ organization.id }}" {{ selected }}>{{ organization.organization_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="searchGradeLevel"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Grade Level</option>
+                        {% for gradeLevel in gradeLevels %}
+                            {% if gradeLevel.grade_level_code == searchCriteria.gradeLevel %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ gradeLevel.grade_level_code }}" {{ selected }}>{{ gradeLevel.description }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="searchGender"
+                            style="display: inline-block; width: 150px;margin-left: 20px;">
+                        <option value="">Choose Gender</option>
+                        {% for gender in gender %}
+                            {% if gender.id == searchCriteria.gender %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ gender.id }}" {{ selected }}>{{ gender.description }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+                <div style="margin-bottom: 10px;">
+
+                    <select class="form-control input-14" name="searchMaritalStatus"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Marital Status</option>
+                        {% for m_status in maritalStatus %}
+                            {% if m_status.id == searchCriteria.maritalStatus %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ m_status.id }}" {{ selected }}>{{ m_status.description }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="searchStateOfOrigin"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose State Of Origin</option>
+                        {% for nigerianState in nigerianStates %}
+                            {% if nigerianState.state_code == searchCriteria.stateOfOrigin %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ nigerianState.state_code }}" {{ selected }}>{{ nigerianState.state_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="searchGeoPoliticalZone"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Region</option>
+                        {% for zone in geoPoliticalZones %}
+                            {% if zone.zone_code == searchCriteria.geoPoliticalZone %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ zone.zone_code }}" {{ selected }}>{{ zone.zone_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-control input-14" name="searchNationality"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Nationality</option>
+                        {% for nationality in nationalityCodes %}
+                            {% if nationality.id == searchCriteria.nationality %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ nationality.id }}" {{ selected }}>{{ nationality.description }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <input type="text" class="form-control input-sm input-14" name="searchDesignation"
+                           value="{{ searchCriteria.designation }}"
+                           placeholder="Designation" style="width: 120px;display: inline-block;"
+                           autocomplete="off"/>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm"
+                    onclick="showLoading();">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                    <button type="submit" name="btnResetSearch" class="btn btn-default btn-sm">
+                        Reset <i class="fa fa-eraser"></i>
+                    </button>
+                </div>
+
+                <div style="margin-top: 20px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst" onclick="showLoading();">|<i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev" onclick="showLoading();"><i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext" onclick="showLoading();"><i
+                                        class="fa fa-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast" onclick="showLoading();"><i
+                                        class="fa fa-chevron-right"></i>|
+                            </button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                        <input type="hidden" name="startRow" value="{{ paginator.startRow }}" readonly/>
+                    </div>
+                    <div class="pull-right">
+                        <a href="#" id="btnPrint" class="btn btn-default btn-sm" onclick="">
+                            Print <i class="fa fa-print"></i>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                {% include 'reporting/_fed_level_criteria_search_report.html.twig' %}
+
+            </form>
+
+            <form id="printForm" target="_blank" method="post" action="{{ path('print_federal_level_criteria_search_report') }}">
+                <input type="hidden" name="searchSubmissionYear" value="{{ searchCriteria.submissionYear }}" />
+                <input type="hidden" name="searchOrganization" value="{{ searchCriteria.organization }}" />
+                <input type="hidden" name="searchGradeLevel" value="{{ searchCriteria.gradeLevel }}" />
+                <input type="hidden" name="searchGender" value="{{ searchCriteria.gender }}" />
+                <input type="hidden" name="searchMaritalStatus" value="{{ searchCriteria.maritalStatus }}" />
+                <input type="hidden" name="searchStateOfOrigin" value="{{ searchCriteria.stateOfOrigin }}" />
+                <input type="hidden" name="searchGeoPoliticalZone" value="{{ searchCriteria.geoPoliticalZone }}" />
+                <input type="hidden" name="searchNationality" value="{{ searchCriteria.nationality }}" />
+                <input type="hidden" name="startRow" value="0" />
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('select2-4.0.3/dist/js/select2.min.js') }}"></script>
+    <script>
+
+        $(document).ready(function () {
+            $('select').select2();
+
+            $('#btnPrint').on('click', function () {
+                $('#printForm').submit();
+            });
+        });
+
+
+
+    </script>
+{% endblock %}

@@ -1,0 +1,114 @@
+.step-indicator {
+    margin-bottom: 20px;
+    line-height: 30px;
+}
+
+.step {
+    display: block;
+    float: left;
+    font-weight: bold;
+    background: #D6D7D6;
+    padding-right: 10px;
+    height: 30px;
+    line-height: 32px;
+    margin-right: 33px;
+    position: relative;
+    text-decoration: none;
+    color: #666;
+    cursor: default;
+}
+.step:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -30px;
+    border: 15px solid transparent;
+    border-color: #D6D7D6;
+    border-left-color: transparent;
+}
+.step:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    right: -30px;
+    border: 15px solid transparent;
+    border-left-color: #D6D7D6;
+}
+.step:first-of-type {
+    border-radius: 2px 0 0 2px;
+    padding-left: 15px;
+}
+.step:first-of-type:before {
+    display: none;
+}
+.step:last-of-type {
+    border-radius: 0 2px 2px 0;
+    margin-right: 25px;
+    padding-right: 15px;
+}
+.step:last-of-type:after {
+    display: none;
+}
+.step.completed {
+    background: #34A853;
+    color: #fff;
+    cursor: pointer;
+}
+.step.completed:before {
+    border-color: #34A853;
+    border-left-color: transparent;
+}
+.step.completed:after {
+    border-left-color: #34A853;
+}
+.step.completed:hover {
+    background: #78BD91;
+    border-color: #78BD91;
+    color: #fff;
+    text-decoration: none;
+}
+.step.completed:hover:before {
+    border-color: #78BD91;
+    border-left-color: transparent;
+}
+.step.completed:hover:after {
+    border-left-color: #78BD91;
+}
+
+.step.failed{
+    background-color: #C03523;
+    color: #fff;
+    cursor: pointer;
+}
+
+.step.failed:hover{
+    background-color: #CE3C31;
+    color: #F9CCBE;
+}
+
+.step.failed:before {
+    border-color: #C03523;
+    border-left-color: transparent;
+}
+.step.failed:after {
+    border-left-color: #C03523;
+}
+
+.step.failed:hover:before {
+    border-color: #CE3C31;
+    border-left-color: transparent;
+}
+.step.failed:hover:after {
+    border-left-color: #CE3C31;
+}
+
+a.step:hover{
+    text-decoration: none;
+    color: #666;
+}

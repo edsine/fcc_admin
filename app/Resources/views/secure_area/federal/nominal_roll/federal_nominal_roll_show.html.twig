@@ -1,0 +1,237 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"/>
+{% endblock %}
+
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+{# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+{% set privilegeChecker = loggedInUser.privilegeChecker %}
+
+{% set referrer = app.request.headers.get('referer')|default('#') %}
+
+{% block page_toolbar_left %}
+    {{ nominalRollSubmission.submissionYear }} Nominal Roll Submission
+{% endblock %}
+{% block page_toolbar_right %}
+    {#<a class="btn btn-link close-btn" href="{{ referrer }}"><i
+                class="fa fa-arrow-left"></i></a>#}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+
+            <div id="passed-validation-summary">
+                <table class="flat-table">
+                    <tr>
+                        <td width="80">
+                            <img src="{{ asset('images/checked.png') }}" width="64" height="64"/>
+                        </td>
+                        <td>
+                            <table class="flat-table">
+                                <tr>
+                                    <td width="120">
+                                        <b>Organization:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRollSubmission.organizationName }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="120">
+                                        <b>Date Uploaded:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRollSubmission.created }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>File Name:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRollSubmission.simpleFileName }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Validation Status:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRollSubmission.validationStatus }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <form method="post"
+                  action="{{ path('federal_nominal_roll_show',{submissionId : nominalRollSubmission.submissionId}) }}"
+                  onsubmit="showLoading();">
+                <div style="margin-top: 20px;margin-bottom: 5px;">
+                    <div class="pull-left">
+                        <div class="btn-group btn-group-sm" role="group"
+                             style="display: inline-block;font-weight: bold;">
+                            <button type="submit" class="btn btn-default" name="btnPageFirst">|<i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPagePrev"><i
+                                        class="fa fa-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageNext"><i
+                                        class="fa fa-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-default" name="btnPageLast"><i
+                                        class="fa fa-chevron-right"></i>|
+                            </button>
+                        </div>
+                        <div style="display: inline-block;margin-left: 20px;">
+                            {{ paginator.paginationDescription }}
+                        </div>
+                    </div>
+                    <div class="pull-right">
+
+
+                        {% if app.user.privilegeChecker.canUploadFedMdaNominalRoll %}
+
+                            <a class="btn btn-primary btn-sm" href="#" id="download-button">
+                                <i class="fa fa-download"></i> Download
+                            </a>
+
+                            {% if not nominalRollSubmission.fccDeskOfficerConfirmed %}
+                                <button id="btnDelete" type="button" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-trash"></i> Delete
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th width="40">S/No</th>
+                            <th>Emp.<br/>Status</th>
+                            <th>Emp. No<br/>MMM/SSSSSS</th>
+                            <th>Name</th>
+                            <th>Nationality<br/>Code</th>
+                            <th>State of Origin<br/>Code</th>
+                            <th>LGA of Origin<br/>Code</th>
+                            <th>Region<br/>Code</th>
+                            <th>Date of Birth<br/>DD/MMM/YYYY</th>
+                            <th>Date of Employment<br/>DD/MMM/YYYY</th>
+                            <th>Date of Pres. Appt.<br/>DD/MMM/YYYY</th>
+                            <th>Grade Level<br/>Code</th>
+                            <th>Designation</th>
+                            <th>State Of Deployment<br/>Code</th>
+                            <th>Sex<br/>Code</th>
+                            <th>M. Status<br/>Code</th>
+                            <th>Physically<br/>Challenged</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {# @var record \AppBundle\Model\Submission\NominalRollValidation #}
+                        {% for record in records %}
+                            <tr>
+                                <td class="">{{ record.serialNo }}</td>
+                                <td>{{ record.employeeStatus }}</td>
+                                <td>{{ record.employeeNumber }}</td>
+                                <td>{{ record.name }}</td>
+                                <td>{{ record.nationality }}</td>
+                                <td>{{ record.stateOfOrigin }}</td>
+                                <td>{{ record.lga }}</td>
+                                <td>{{ record.geoPoliticalZone }}</td>
+                                <td>{{ record.dateOfBirth }}</td>
+                                <td>{{ record.dateOfEmployment }}</td>
+                                <td>{{ record.dateOfPresentAppointment }}</td>
+                                <td>{{ record.gradeLevel }}</td>
+                                <td>{{ record.designation }}</td>
+                                <td>{{ record.stateOfLocation }}</td>
+                                <td>{{ record.gender }}</td>
+                                <td>{{ record.maritalStatus }}</td>
+                                <td>{{ record.physicallyChallengedStatus }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="17">No records found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <input type="hidden" name="startRow" value="{{ paginator.startRow }}"/>
+                </div>
+            </form>
+            <div class="v-sep-20"></div>
+            <div class="v-sep-20"></div>
+
+            {% if app.user.privilegeChecker.canUploadFedMdaNominalRoll %}
+
+                <iframe id="download-frame"
+                        style="visibility: hidden; display: inline-block; height: 5px; width: 10px;"
+                        src=""></iframe>
+
+            {% if not nominalRollSubmission.fccDeskOfficerConfirmed %}
+
+                <div style="visibility: hidden">
+                    <form method="post"
+                          action="{{ path('federal_mda_admin_nominal_roll_submission_delete', {submissionId : nominalRollSubmission.submissionId}) }}"
+                          id="deleteForm" onsubmit="showLoading();">
+                        <input type="hidden" name="btnSubmit"/>
+                    </form>
+                </div>
+
+            {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#download-button').on('click', function (event) {
+                event.preventDefault();
+                $('#download-frame').attr('src', '{{ path('nominal_role_download', { submissionId : nominalRollSubmission.submissionId }) }}');
+
+            });
+
+            {% if app.user.privilegeChecker.canUploadFedMdaNominalRoll %}
+            {% if not nominalRollSubmission.fccDeskOfficerConfirmed %}
+            $('#btnDelete').on('click', function (event) {
+                event.preventDefault();
+
+                $.confirm({
+                    title: 'Confirmation?',
+                    content: 'Are you sure you want to delete this Submission?<br/>This cannot be reversed.',
+                    buttons: {
+                        ok: {
+                            text: "Yes",
+                            btnClass: 'btn-primary',
+                            keys: ['enter'],
+                            action: function () {
+                                $('#deleteForm').submit();
+                            }
+                        },
+                        cancel: function () {
+                            //console.log('the user clicked cancel');
+                        }
+                    }
+                });
+            });
+            {% endif %}
+            {% endif %}
+
+        });
+
+    </script>
+{% endblock %}

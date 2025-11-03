@@ -1,0 +1,17 @@
+<div>
+    <ul class="nav nav-tabs with-bold-active">
+        <li class="{{ (activePage == 'pending' ? 'active' : '') }}">
+            <a href="{{ path('mis_head_cbi_report_request_pending_approval_list') }}">
+                Pending Approval
+            </a>
+        </li>
+        <li class="{{ (activePage == 'approved' ? 'active' : '') }}">
+            <a href="{{ path('mis_head_cbi_report_request_approved_list') }}">
+                Approved
+            </a>
+        </li>
+        <li class="{{ (activePage == 'declined' ? 'active' : '') }}">
+            <a href="{{ path('mis_head_cbi_report_request_declined_list') }}">Declined</a>
+        </li>
+    </ul>
+</div>

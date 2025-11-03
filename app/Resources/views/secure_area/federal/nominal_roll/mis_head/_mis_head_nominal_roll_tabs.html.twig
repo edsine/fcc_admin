@@ -1,0 +1,17 @@
+<div>
+    <ul class="nav nav-tabs with-bold-active">
+        <li class="{{ (activePage == 'pending' ? 'active' : '') }}">
+            <a href="{{ path('mis_head_nominal_roll_pending_approval_list') }}">
+                PENDING APPROVAL <span class="badge badge-info">{{ totalPending }}</span>
+            </a>
+        </li>
+        <li class="{{ (activePage == 'processing' ? 'active' : '') }}">
+            <a href="{{ path('mis_head_nominal_roll_processing_list') }}">
+                PROCESSING <span class="badge badge-danger">{{ totalStillProcessing }}</span>
+            </a>
+        </li>
+        <li class="{{ (activePage == 'processed' ? 'active' : '') }}">
+            <a href="{{ path('mis_head_nominal_roll_processed_list') }}">PROCESSED</a>
+        </li>
+    </ul>
+</div>

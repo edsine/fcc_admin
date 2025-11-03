@@ -1,0 +1,138 @@
+{% extends 'reporting/open_data/base.opendata.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('resources/custom/open_data/css/zonal-poloh.css') }}" type="text/css">
+{% endblock %}
+
+{% block page_title %}
+    {#<div class="page-title">
+        <div class="container">
+            <h1 class="opacity-40 center">
+                FCC Open Data Portal
+            </h1>
+        </div>
+        <!--end container-->
+    </div>#}
+{% endblock %}
+
+{% block hero_form %}
+    <form id="report-form" class="hero-form form" method="post" action="{{ path('open_data_fed_level_career_dist_single_establishment') }}"
+    onsubmit="showLoading();">
+        <div class="container">
+            <!--Main Form-->
+            <div class="main-search-form">
+                <div class="form-row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="searchOrganization" class="col-form-label" style="color: #545454;">Federal MDA Manpower Distribution</label>
+                            <select id="searchOrganization" name="searchOrganization" class="select-mda"
+                            style="padding: 1.3rem !important;" required>
+                                <option value="">Choose Federal MDA</option>
+                                {% for organization in organizations %}
+                                    <option value="{{ organization.id }}" data-total_submissions_processed="{{ organization.total_submissions_processed }}">
+                                        {{ organization.organization_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <!--end col-md-3-->
+                    <!--end col-md-3-->
+                    <div class="col-md-3 col-sm-3">
+                        <div class="form-group">
+                            {#<label for="searchSubmissionYear" class="col-form-label">Year?</label>#}
+                            <select id="searchSubmissionYear" name="searchSubmissionYear" class="select-2" required>
+                                <option value="">Choose Year</option>
+                                {% for submissionYearRecord in submissionYears %}
+                                    <option value="{{ submissionYearRecord.submission_year }}">{{ submissionYearRecord.submission_year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <!--end col-md-3-->
+                    <div class="col-md-3 col-sm-3">
+                        <button type="button" id="btn-get-report" class="btn btn-info btn-rounded width-100">Search</button>
+                    </div>
+                    <!--end col-md-3-->
+                </div>
+                <!--end form-row-->
+            </div>
+            <!--end main-search-form-->
+            <!--Alternative Form-->
+
+            <!--end alternative-search-form-->
+        </div>
+        <!--end container-->
+    </form>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12 col-xs-12">
+            {% include 'reporting/shared/_fed_level_poloh_dist_zonal_consolidated.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+
+            $('#searchOrganization').on('change', function (event) {
+                var organizationId = $(this).val();
+                var emptyOption = '<option value="">Choose Year</option>';
+
+                var selectYear = $('#searchSubmissionYear');
+                selectYear.html(loadingSelectOption);
+                selectYear.prop("disabled", true);
+
+                if (organizationId) {
+                    $.ajax(
+                        {
+                            type: 'POST',
+                            url: '{{ path('api_mda_processed_years') }}' + "/" + $(this).val()
+                        }
+                    ).done(
+                        function (data, textStatus, jqXHR) {
+                            selectYear.prop("disabled", false);
+                            selectYear.html(data);
+                        }
+                    ).fail(
+                        function (jqXHR, textStatus, errorThrown) {
+                            selectYear.html(emptyOption);
+                        }
+                    ).always(
+                        function (jqXHR, textStatus) {
+
+                        }
+                    );
+                } else {
+                    selectYear.html(emptyOption);
+                }
+            });
+
+            $('#btn-get-report').on('click', function (e) {
+
+                e.preventDefault();
+
+                if(!$('#searchOrganization').val() || !$('#searchSubmissionYear').val()){
+                    $.growl.warning({
+                        title :'Ooops!',
+                        message: 'All fields are required',
+                        location: 'tc'
+                    });
+                }else{
+                    $('#report-form').submit();
+                }
+
+            });
+
+
+        });
+    </script>
+
+    {% include 'reporting/shared/_fed_level_poloh_dist_zonal_consolidated_js.html.twig' %}
+
+{% endblock %}

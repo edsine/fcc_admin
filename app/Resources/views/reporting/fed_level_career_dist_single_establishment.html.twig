@@ -1,0 +1,190 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>
+    {#<link rel="stylesheet" href="{{ asset('table-export-js/css/tableexport.min.css') }}"/>#}
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Federal Establishment Career Post Distribution
+{% endblock %}
+{% block page_toolbar_right %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="{{ path('fed_level_career_dist_single_establishment') }}" class="do-not-print">
+                <div style="margin-bottom: 10px;" class="do-not-print">
+                    <select class="form-control input-14 select-2" name="searchOrganization"
+                            style="display: inline-block; width: 400px;">
+                        <option value="">Choose Organization</option>
+                        {% for organization in organizations %}
+                            {% if organization.id == searchOrganization %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ organization.id }}" {{ selected }}>{{ organization.organization_name }}</option>
+                        {% endfor %}
+                    </select>
+                    {#<input type="text" class="form-control input-14" name="searchSubmissionYear"
+                           value="{{ searchSubmissionYear }}"
+                           placeholder="Submission Year"
+                           style="width: 150px;display: inline-block;margin-left: 20px;" autocomplete="off">#}
+
+                    <select class="form-control input-14" name="searchSubmissionYear"
+                            style="display: inline-block; width: 200px;margin-left: 20px;">
+                        <option value="">Choose Submission Year</option>
+                        {% for submissionYearRecord in submissionYears %}
+                            {% if submissionYearRecord.submission_year == searchSubmissionYear %}
+                                {% set selected = 'selected' %}
+                            {% else %}
+                                {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ submissionYearRecord.submission_year }}" {{ selected }}>{{ submissionYearRecord.submission_year }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="btnSearch" class="btn btn-primary btn-sm">
+                        Search <i class="fa fa-search"></i>
+                    </button>
+                    {#<button type="submit" name="btnResetSearch" class="btn btn-primary btn-sm">
+                        <i class="fa fa-refresh"></i>
+                    </button>#}
+                </div>
+            </form>
+
+            {% if report is not empty %}
+                <div class="" style="width: 1300px;text-align: right; padding: 5px;margin-bottom: 20px;">
+                    <a href="{{ path('print_fed_level_career_dist_single_establishment',{organization : searchOrganization , submissionYear : searchSubmissionYear}) }}"
+                       class="btn btn-default btn-sm" target="_blank">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <i class="fa fa-download"></i> Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {#<li><a href="#" onclick="alert('Excel export, coming soon.'); return false;">Microsoft Excel</a></li>#}
+                            <li><a href="{{ path('export_fed_level_career_dist_single_establishment',{organization:searchOrganization,submissionYear:searchSubmissionYear}) }}"
+                                target="_blank">Adobe PDF</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            <table id="exportTable">
+                <tr>
+                    <td valign="top">
+
+                        {% include 'reporting/_fed_level_career_dist_stage1_to_stage9.html.twig' with { 'whichDistribution' : 'single_establishment' } %}
+
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {#<script type="text/javascript" src="{{ asset('table-export-js/xlsx.core.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('table-export-js/FileSaver.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('table-export-js/js/tableexport.min.js') }}"></script>#}
+
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.barRenderer.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.categoryAxisRenderer.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.pointLabels.js') }}"></script>
+
+    {% if report is not empty and report.stage3 is not empty %}
+        <script>
+            $(document).ready(function () {
+
+                var gl_01_to_04 = {{ report.stage3.stage3Data[0] }};
+                var gl_05_to_06 = {{ report.stage3.stage3Data[1] }};
+                var gl_07_to_10 = {{ report.stage3.stage3Data[2] }};
+                var gl_11_to_14 = {{ report.stage3.stage3Data[3] }};
+                var gl_15_And_Above = {{ report.stage3.stage3Data[4] }};
+
+                var ticks = {{ report.stage3.xAxisLabels|raw }};
+                //console.log(ticks);
+
+                plot3 = $.jqplot('stage3-chart', [gl_01_to_04, gl_05_to_06, gl_07_to_10, gl_11_to_14, gl_15_And_Above], {
+                    // Tell the plot to stack the bars.
+                    title: 'STAFF DISTRIBUTION BY STATE OF ORIGIN AND BY CATEGORY',
+                    stackSeries: true,
+                    captureRightClick: true,
+                    seriesDefaults: {
+                        renderer: $.jqplot.BarRenderer,
+                        rendererOptions: {
+                            // Put a 30 pixel margin between bars.
+                            barMargin: 10,
+                            // Highlight bars when mouse button pressed.
+                            // Disables default highlighting on mouse over.
+                            highlightMouseDown: true
+                        },
+                        pointLabels: {show: false}
+                    },
+                    series: [
+                        {label: '01-04'},
+                        {label: '05-06'},
+                        {label: '07-10'},
+                        {label: '11-14'},
+                        {label: '15+'}
+                    ],
+                    seriesColors: ["#9999FF", "#993366", "#FFFFCC", "#CCFFFF", "#660066"],
+                    grid: {
+                        background: '#C0C0C0'
+                    },
+                    axes: {
+                        xaxis: {
+                            renderer: $.jqplot.CategoryAxisRenderer,
+                            ticks: ticks
+                        },
+                        yaxis: {
+                            // Don't pad out the bottom of the data range.  By default,
+                            // axes scaled as if data extended 10% above and below the
+                            // actual range to prevent data points right on grid boundaries.
+                            // Don't want to do that here.
+                            padMin: 0
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        location: 'e',
+                        placement: 'outside'
+                    }
+                });
+                // Bind a listener to the "jqplotDataClick" event.  Here, simply change
+                // the text of the info3 element to show what series and ponit were
+                // clicked along with the data for that point.
+                /*$('#stage3-chart').bind('jqplotDataClick',
+                 function (ev, seriesIndex, pointIndex, data) {
+                 $('#info3').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+                 }
+                 );*/
+
+                /*$("#exportTable").tableExport({
+                    headings: true,
+                    footers: true,
+                    formats: ["xls", "csv", "txt"],
+                    fileName: "id",
+                    bootstrap: true,
+                    position: "bottom",
+                });*/
+
+            });
+
+        </script>
+    {% endif %}
+
+
+{% endblock %}

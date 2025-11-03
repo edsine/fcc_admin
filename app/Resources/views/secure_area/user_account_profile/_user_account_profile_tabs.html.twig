@@ -1,0 +1,45 @@
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+{# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+{% set privilegeChecker = loggedInUser.privilegeChecker %}
+<div>
+    <ul class="nav nav-tabs with-bold-active">
+        <li class="{{ (activePage=='profile_edit') ? 'active' : '' }}">
+            <a href="{{ path('user_profile_edit') }}">
+                Edit Profile
+            </a>
+        </li>
+        <li class="{{ (activePage=='change_password') ? 'active' : '' }}">
+            <a href="{{ path('user_profile_change_password') }}">
+                Change Password
+            </a>
+        </li>
+        <li class="{{ (activePage=='change_profile_picture') ? 'active' : '' }}">
+            <a href="{{ path('user_profile_change_profile_picture') }}">
+                Change Profile Picture
+            </a>
+        </li>
+        {% if privilegeChecker.canUploadFedMdaNominalRoll or privilegeChecker.canUploadStateMdaNominalRoll %}
+
+            {% if privilegeChecker.mdaAdmin %}
+                <li class="{{ (activePage=='baseline_edit') ? 'active' : '' }}">
+                    <a href="{{ path('mda_baseline_edit') }}">
+                        Organization Baseline
+                    </a>
+                </li>
+                <li class="{{ (activePage=='mda_admin_additional_users') ? 'active' : '' }}">
+                    <a href="{{ path('mda_admin_additional_users') }}">
+                        Additional Users
+                    </a>
+                </li>
+            {% endif %}
+
+            <li class="{{ (activePage=='mda_fcc_desk_officer_summary') ? 'active' : '' }}">
+                <a href="{{ path('mda_fcc_desk_officer_summary') }}">
+                    FCC Desk Officer
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>

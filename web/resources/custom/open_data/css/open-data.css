@@ -1,0 +1,85 @@
+body{
+    /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;*/
+    font-family: 'Segoe UI', Segoe, 'Segoe WP', Tahoma, Verdana, Arial, sans-serif;
+}
+
+.hero .main-navigation .navbar {
+    border-bottom: 0px solid rgba(0,0,0,.1);
+}
+
+.hero .main-navigation .navbar {
+    padding: 15px 0 5px;
+}
+
+.hero .page-title {
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+.hero .page-title h1,
+.hero .page-title h2{
+    margin-bottom: 0;
+}
+
+.main-search-form{
+    background-color: transparent !important;
+}
+
+.main-search-form:before {
+    display: none;
+}
+
+.form.hero-form {
+    padding-top: 150px;
+}
+
+.btn.btn-framed.btn-secondary {
+    color: #606469;
+}
+
+.footer {
+    position: relative;
+}
+
+.footer .brand {
+    margin-bottom: 10px;
+}
+
+.footer .brand img{
+    height: 90px;
+}
+
+.mda-has-data{
+    /*color: #138C45;*/
+}
+
+.mda-has-no-data{
+    color: #D0D1D1;
+}
+
+.select2{
+    outline: none;
+}
+
+.select2-container .select2-selection--single {
+    height: 55px;
+    box-shadow: 0 0.2rem 1rem 0rem rgba(0,0,0, .1);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 55px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 55px;
+}
+
+.jqstooltip {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+.background-image.original-size {
+    background-size: cover;
+}

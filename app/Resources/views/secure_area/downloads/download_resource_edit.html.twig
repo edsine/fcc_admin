@@ -1,0 +1,155 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"/>
+    <link href="{{ asset('jasny-bootstrap-v3.1.3/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Edit Download Resource
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('download_manager') }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-5">
+
+            {% if alertNotification.hasMessage %}
+                <div style="margin-bottom: 30px;">
+                    <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        {% for message in alertNotification.messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <form id="main-form" method="post" action="{{ path('download_resource_edit', { selector : downloadResource.selector }) }}" class="form-horizontal"
+                  enctype="multipart/form-data" >
+
+                <div class="form-group">
+                    <label for="title" class="col-sm-3 control-label text-bold">Title:<span class="required"> *</span></label>
+                    <div class="col-sm-9">
+                        <textarea type="text" name="title"
+                                  class="form-control input-14" id="title" placeholder="Enter Title"
+                                  autocomplete="off">{{ downloadResource.title }}</textarea>
+                        {{ validator.fields.field('title').html | raw }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="col-sm-3 control-label text-bold">Brief Description:<span class="required"> *</span></label>
+                    <div class="col-sm-9">
+                        <textarea type="text" name="description"
+                                  class="form-control input-14" id="description" placeholder="Enter Brief Description"
+                                  autocomplete="off">{{ downloadResource.description }}</textarea>
+                        {{ validator.fields.field('description').html | raw }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category" class="col-sm-3 control-label">Download Category:</label>
+                    <div class="col-sm-9">
+                        <select class="form-control input-14" name="category" id="category">
+                            <option value="">Choose Download Category</option>
+                            {% for downloadCategory in downloadCategories %}
+                                {% if downloadCategory.id == downloadResource.categoryId %}
+                                    {% set selected = 'selected' %}
+                                {% else %}
+                                    {% set selected = '' %}
+                                {% endif %}
+                                <option value="{{ downloadCategory.id }}" {{ selected }}>{{ downloadCategory.title }}</option>
+                            {% endfor %}
+                        </select>
+                        {{ validator.fields.field('category').html | raw }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vacancy_file" class="control-label col-sm-3 text-bold">
+                        Attachment:
+                        <span class="required"> *</span>
+                        {#<span class="help-block">(Optional)</span>#}
+                    </label>
+
+                    <div class="col-sm-9">
+                        <div id="uploaded-file-error" class="validation-error"></div>
+
+                        <div id="uploaded-file" class="fileinput fileinput-new" data-provides="fileinput">
+                            <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+                            <div>
+                                <span class="btn btn-info btn-sm btn-file">
+                                    <span class="fileinput-new"><i class="fa fa-paperclip"></i> Select File</span>
+                                    <span class="fileinput-exists"><i class="fa fa-edit"></i> Change</span>
+                                    <input type="file" name="uploaded_file" id="uploaded_file"></span>
+                                <a href="#" class="btn btn-danger btn-sm fileinput-exists" data-dismiss="fileinput">
+                                    Remove <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="file_error" class="validation-error"></div>
+                        {{ validator.fields.field('uploaded_file').html | raw }}
+                    </div>
+                </div>
+
+                <div class="col-sm-9 col-sm-offset-3">
+                    <input type="hidden" name="selector" value="{{ downloadResource.selector }}"/>
+                    <input type="hidden" name="old_attachment_file_name" value="{{ downloadResource.attachment.fileName }}"/>
+                    <input type="hidden" name="submit_check"/>
+                    <button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary">Submit <i class="fa fa-send"></i></button>
+                </div>
+
+                <div class="v-sep-20"></div>
+                <div class="v-sep-20"></div>
+            </form>
+        </div>
+        <div class="col-sm-7">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('jasny-bootstrap-v3.1.3/js/jasny-bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var fileUpload = $('#uploaded_file');
+            var fileError = $('#file_error');
+            $('#main-form').on('submit', function (e) {
+
+                var fileName = fileUpload.val();
+
+                if(!fileName){
+                    //fileError.html('Please Select Attachment');
+                    //return false;
+                }else{
+
+                    var size= fileUpload[0].files[0].size;
+                    var extension= fileName.replace(/^.*\./, '');
+
+                    if($.inArray(extension, ['xlsx','docx','pdf']) === -1){
+                        fileError.html('Only Excel, Word and PDF attachments allowed');
+                        return false;
+                    }
+
+                    if(size > 800000){
+                        fileError.html('Invalid file Size. Not greater than 800kb');
+                        return false;
+                    }
+                }
+
+                showLoading();
+                return true;
+
+            });
+
+        });
+    </script>
+
+{% endblock %}

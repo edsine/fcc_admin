@@ -1,0 +1,133 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/reporting.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jqplot-override.css') }}"/>
+    {#<link rel="stylesheet" href="{{ asset('table-export-js/css/tableexport.min.css') }}"/>#}
+{% endblock %}
+
+{% set referrer = app.request.headers.get('referer')|default('#') %}
+
+{% block page_toolbar_left %}
+    Federal Establishment Career Character Balancing Index
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ referrer }}"><i
+                class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% if report is not empty %}
+                <div class="do-not-print" style="width: 1300px;text-align: right; padding: 5px;margin-bottom: 20px;">
+                    <a href="#" onclick="window.print(); return false;"
+                       class="btn btn-default btn-sm" target="_blank">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-download"></i> Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="alert('Excel export, coming soon.'); return false;">Microsoft
+                                    Excel</a></li>
+                            <li>
+                                <a href="{{ path('export_federal_level_character_balancing_index'
+                                    ,{ numberToBeRecruited : cbiReportRequest.recruitmentValue
+                                    , gradeLevelCategory : cbiReportRequest.cbiGradeLevelCategory
+                                    , organization : cbiReportRequest.organizationId }) }}"
+                                   target="_blank">Adobe
+                                    PDF</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% include 'reporting/_fed_level_character_balancing_index.html.twig' %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {#<script type="text/javascript" src="{{ asset('table-export-js/xlsx.core.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('table-export-js/FileSaver.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('table-export-js/js/tableexport.min.js') }}"></script>#}
+
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/jquery.jqplot.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.barRenderer.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.categoryAxisRenderer.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jqplot.1.0.9.d96a669/plugins/jqplot.pointLabels.js') }}"></script>
+
+    {% if report is not empty and report.stage1 is not empty %}
+        <script>
+            $(document).ready(function () {
+                //$.jqplot.config.enablePlugins = true;
+                var proportionSeries = {{ report.stage1.chartSeries[0] }};
+                var cbIndexSeries = {{ report.stage1.chartSeries[1] }};
+                var percentBFactorSeries = {{ report.stage1.chartSeries[2] }};
+                var ticks = {{ report.stage1.xAxisLabels|raw }};
+
+                plot1 = $.jqplot('proportion-chart', [proportionSeries], {
+                    // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+                    //animate: !$.jqplot.use_excanvas,
+                    title: 'Proportion of Representation',
+                    seriesDefaults: {
+                        renderer: $.jqplot.BarRenderer,
+                        pointLabels: {show: true}
+                    },
+                    axes: {
+                        xaxis: {
+                            renderer: $.jqplot.CategoryAxisRenderer,
+                            ticks: ticks
+                        }
+                    },
+                    highlighter: {show: false}
+                });
+
+                plot2 = $.jqplot('cbindex-chart', [cbIndexSeries], {
+                    // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+                    //animate: !$.jqplot.use_excanvas,
+                    title: 'CBIndex (Character Balancing Index)',
+                    seriesDefaults: {
+                        renderer: $.jqplot.BarRenderer,
+                        pointLabels: {show: true}
+                    },
+                    axes: {
+                        xaxis: {
+                            renderer: $.jqplot.CategoryAxisRenderer,
+                            ticks: ticks
+                        }
+                    },
+                    highlighter: {show: false}
+                });
+
+                plot2 = $.jqplot('percent-bfactor-chart', [percentBFactorSeries], {
+                    // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+                    //animate: !$.jqplot.use_excanvas,
+                    title: '% Bfactor (Balancing Factor)',
+                    seriesDefaults: {
+                        renderer: $.jqplot.BarRenderer,
+                        pointLabels: {show: true}
+                    },
+                    axes: {
+                        xaxis: {
+                            renderer: $.jqplot.CategoryAxisRenderer,
+                            ticks: ticks
+                        }
+                    },
+                    highlighter: {show: false}
+                });
+
+            });
+        </script>
+    {% endif %}
+
+
+{% endblock %}

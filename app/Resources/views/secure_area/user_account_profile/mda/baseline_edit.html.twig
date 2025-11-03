@@ -1,0 +1,107 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/body-not-white.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Profile
+{% endblock %}
+{% block page_toolbar_right %}
+    {#<a class="btn btn-link close-btn" href="{{ path('federal_ministry_list') }}"><i class="fa fa-arrow-left"></i></a>#}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-3">
+
+            {% include 'secure_area/user_account_profile/_user_profile_summary.html.twig' %}
+
+        </div>
+        <div class="col-sm-9">
+
+            <div class="organization-profile-wrapper">
+
+                {% include 'secure_area/user_account_profile/_user_account_profile_tabs.html.twig' with { activePage : 'baseline_edit' } %}
+
+                <div class="v-sep-20"></div>
+
+
+                <div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            {% if alertNotification.hasMessage %}
+                                <div style="margin-bottom: 30px;">
+                                    <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                        {% for message in alertNotification.messages %}
+                                            {{ message }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <form method="post" action="{{ path('mda_baseline_edit') }}" class="form-horizontal"
+                                  onsubmit="showLoading();">
+
+                                <div class="form-group">
+                                    <label for="year_of_establishment" class="col-sm-4 control-label">Year Of
+                                        Establishment:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-14"
+                                               name="year_of_establishment" id="year_of_establishment"
+                                               value="{{ mdaBaseline.yearOfEstablishment }}"
+                                               placeholder="Enter Your Organisation Year Of Establishment"
+                                               autocomplete="off"/>
+                                        {{ validator.fields.field('year_of_establishment').html | raw }}
+                                        {{ validator.fields.field('year_of_establishment_total_digits').html | raw }}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirm_year_of_establishment" class="col-sm-4 control-label">Confirm
+                                        Year Of Establishment:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-14"
+                                               name="confirm_year_of_establishment" id="confirm_year_of_establishment"
+                                               value="{{ mdaBaseline.confirmYearOfEstablishment }}"
+                                               placeholder="Confirm Your Organisation Year Of Establishment"
+                                               autocomplete="off"/>
+                                        {{ validator.fields.field('confirm_year_of_establishment').html | raw }}
+                                        {{ validator.fields.field('confirm_year_of_establishment_total_digits').html | raw }}
+                                        {{ validator.fields.field('year_of_establishment_match').html | raw }}
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-offset-4 col-sm-8">
+                                    <input type="hidden" name="guid" value="{{ mdaBaseline.selector }}">
+                                    <button type="submit" name="btn_submit" class="btn btn-primary">
+                                        Submit
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="background-color: #f5f5f5;">
+                                    <div class="text-center" style="font-size: 17px;">
+                                        Baseline Year
+                                        <div style="font-size: 42px; color: #7c7c7c;">
+                                            {{ mdaBaseline.baselineYear | default('?') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

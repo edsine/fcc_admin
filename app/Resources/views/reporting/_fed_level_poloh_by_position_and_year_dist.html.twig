@@ -1,0 +1,84 @@
+{% if report is not empty %}
+    <div id="print-panel" class="print-portrait-abc" style="width: 600px;margin-top: 20px;">
+        <!-- STAGE 1 -->
+        <div class="card card-3 print-break-after">
+            <table id="stage1" style="width: 100%;"
+                   class="table table-bordered table-hover report-table">
+                <tbody>
+                <tr align="center">
+                    <td colspan="3" align="center">
+                        {{ report.submissionYear }} DISTRIBUTION OF {{ report.positionDescription }}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="3" align="center">DISTRIBUTION BY STATE OF ORIGIN</td>
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;">STATES</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                </tr>
+                </tbody>
+                <tbody>
+                {% for stage1Distribution in report.stage1.stage1Data %}
+                    <tr>
+                        <td>{{ stage1Distribution.stateName }}</td>
+                        <td align="right">{{ stage1Distribution.total }}</td>
+                        <td align="right">{{ stage1Distribution.percentage }}%</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>TOTAL</td>
+                    <td align="right">{{ report.stage1.overallTotal }}</td>
+                    <td align="right">{{ report.stage1.overallPercentage }}%</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="report-page-number">Page 1</div>
+        </div>
+
+        <div class="v-sep-20"></div>
+
+        <!-- STAGE 2 -->
+        <div class="card card-3">
+            <table id="stage2" style="width: 100%;"
+                   class="table table-bordered table-hover report-table">
+                <tbody>
+                <tr align="center">
+                    <td colspan="3" align="center">
+                        DISTRIBUTION BY ZONE AS AT {{ report.submissionYear }}
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan="3" align="center"></td>
+                </tr>
+                <tr align="center">
+                    <td style="text-align: left;">ZONES</td>
+                    <td>NO.</td>
+                    <td>%</td>
+                </tr>
+                </tbody>
+                <tbody>
+                {% for stage2Distribution in report.stage2.stage2Data %}
+                    <tr>
+                        <td>{{ stage2Distribution.geoPoliticalZoneName }}</td>
+                        <td align="right">{{ stage2Distribution.total }}</td>
+                        <td align="right">{{ stage2Distribution.percentage }}%</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>TOTAL</td>
+                    <td align="right">{{ report.stage2.overallTotal }}</td>
+                    <td align="right">{{ report.stage2.overallPercentage }}%</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="report-page-number">Page 2</div>
+        </div>
+
+        <div class="v-sep-20"></div>
+
+    </div>
+{% else %}
+    <span class="text-warning">No Report Found.</span>
+{% endif %}

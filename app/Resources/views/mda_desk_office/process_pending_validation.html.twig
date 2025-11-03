@@ -1,0 +1,385 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('jquery-confirm/jquery-confirm.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+    <link rel="stylesheet" href="{{ asset('css/form-wizard.css') }}"/>
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Pending Submission Validation
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('mda_desk_office_submission_list') }}"><i
+                class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+
+
+{% block main %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="passed-validation-summary">
+                <table class="flat-table">
+                    <tr>
+                        <td width="80">
+                            <i id="validation-status-icon" class="fa fa-question-circle" style="color: #444444;font-size: 64px;font-weight: bold;"></i>
+                        </td>
+                        <td>
+                            <table class="flat-table">
+                                <tr>
+                                    <td width="120">
+                                        <b>Date Uploaded:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRoleSubmission.created }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>File Name:</b>
+                                    </td>
+                                    <td>
+                                        {{ nominalRoleSubmission.simpleFileName }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Validation Status:</b>
+                                    </td>
+                                    <td>
+                                        <span id="validation-status-label">{{ nominalRoleSubmission.validationStatus }}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="panel-abc panel-default-abc">
+                <div class="panel-body-abc">
+
+                    <div id="first-step" class="step-container" style="min-height: 350px;">
+                        <div class="row">
+                            <div class="col-sm-12 step-instruction">
+                                <div style="display: flex;justify-content: center; align-items: center;height: 300px;">
+
+                                    <button id="btn-restart-validation" class="btn btn-info btn-lg">
+                                        <i class="fa fa-refresh" style="font-size: 30px;"></i>
+                                        <br/>
+                                        Re-Check Validation Status
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div id="second-step" class="step-container">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="validation-step-container">
+
+                                    <div id="validationProgress" class="validation-stage text-center">
+                                        <div class="loader">
+                                            <svg class="circular" viewBox="25 25 50 50">
+                                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
+                                                        stroke-miterlimit="10"/>
+                                            </svg>
+                                        </div>
+                                        <br/>
+                                        <h5>Please Wait</h5>
+                                    </div>
+
+                                    <div id="validationSuccess" class="validation-stage text-center">
+
+                                        <form method="post"
+                                              action="{{ path('mda_desk_office_nominal_role_validation_handle_show') }}">
+
+                                            <i class="fa fa-check-circle validation-success-icon"></i>
+                                            <br/>
+                                            <h5 class="text-success">Congratulations!, Validation Passed.</h5>
+                                            <br/>
+                                            <input type="hidden" name="submissionId"
+                                                   value="{{ nominalRoleSubmission.submissionId }}"
+                                                   class="validation_stage_submission_id_holders"/>
+                                            <br/>
+                                            <input type="hidden" name="validationStatus" value="PASSED"/>
+                                            <br/>
+                                            <button type="submit" class="btn btn-success">
+                                                Continue
+                                            </button>
+
+                                        </form>
+                                    </div>
+
+                                    <div id="validationFailed" class="validation-stage text-center">
+                                        <form method="post"
+                                              action="{{ path('mda_desk_office_nominal_role_validation_handle_show') }}">
+                                            <i class="fa fa-times-circle validation-error-icon"></i>
+                                            <br/>
+                                            <h5 class="text-danger">Validation Failed</h5>
+                                            <br/>
+                                            <input type="hidden" name="submissionId"
+                                                   value="{{ nominalRoleSubmission.submissionId }}"
+                                                   class="validation_stage_submission_id_holders"/>
+                                            <br/>
+                                            <input type="hidden" name="validationStatus" value="FAILED"/>
+                                            <br/>
+                                            <button type="submit" class="btn btn-danger">
+                                                View Validation Result
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div id="validationError" class="validation-stage text-center">
+                                        <form method="post"
+                                              action="{{ path('mda_desk_office_nominal_role_validation_handle_show') }}">
+                                            <i class="fa fa-ban validation-error-icon"></i>
+                                            <br/>
+                                            <h5 class="text-danger">A Fatal Error Occurred, While Processing
+                                                Validation</h5>
+                                            <br/>
+                                            <input type="hidden" name="submissionId"
+                                                   value="{{ nominalRoleSubmission.submissionId }}"
+                                                   class="validation_stage_submission_id_holders"/>
+                                            <br/>
+                                            <input type="hidden" name="validationStatus" value="FATAL_ERROR"/>
+                                            <br/>
+                                            <button type="submit" class="btn btn-danger">
+                                                View Result
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div id="retry-validation" class="validation-stage text-center">
+                                        <i class="fa fa-bolt validation-warning-icon"></i>
+                                        <br/>
+                                        <h5 class="text-warning">
+                                            We are having trouble connecting with our validation service.
+                                            <br/>
+                                            Check your internet connection and click the button bellow.
+                                        </h5>
+                                        <br/>
+                                        <button id="btn-retry-validation" type="submit" class="btn btn-warning">
+                                            Try Again
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {#validation form#}
+                    <div id="validation-form-container" class="validation-form-container" style="visibility: hidden;">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div>
+                                    <form method="post" action="{{ path('mda_desk_office_submission_validation') }}"
+                                          id="validationForm"
+                                          enctype="multipart/form-data">
+
+                                        <input type="hidden" name="submissionId" id="validation_submission_id"
+                                               value="{{ nominalRoleSubmission.submissionId }}"/>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/jquery.form.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('jquery-confirm/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var firstStepContainer = $('#first-step');
+            var secondStepContainer = $('#second-step');
+
+            var validationProgressContainer = $('#validationProgress');
+            var validationSuccessContainer = $('#validationSuccess');
+            var validationFailedContainer = $('#validationFailed');
+            var validationErrorContainer = $('#validationError');
+
+            var validationReTryContainer = $('#retry-validation');
+            var retryValidationBtn = $('#btn-retry-validation');
+
+            var validationForm = $('#validationForm');
+            var txtValidationSubmissionId = $('#validation_submission_id');
+            var txtValidationStageSubmissionIdHolders = $('.validation_stage_submission_id_holders');
+
+            var validationStatusIcon = $('#validation-status-icon');
+            var validationStatusLabel = $('#validation-status-label');
+
+            $('#btn-restart-validation').on('click', function (event) {
+                event.preventDefault();
+                //console.log('button clicked');
+                validationForm.submit();
+            });
+
+
+            //validation form
+            validationForm.ajaxForm({
+                beforeSubmit: function (formData, jqForm, options) {
+                    //check the submission Id
+                    var submissionId = txtValidationSubmissionId.val();
+
+                    if (!submissionId) {
+                        showAlert('Error', 'Invalid Submission ID', 'red');
+                        return false;
+                    } else {
+                        showValidationStage("progress");
+                        setInterval(pollServer, 45000);
+                        return true;
+                    }
+                },
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    var validationRequestStatus = data.validationRequestStatus;
+
+                    if (validationRequestStatus == 'OK') {
+                        //showValidationStage
+                        //function to be checking status of validation
+                        window.setInterval(checkValidationStatus, 2000);
+                    } else {
+                        //show try again stage of panel, that will submit validation form again
+                        showValidationStage("retry");
+                    }
+
+                    //showAlert('Confirmation', uploadStatus + ":" + uploadMessage + ":" + submissionId);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showValidationStage("retry");
+                    //console.log(jqXHR.responseText);
+                    //showAlert('Error', jqXHR.responseText);
+                    //show retry panel
+                },
+                complete: function (jqXHR, textStatus) {
+
+                }
+            });
+
+            retryValidationBtn.on('click', function (event) {
+                event.preventDefault();
+                validationForm.submit();
+            });
+
+            function checkValidationStatus() {
+                var validationSubmissionId = txtValidationStageSubmissionIdHolders.val();
+                $.ajax({
+                    url: "{{ path('mda_desk_office_submission_validation_status_check') }}",
+                    data: {
+                        submissionId: validationSubmissionId
+                    },
+                    dataType: "json",
+                    type: "GET"
+                }).done(function (data, textStatus, jqXHR) {
+                    var checkStatus = data.checkStatus;
+                    var validationStatus = data.validationStatus;
+
+                    if (checkStatus == 'OK') {
+                        switch (validationStatus) {
+                            case 'PENDING':
+                                break;
+
+                            case 'STARTED':
+                                break;
+
+                            case 'PASSED':
+                                showValidationStage("passed");
+                                break;
+
+                            case 'FAILED':
+                                showValidationStage("failed");
+                                break;
+
+                            case 'FATAL_ERROR':
+                                showValidationStage("error")
+                                break;
+                        }
+                    } else {
+
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    //console.log(jqXHR.responseText);
+                    //show retry panel
+                    showAlert('Network Error', jqXHR.responseText);
+                }).always(function (jqXHR, textStatus) {
+
+                });
+            }
+
+            function showAlert(title, content, dialogtype) {
+                dialogtype = (typeof dialogtype !== 'undefined') ? dialogtype : 'green';
+                $.alert({
+                    title: title,
+                    content: content,
+                    type: dialogtype
+                });
+            }
+
+            //VALIDATION
+            function showValidationStage(which) {
+                firstStepContainer.hide();
+                secondStepContainer.show();
+
+                $('.validation-stage').hide();
+
+                switch (which) {
+                    case "progress":
+                        validationProgressContainer.show();
+                        break;
+
+                    case "passed":
+                        validationSuccessContainer.show();
+                        validationStatusLabel.html('PASSED');
+                        validationStatusIcon.removeClass("fa-question-circle fa-times-circle fa-ban").addClass("fa-check-circle");
+                        break;
+
+                    case "failed":
+                        validationFailedContainer.show();
+                        validationStatusLabel.html('FAILED');
+                        validationStatusIcon.removeClass("fa-question-circle fa-check-circle fa-ban").addClass("fa-times-circle");
+                        break;
+
+                    case "retry":
+                        validationReTryContainer.show();
+                        break;
+
+                    case "error":
+                        validationErrorContainer.show();
+                        validationStatusLabel.html('FATAL ERROR');
+                        validationStatusIcon.removeClass("fa-question-circle fa-check-circle fa-times-circle").addClass("fa-ban");
+                        break;
+                }
+
+            }
+
+            function pollServer() {
+                $.get('{{ path('keep_alive') }}', function (resp) {
+                    //console.log(resp);
+                });
+            }
+
+        });
+
+    </script>
+{% endblock %}

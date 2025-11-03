@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+
+    <title>Federal Character Commission {% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-override.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('select2-4.0.3/dist/css/select2.min.css') }}" rel="stylesheet">
+
+    <!-- Bootstrap watch paper theme CSS -->
+    {#<link href="{{ asset('css/bootstrap-bootswatch-paper-theme.min.css') }}" rel="stylesheet">#}
+
+
+    <!-- font awesome -->
+    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('font-awesome/css/font-awesome-animation.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/loading.css') }}" rel="stylesheet">
+
+    {% block stylesheets %}{% endblock %}
+
+</head>
+
+<body>
+
+{% block header %}
+    <div class="fixed-header do-not-print">
+
+        {# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+        {% set loggedInUser = app.user %}
+
+        {# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+        {% set privilegeChecker = loggedInUser.privilegeChecker %}
+
+        <nav id="navigation-1" class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">
+                        <img src="{{ asset('images/logo-inner.png') }}"/>
+                        {#FCC DP &amp; A#}
+                    </a>
+                    {#<div class="training-demo-notice">
+                        <i class="fa fa-warning faa-flash animated"></i><img src="{{ asset('images/teacher2.png') }}" align="top" /> Training Only
+                    </div>#}
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right user-nav">
+                        <li class="">
+                            <a href="#" class="user-organization"
+                               style="max-width: 350px; height: 54px; font-size: 11px;line-height: normal;display: table-cell; vertical-align: middle;">
+                                {{ app.user.organizationName }}
+                            </a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">
+                                {% if not loggedInUser.profilePictureDisplayUrl %}
+                                    <img src="{{ asset('images/user.png') }}" class="user-icon"/>
+                                {% else %}
+                                    <img src="{{ loggedInUser.profilePictureDisplayUrl }}" class="profile-icon-32"/>
+                                {% endif %}
+
+                                {{ app.user.displayName }} <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ path('user_profile_edit') }}">Profile</a></li>
+                                <li role="separator" class="divider no-margin"></li>
+                                <li><a href="{{ path('logout') }}">Log Out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <nav id="navigation-2" class="navbar navbar-default navbar-fixed-top_">
+            <div class="container-fluid" style="padding-left: 0;">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar2"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+                <div id="navbar2" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+
+                        {% if app.user.privilegeChecker.appUser %}
+
+                            <li class=""><a href="{{ path('dashboard') }}">Home</a></li>
+
+                        {% endif %}
+
+
+                        {% if app.user.privilegeChecker.misHead %}
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">Submissions <span
+                                            class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class=""><a
+                                                href="{{ path('mis_head_nominal_roll_pending_approval_list') }}">Submissions</a>
+                                    </li>
+                                    <li class=""><a href="{{ path('submission_status') }}">Submission Status</a></li>
+                                    <li>
+                                        <a href="{{ path('mis_head_submission_permission_request_pending_approval_list') }}">
+                                            Nominal Roll Submission Permission Requests
+                                        </a>
+                                    </li>
+                                    <li class=""><a href="{{ path('mis_head_fix_submission_issues') }}">Fix Submission/Processing Issues</a></li>
+                                </ul>
+                            </li>
+
+                        {% endif %}
+
+                        {% if app.user.privilegeChecker.superAdmin or app.user.privilegeChecker.misHead %}
+
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">Establishments <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-header">FCC</li>
+                                    <li><a href="{{ path('committee_list') }}">FCC Committee</a></li>
+                                    <li><a href="{{ path('merge_committee') }}">Merge Committees</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li class="dropdown-header">FEDERAL</li>
+                                    <li><a href="{{ path('federal_ministry_list') }}">Federal Ministry</a></li>
+                                    <li><a href="{{ path('federal_parastatal_list') }}">Federal Parastatal</a></li>
+                                    <li><a href="{{ path('merge_federal_mda') }}">Merge Federal MDAs</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">Users <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ path('fcc_user_list') }}">FCC Users</a></li>
+                                    <li><a href="{{ path('mda_user_list') }}">MDA Users</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">Security <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-header">Roles</li>
+                                    <li><a href="{{ path('system_role_list') }}">System Roles</a></li>
+                                </ul>
+                            </li>
+
+                        {% elseif app.user.privilegeChecker.canUploadFedMdaNominalRoll %}
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">Nominal Roll <span
+                                            class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class=""><a
+                                                href="{{ path('federal_mda_admin_nominal_roll_main_submission_list') }}">Main
+                                            Submissions</a></li>
+                                    <li class=""><a
+                                                href="{{ path('federal_mda_admin_nominal_roll_quarterly_return_list') }}">Quarterly
+                                            Returns</a></li>
+                                </ul>
+                            </li>
+
+                            {#<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">Recruitment Advert <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class=""><a href="{{ path('mda_admin_vacancy_list') }}">Recruitment Advert Uploads</a></li>
+                                </ul>
+                            </li>#}
+
+                        {% elseif app.user.privilegeChecker.canConfirmFedMdaNominalRollUpload %}
+
+                            <li class=""><a href="{{ path('fcc_desk_officer_nominal_roll_pending_confirmation_list') }}">Submission Confirmation</a>
+                            </li>
+                            <li class=""><a href="{{ path('fcc_desk_officer_assigned_organizations_list') }}">Assigned
+                                    MDA(s)</a></li>
+                        {% endif %}
+
+                        {% if app.user.privilegeChecker.appUser %}
+
+                            <li class="">
+                                <a href="https://mailer.federalcharacter.gov.ng/secure_area/notification/notification_inbox">
+                                    Notifications {% block top_notification_badge %}{% endblock %}
+                                </a>
+                            </li>
+
+                        {% endif %}
+
+                        {% if privilegeChecker.isSuperAdmin or privilegeChecker.canUploadFedMdaNominalRoll or privilegeChecker.canUploadStateMdaNominalRoll %}
+
+                            <li class="">
+                                <a href="{{ path('download_manager') }}">
+                                    Downloads
+                                </a>
+                            </li>
+
+                        {% endif %}
+
+                        {% if privilegeChecker.canViewReports %}
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    {% if privilegeChecker.canViewFederalReports %}
+
+                                        <li class="dropdown-header">FEDERAL LEVEL</li>
+                                        <li style="display: {{ (privilegeChecker.canQueryFedMdaNominalRoll) ? '' : 'none' }}">
+                                            <a href="{{ path('federal_level_criteria_search_report') }}">
+                                                Federal Nominal Roll
+                                            </a>
+                                        </li>
+                                        <li style="display: {{ (privilegeChecker.canViewFedMdaCareerPostDist) ? '' : 'none' }}">
+                                            <a href="{{ path('fed_level_career_dist_single_establishment') }}">
+                                                Single Establishment Career Post Dist.
+                                            </a>
+                                        </li>
+                                        <li style="display: {{ (privilegeChecker.canViewFedConsolidatedCareerPostDist) ? '' : 'none' }}">
+                                            <a href="{{ path('fed_level_career_dist_min_consolidated') }}">
+                                                Federal Consolidated Career Post Dist.
+                                            </a>
+                                        </li>
+                                        <li style="display: {{ (privilegeChecker.canViewFedConsolidatedCareerPostDist) ? '' : 'none' }}">
+                                            <a href="{{ path('fed_level_poloh_dist_consolidated') }}">Federal Political
+                                                Post</a>
+                                        </li>
+                                        <li style="display: {{ (privilegeChecker.canViewFedPOLOHByPostAndYearDist) ? '' : 'none' }}">
+                                            <a href="{{ path('fed_level_poloh_by_position_and_year_dist') }}">
+                                                Distribution Of Political Office By State Of Origin
+                                            </a>
+                                        </li>
+                                        <li style="display: {{ (privilegeChecker.canViewFedComparativeDataOnStaffDist) ? '' : 'none' }}">
+                                            <a href="{{ path('fed_level_comparative_data') }}">
+                                                Comparative Manpower Statistics
+                                            </a>
+                                        </li>
+                                        <li style="display: {{ (privilegeChecker.canViewFedListOfChiefExecutives) ? '' : 'none' }}">
+                                            <a href="{{ path('fed_level_ceo_list') }}">
+                                                List Of Federal Chief Executives
+                                            </a>
+                                        </li>
+                                        <li style="display: {{ (privilegeChecker.canViewFedMdaCareerCharacterBalancingIndex) ? '' : 'none' }}">
+                                            <a href="{{ path('federal_level_character_balancing_index') }}">
+                                                Federal Character Balancing Index
+                                            </a>
+                                        </li>
+
+                                        <li style="display: {{ (privilegeChecker.canRequestFedMdaCareerCharacterBalancingIndex) ? '' : 'none' }}">
+                                            <a href="{{ path('mda_cbi_report_request_list') }}">
+                                                Federal Character Balancing Index
+                                            </a>
+                                        </li>
+
+                                        <li style="display: {{ (privilegeChecker.misHead) ? '' : 'none' }}">
+                                            <a href="{{ path('proportion_of_position_fcsc') }}">
+                                                Proportion Of Positions In Public Institutions
+                                            </a>
+                                        </li>
+
+                                        <li style="display: {{ (privilegeChecker.misHead) ? '' : 'none' }}">
+                                            <a href="{{ path('proportion_of_position_lgsc') }}">
+                                                Number of positions (Local Government Area)
+                                            </a>
+                                        </li>
+
+                                        <li style="display: {{ (privilegeChecker.misHead) ? '' : 'none' }}">
+                                            <a href="{{ path('proportion_of_position_nuc') }}">
+                                                Number of positions (Federal Academic Establishments)
+                                            </a>
+                                        </li>
+
+                                        <li style="display: {{ (privilegeChecker.misHead) ? '' : 'none' }}">
+                                            <a href="{{ path('submission_summary') }}">
+                                                Submission Summary
+                                            </a>
+                                        </li>
+
+                                    {% endif %}
+                                </ul>
+                            </li>
+
+                            {% if privilegeChecker.misHead %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class=""><a href="{{ path('static_cms_list') }}">CMS</a></li>
+                                        <li class=""><a href="{{ path('mis_head_cbi_report_request_pending_approval_list') }}">
+                                                CBI Report Requests</a></li>
+                                        <li class=""><a href="{{ path('download_manager') }}">Downloads</a></li>
+                                    </ul>
+                                </li>
+                            {% elseif privilegeChecker.canUploadFedMdaNominalRoll %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{{ path('mda_submission_permission_request_list') }}">Nominal Roll
+                                                Submission Permission Requests</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li class="dropdown-header">Help</li>
+                                        <li class=""><a href="http://federalcharacter.gov.ng/fcc-portal-help/"
+                                                        target="_blank">Portal Help</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li class="dropdown-header">COMING SOON</li>
+                                        <li class=""><a href="#" disabled="disabled">Certificate Of Compliance</a></li>
+                                        <li class=""><a href="#" disabled="disabled">Regularization of Recruitment</a></li>
+                                        <li class=""><a href="#" disabled="disabled">Waivers</a></li>
+                                        <li class=""><a href="#" disabled="disabled">Manage Long List</a></li>
+                                        <li class=""><a href="#" disabled="disabled">Manage Short List</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                        {% endif %}
+                    </ul>
+
+                    {#<ul class="nav navbar-nav navbar-right">
+                        <li class=""><a href="#">{{ app.user.primaryRoleDescription }}</a></li>
+                    </ul>#}
+
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <div class="container-fluid page-toolbar">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-left">
+                        <h4>{% block page_toolbar_left %}{% endblock %}</h4>
+                    </div>
+                    <div class="pull-right page-toolbar-right">
+                        {% block page_toolbar_right %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+<div class="container-fluid">
+
+    {% block main %}{% endblock %}
+
+</div>
+<!-- /container -->
+
+<div id="loading-overlay">
+    <div class="spinner-wrapper">
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
+                        stroke-miterlimit="10"></circle>
+            </svg>
+        </div>
+    </div>
+</div>
+
+<!-- Placed at the end of the document so the pages load faster -->
+{#<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>#}
+<script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('select2-4.0.3/dist/js/select2.min.js') }}"></script>
+<script src="{{ asset('js/app.js') }}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".select-2").select2({});
+    });
+</script>
+
+{% block javascripts %}{% endblock %}
+</body>
+</html>

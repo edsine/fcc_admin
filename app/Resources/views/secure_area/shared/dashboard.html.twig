@@ -1,0 +1,248 @@
+{% extends 'base.fcc.html.twig' %}
+
+{# loggedInUser \AppBundle\Model\Security\SecurityUser #}
+{% set loggedInUser = app.user %}
+
+{# privilegeChecker \AppBundle\Model\Security\PrivilegeChecker #}
+{% set privilegeChecker = loggedInUser.privilegeChecker %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page_toolbar_left %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            {% if alertNotification.hasMessage %}
+                <div style="margin-bottom: 30px;width: 975px;" id="alert-container">
+                    <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        {% autoescape false %}
+                            {% for message in alertNotification.messages %}
+                                {{ message }}
+                            {% endfor %}
+                        {% endautoescape %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <table>
+                <tr>
+                    <td style="width: 550px;padding: 30px;background-color: #2358A6;">
+
+                        <h4 style="color: #FFDB4C;margin-bottom: 40px;">Hi, Welcome Back</h4>
+
+                        <table width="100%">
+                            <tr>
+                                <td style="padding: 10px 0 10px 0;" width="130">
+                                    {% if not loggedInUser.profilePictureDisplayUrl %}
+                                        <img src="{{ asset('images/user-128px.png') }}"/>
+                                    {% else %}
+                                        <img src="{{ loggedInUser.profilePictureDisplayUrl }}"  class="profile-icon-128"/>
+                                    {% endif %}
+                                </td>
+                                <td width="10" style="border-right: 1px dashed #668DC7;"></td>
+                                <td width="10"></td>
+                                <td style="padding: 0;">
+                                    <div style="font-size: 16px;font-weight: bold;color: #fff;">
+                                        {{ loggedInUser.displayName }}
+                                    </div>
+                                    <div class="v-sep-20"></div>
+                                    <div style="font-size: 16px;font-weight: bold;color: #fff;">
+                                        <i class="fa fa-phone"></i> {{ loggedInUser.primaryPhone }}
+                                    </div>
+                                    <div style="font-size: 16px;font-weight: bold;color: #fff;">
+                                        <i class="fa fa-envelope"></i> {{ loggedInUser.emailAddress }}
+                                    </div>
+                                    <div class="v-sep-20"></div>
+                                    <div style="font-size: 16px;font-weight: bold;color: #fff;">
+                                        {{ loggedInUser.organizationName }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                    <td valign="top" width="425">
+                        {% if privilegeChecker.canUploadFedMdaNominalRoll or privilegeChecker.canUploadStateMdaNominalRoll %}
+                            <div style="display: flex;align-items: center;justify-content: flex-start;
+                                    width: 100%;height: auto;padding: 50px 30px;background-color: #6168C0;">
+                                <div>
+                                    <div style="font-size: 17px;text-align: left;color: #fff;margin-bottom: 40px;">
+                                        <b>Submissions</b>
+                                    </div>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                    <b>Main<br/>Submission</b>
+                                                </div>
+                                                <div style="font-size: 25px;text-align: center;color: #fff;">
+                                                    {{ submissionStats['totalMainSubmissions']|default('--') }}
+                                                </div>
+                                            </td>
+                                            <td width="20" style="border-right: 1px dashed #ccc;"></td>
+                                            <td width="20"></td>
+                                            <td>
+                                                <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                    <b>Quarterly<br/>Return</b>
+                                                </div>
+                                                <div style="font-size: 25px;text-align: center;color: #fff;">
+                                                    {{ submissionStats['totalQuarterlyReturn']|default('--') }}
+                                                </div>
+                                            </td>
+                                            <td width="20" style="border-right: 1px dashed #ccc;"></td>
+                                            <td width="20"></td>
+                                            <td>
+                                                <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                    <b>Failed<br/>Validation</b>
+                                                </div>
+                                                <div style="font-size: 25px;text-align: center;color: #fff;">
+                                                    {{ submissionStats['totalFailedValidation']|default('--') }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                        {% elseif privilegeChecker.canConfirmFedMdaNominalRollUpload or privilegeChecker.canConfirmStateMdaNominalRollUpload %}
+
+                            <div style="display: flex;align-items: center;justify-content: flex-start;
+                                    width: 100%;height: auto;padding: 50px 30px;background-color: #6168C0;">
+                                <div>
+                                    <div style="font-size: 17px;text-align: left;color: #fff;margin-bottom: 40px;">
+                                        <b>Submissions</b>
+                                    </div>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                    Pending Confirmation
+                                                </div>
+                                                <div style="font-size: 25px;text-align: center;color: #fff;">
+                                                    {{ submissionStats['totalPending']|default('--') }}
+                                                </div>
+                                            </td>
+                                            <td width="20" style="border-right: 1px dashed #ccc;"></td>
+                                            <td width="20"></td>
+                                            <td>
+                                                <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                    Failed Validation
+                                                </div>
+                                                <div style="font-size: 25px;text-align: center;color: #fff;">
+                                                    {{ submissionStats['totalFailed']|default('--') }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                        {% elseif privilegeChecker.isMISHead %}
+
+                            <div style="display: flex;align-items: center;justify-content: flex-start;
+                                    width: 100%;height: auto;padding: 50px 30px;background-color: #6168C0;">
+                                <div>
+                                    <div style="font-size: 17px;text-align: left;color: #fff;margin-bottom: 40px;">
+                                        <b>Submissions</b>
+                                    </div>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                    Pending Approval
+                                                </div>
+                                                <div style="font-size: 25px;text-align: center;color: #fff;">
+                                                    {{ submissionStats['totalPending']|default('--') }}
+                                                </div>
+                                            </td>
+                                            <td width="20" style="border-right: 1px dashed #ccc;"></td>
+                                            <td width="20"></td>
+                                            <td>
+                                                <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                    Currently Processing
+                                                </div>
+                                                <div style="font-size: 25px;text-align: center;color: #fff;">
+                                                    {{ submissionStats['totalStillProcessing']|default('--') }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                        {% endif %}
+
+
+                        <div style="display: flex;align-items: center;justify-content: flex-start;
+                                    width: 100%;height: auto;padding: 50px 30px;background-color: #76859a;">
+                            <div>
+                                <div style="font-size: 17px;text-align: left;color: #fff;margin-bottom: 40px;">
+                                    <b>Notification</b>
+                                </div>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div style="font-size: 14px;text-align: center;color: #fff;">
+                                                Unread Messages
+                                            </div>
+                                            <div id="total-unread-messages" style="font-size: 25px;text-align: center;color: #fff;">
+                                                ...
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="v-sep-20"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+
+        $(document).ready(function (e) {
+
+            fetchUnreadMessages();
+
+            function fetchUnreadMessages(){
+                $.ajax({
+                    url: "{{ path('api_total_unread_messages') }}" + "/" + {{ loggedInUser.id }},
+                    type: "GET"
+                }).done(function (data, textStatus, jqXHR) {
+                    //console.log(data);
+                    $('#total-unread-messages').html(data);
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    //console.log(jqXHR.responseText);
+                    $('#total-unread-messages').html('--');
+                }).always(function (jqXHR, textStatus) {
+
+                });
+            }
+
+        });
+
+    </script>
+{% endblock %}

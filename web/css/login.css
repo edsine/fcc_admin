@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  font-size: 13px !important;
+  font-family: "Roboto",Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+}
+
+body{
+	display: block;
+	height: 100%;
+	background-color: #F2F4F8 !important;
+	/*background-color: #F0F3F5;*/
+    background-image: url("../images/fcc-building.jpg");
+	background-repeat: no-repeat;
+    background-size: cover;
+	-webkit-background-size: cover;
+}
+
+.alert-container{
+	text-align: left !important;
+}
+
+.login-info{
+	position: fixed;
+	top: 0;
+	left: 0;
+	content: '';
+	width: 100%;
+	height: 100%;
+	background-color: rgba(33, 33, 33, .4);
+	/*background-position: center top;
+	-webkit-background-size: cover;
+	background-size: cover;*/
+	/*z-index: -1;*/
+	padding-right: 450px;
+	/*padding-left: 128px;
+	padding-top: 128px;*/
+}
+
+.login-info-content{
+	/*position: relative;*/
+	padding: 140px 20px 20px 128px;
+}
+
+.login-info-logo{
+	width: 128px;
+	height: 133px;
+}
+
+.login-info-client-name{
+	font-size: 28px;
+	color: #fff;
+	margin-top: 10px;
+}
+
+.login-info-app-name{
+	font-size: 25px;
+	color: #fff;
+}
+
+.login-wrapper {
+    position: absolute;
+	top: 0;
+    right: 10px;
+	width: 400px;
+	height: 100%;
+	margin: 0;
+	background-color: #ffffff;
+
+	box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+}
+
+.login-content{
+	padding: 30px;
+	text-align: center;	
+}
+
+.login-content .form-group{
+	margin-bottom: 25px;
+}
+
+.login-logo{
+	text-align:center;
+	width: 100%;
+	margin-bottom: 20px;	
+}
+
+.login-title{
+	width: 100%;
+	font-size: 22px;
+	margin-bottom: 30px;
+}
+
+.login-container{
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+@media (max-width: 480px){
+.login-wrapper {
+    width: 100%;
+}
+}
+
+/* bootstrap override */
+
+/* end bootstrap override */
+
+/* bootswatch theme override */
+
+
+/* end bootswatch theme override */

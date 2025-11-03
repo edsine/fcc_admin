@@ -1,0 +1,77 @@
+{% extends 'base.fcc.html.twig' %}
+
+{% block page_toolbar_left %}
+    New Character Balancing Index Report Request
+{% endblock %}
+{% block page_toolbar_right %}
+    <a class="btn btn-link close-btn" href="{{ path('mda_cbi_report_request_list') }}"><i class="fa fa-arrow-left"></i></a>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-5">
+
+            {% if alertNotification.hasMessage %}
+                <div style="margin-bottom: 30px;">
+                    <div class="alert alert-{{ alertNotification.type }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        {% for message in alertNotification.messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('mda_cbi_report_request_new') }}" class="form-horizontal"
+                  onsubmit="showLoading();">
+
+                <div class="form-group">
+                    <label for="cbi_grade_level_category" class="col-sm-4 control-label">Recruitment Category:</label>
+                    <div class="col-sm-8">
+                        <select class="form-control input-sm input-14" name="cbi_grade_level_category"
+                                style="display: inline-block; width: 200px;">
+                            <option value="">Recruitment Category</option>
+                            {% for glCategory in cbiReportGradeLevels %}
+                                {% if glCategory.id == cbiReportRequest.cbiGradeLevelCategory %}
+                                    {% set selected = 'selected' %}
+                                {% else %}
+                                    {% set selected = '' %}
+                                {% endif %}
+                                <option value="{{ glCategory.id }}" {{ selected }}>{{ glCategory.description }}</option>
+                            {% endfor %}
+                        </select>
+                        {{ validator.fields.field('cbi_grade_level_category').html | raw }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="recruitment_value" class="col-sm-4 control-label">Recruitment Value:</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="recruitment_value" value="{{ cbiReportRequest.recruitmentValue }}"
+                               class="form-control input-14" id="recruitment_value"
+                               placeholder="Enter Recruitment Value (Total Number To Recruit)"
+                               autocomplete="off">
+                        {{ validator.fields.field('recruitment_value').html | raw }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="remark" class="col-sm-4 control-label">Remark:</label>
+                    <div class="col-sm-8">
+                                <textarea class="form-control input-14 counter" rows="6" name="remark" id="remark"
+                                          placeholder="Enter the reason for requesting this report"
+                                          maxlength="220">{{ cbiReportRequest.remarks }}</textarea>
+                        {{ validator.fields.field('remark').html | raw }}
+                    </div>
+                </div>
+                <div class="col-sm-8 col-sm-offset-4">
+                    <button type="submit" name="btnSubmit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+
+        </div>
+        <div class="col-sm-7">
+
+        </div>
+    </div>
+{% endblock %}

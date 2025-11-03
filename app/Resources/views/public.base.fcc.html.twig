@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>Federal Character Commission {% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    {#<link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">#}
+
+    <!-- Bootstrap watch paper theme CSS -->
+    <link href="{{ asset('css/bootstrap-bootswatch-paper-theme.min.css') }}" rel="stylesheet">
+
+    <!-- font awesome -->
+    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
+    {% block stylesheets %}{% endblock %}
+
+</head>
+
+<body class="public-template">
+
+{% block header %}
+    {#<div class="fixed-header">
+        <div class="container-fluid page-toolbar">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-left">
+                        <h5>{% block page_toolbar_left %}{% endblock %}</h5>
+                    </div>
+                    <div class="pull-right page-toolbar-right">
+                        {% block page_toolbar_right %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>#}
+{% endblock %}
+
+
+<div class="container-fluid">
+
+    {% block main %}{% endblock %}
+
+</div>
+<!-- /container -->
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
+</body>
+</html>
